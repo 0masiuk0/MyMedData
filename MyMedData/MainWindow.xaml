@@ -5,8 +5,53 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Моя Медкнижка" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StatusBar
+             VerticalAlignment="Bottom" Background="Beige"
+            Grid.Row="3">
+            <StatusBarItem Margin="4,2,4,2">
+                <TextBlock x:Name="StatusTextBlock"
+                           FontSize="14">
+                    Текущий статус
+                </TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem >
+                <ProgressBar x:Name="ManiProgressBar"
+                             Width="400"
+                             VerticalAlignment="Stretch"
+                             Height="20"
+                             Opacity="0"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StatusBar>
+                    <StatusBarItem Margin="8,0,8,0">
+                        <Button x:Name="CalendarViewButton" Height="25" Width="25" Padding="-7">
+                            <Button.BorderBrush>
+                                <SolidColorBrush Opacity="0"/>
+                            </Button.BorderBrush>
+                            <Image Source="C:\Users\masuk\source\repos\MyMedData\MyMedData\Pics\Icons\CalendarViewIcon.png"/>
+                        </Button>
+                    </StatusBarItem>
+                    <StatusBarItem Margin="8,0,8,0">
+                        <Button x:Name="TableViewButton" Height="25" Width="25" Padding="-2">
+                            <Button.BorderBrush>
+                                <SolidColorBrush Opacity="0"/>
+                            </Button.BorderBrush>
+                            <Image Source="C:\Users\masuk\source\repos\MyMedData\MyMedData\Pics\Icons\TableViewIcon.png"/>
+                        </Button>
+                    </StatusBarItem>
+                </StatusBar>
+        </StatusBarItem>
+        </StatusBar>
 
     </Grid>
 </Window>
