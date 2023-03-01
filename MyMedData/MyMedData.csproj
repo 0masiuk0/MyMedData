@@ -7,4 +7,14 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Pics\Icons\AuthorizationIcon.svg" />
+    <None Remove="Pics\Icons\CalendarViewIcon.png" />
+    <None Remove="Pics\Icons\TableViewIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Pics\Icons\AuthorizationIcon.svg" />
+  </ItemGroup>
+
 </Project>
