@@ -1,4 +1,4 @@
-﻿<Window x:Class="MyMedData.MainWindow"
+﻿<Window x:Name="MainWindow1" x:Class="MyMedData.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,8 +11,16 @@
                     DockPanel.Dock="Top" Orientation="Horizontal">
             <Button x:Name="NewAppointmentRecordData"
                     Height="40" Width="40" BorderBrush="Transparent"
-                    Margin="5"
-                    Content="{StaticResource NewRecordDrawingImage}" Background="#FF27241F"/>
+                    Margin="5" Padding="2"
+                    Content="{StaticResource NewRecordDrawingImage}" Background="{StaticResource LightDarkBackColor}"/>
+            <Button x:Name="NewAnalysisButon"
+                    Height="40" Width="40" BorderBrush="Transparent"
+                    Margin="5" Padding="2"
+                    Content="{StaticResource AnalisysImage}" Background="{StaticResource LightDarkBackColor}"/>
+            <Button x:Name="SettingsdButton"
+                    Height="40" Width="40" BorderBrush="Transparent"
+                    Margin="5" Padding="2"
+                    Content="{StaticResource SettingsImage}" Background="{StaticResource LightDarkBackColor}"/>
         </StackPanel>
         <DockPanel x:Name="StatusBarDockPanel"
              VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
@@ -51,8 +59,27 @@
                     Content="{StaticResource AuthButtonDrawing}"/>
             <ProgressBar x:Name="ManiProgressBar"                  
                          Margin="10,4,10,4"
-                         Opacity="1" Minimum="-1" Foreground="{DynamicResource LightDarkBackColor}"/>
+                         Opacity="1" Minimum="-1" 
+                         Foreground="{StaticResource BlueConotourColor}" Background="{DynamicResource LightDarkBackColor}"/>
         </DockPanel>
-
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="InfoAreaBorder" Grid.Column="1" BorderBrush="{StaticResource DarkBackColor}" BorderThickness="2" CornerRadius="3" Margin="3">
+                <StackPanel x:Name="InfoStackPanel" Orientation="Vertical">
+                    <TextBlock x:Name="HeaderInfoTextBlock" Foreground="{StaticResource DarkThemeFontColor}">
+                        ЗАГОЛОВОК
+                    </TextBlock>
+                    <FlowDocumentReader x:Name="InfoTextBlock">
+                        <FlowDocument>
+                            <Paragraph>123214</Paragraph>
+                            <Paragraph>545454asas</Paragraph>
+                        </FlowDocument>
+                    </FlowDocumentReader>
+                </StackPanel>
+            </Border>
+        </Grid>
     </DockPanel>
 </Window>
