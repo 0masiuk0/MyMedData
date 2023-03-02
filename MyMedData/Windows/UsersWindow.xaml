@@ -1,0 +1,23 @@
+﻿<Window x:Class="MyMedData.Windows.UsersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyMedData.Windows"
+        mc:Ignorable="d"
+        Title="Пользователи"
+        Height="350" MinHeight="210" Width="450" Style="{StaticResource DarkWindowStyle}">    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="130"/>
+        </Grid.ColumnDefinitions>
+        <ListView x:Name="UsersListBox" Background="{StaticResource LightDarkBackColor}" Grid.Column="0" Margin="5"/>
+        <StackPanel Grid.Column="1">
+            <Button x:Name="LoginButton" Content="Войти" Style="{StaticResource ButtonStyle1}"/>
+            <Button x:Name="EditUserButton" Content="Изменить" Style="{StaticResource ButtonStyle1}"/>
+            <Button x:Name="AddUserButton" Content="Добавить" Style="{StaticResource ButtonStyle1}"/>
+            <Button x:Name="DeleteUserButon" Content="Удалить" Style="{StaticResource ButtonStyle1}"/>
+        </StackPanel>
+    </Grid>
+</Window>

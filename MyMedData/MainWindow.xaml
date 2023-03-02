@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData"
         mc:Ignorable="d"
-        Title="Моя Медкнижка" Height="450" Width="800" MinWidth="700" MinHeight="300" Background="{DynamicResource LightDarkBackColor}">
+        Title="Моя Медкнижка" Height="450" Width="800" MinWidth="700" MinHeight="300" Style="{StaticResource DarkWindowStyle}">
     <DockPanel x:Name="MainDockPanel">
         <StackPanel x:Name="MenuStackPanel" Background="{StaticResource DarkBackColor}"
                     DockPanel.Dock="Top" Orientation="Horizontal">
@@ -67,19 +67,8 @@
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Border x:Name="InfoAreaBorder" Grid.Column="1" BorderBrush="{StaticResource DarkBackColor}" BorderThickness="2" CornerRadius="3" Margin="3">
-                <StackPanel x:Name="InfoStackPanel" Orientation="Vertical">
-                    <TextBlock x:Name="HeaderInfoTextBlock" Foreground="{StaticResource DarkThemeFontColor}">
-                        ЗАГОЛОВОК
-                    </TextBlock>
-                    <FlowDocumentReader x:Name="InfoTextBlock">
-                        <FlowDocument>
-                            <Paragraph>123214</Paragraph>
-                            <Paragraph>545454asas</Paragraph>
-                        </FlowDocument>
-                    </FlowDocumentReader>
-                </StackPanel>
-            </Border>
+            <Border x:Name="MainAreaBorder" Grid.Column="0" BorderBrush="{StaticResource DarkBackColor}" BorderThickness="2" CornerRadius="3" Margin="3,3,1.5,3"/>
+            <Border x:Name="InfoAreaBorder" Grid.Column="1" BorderBrush="{StaticResource DarkBackColor}" BorderThickness="2" CornerRadius="3" Margin="1.5,3,3,3"/>
         </Grid>
     </DockPanel>
 </Window>
