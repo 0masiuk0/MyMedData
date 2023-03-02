@@ -27,7 +27,7 @@
                         <DrawingGroup Opacity="1">
                             <GeometryDrawing Geometry="F1 M24,24z M0,0z M12,11L12,14 M12,14L12,17 M12,14L9,14 M12,14L15,14 M13,3L5,3 5,5 M13,3L14,3 19,8 19,9 M13,3L13,7C13,8,14,9,15,9L19,9 M19,9L19,12 M5,10L5,21 19,21 19,16">
                                 <GeometryDrawing.Pen>
-                                    <Pen Brush="#FF87CEFA" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                                    <Pen Brush="{StaticResource BlueConotourColor}" Thickness="0.7" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
                                 </GeometryDrawing.Pen>
                             </GeometryDrawing>
                         </DrawingGroup>
