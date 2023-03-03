@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="MyMedData.Controls.UserPlaque"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyMedData.Controls"
+             xmlns:uc="clr-namespace:MyMedData.Controls"
+             mc:Ignorable="d" 
+             x:Name="UserPlaqueControl"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="50">
+    <Border BorderBrush="{Binding ElementName=UserPlaqueControl, Path=BorderBrush}"
+            BorderThickness="{Binding ElementName=UserPlaqueControl, Path=BorderThickness}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="45"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="45" Height="45">
+                <Image.Source>
+                    <DrawingImage>
+                        <DrawingImage.Drawing>
+                            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                <GeometryDrawing Brush="Transparent">
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,0,24,24" />
+                                    </GeometryDrawing.Geometry>
+                                </GeometryDrawing>
+                                <GeometryDrawing Brush="{Binding ElementName=UserPlaqueControl, Path=Foreground}" Geometry="F0 M24,24z M0,0z M2,12C2,6.47715 6.47715,2 12,2 17.5228,2 22,6.47715 22,12 22,17.5228 17.5228,22 12,22 6.47715,22 2,17.5228 2,12z M11.9999,6C9.79077,6 7.99991,7.79086 7.99991,10 7.99991,12.2091 9.79077,14 11.9999,14 14.209,14 15.9999,12.2091 15.9999,10 15.9999,7.79086 14.209,6 11.9999,6z M17.1115,15.9974C17.8693,16.4854 17.8323,17.5491 17.1422,18.1288 15.7517,19.2966 13.9581,20 12.0001,20 10.0551,20 8.27215,19.3059 6.88556,18.1518 6.18931,17.5723 6.15242,16.5032 6.91351,16.012 7.15044,15.8591 7.40846,15.7251 7.68849,15.6097 8.81516,15.1452 10.2542,15 12,15 13.7546,15 15.2018,15.1359 16.3314,15.5954 16.6136,15.7102 16.8734,15.8441 17.1115,15.9974z" />
+                            </DrawingGroup>
+                        </DrawingImage.Drawing>
+                    </DrawingImage>
+                </Image.Source>
+            </Image>
+            <TextBlock x:Name="UserNameTextBlock" Grid.Column="1" 
+                   HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,10,10,10"
+                   FontSize="25" Foreground="{StaticResource DarkThemeFontColor}"
+                   Text="{Binding ElementName=UserPlaqueControl, Path=Text}"/>
+        </Grid>
+    </Border>
+</UserControl>
