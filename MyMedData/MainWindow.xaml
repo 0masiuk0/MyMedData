@@ -6,6 +6,32 @@
         xmlns:local="clr-namespace:MyMedData"
         mc:Ignorable="d"
         Title="Моя Медкнижка" Height="450" Width="800" MinWidth="700" MinHeight="300" Style="{StaticResource DarkWindowStyle}">
+    <Window.Resources>
+        <Style x:Key="ButtonMousOverStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                            </TransformGroup>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <DockPanel x:Name="MainDockPanel">
         <StackPanel x:Name="MenuStackPanel" Background="{StaticResource DarkBackColor}"
                     DockPanel.Dock="Top" Orientation="Horizontal">
@@ -33,30 +59,43 @@
             </TextBlock>
             
             <Button x:Name="CalendarViewButton" Height="25" Width="25" 
-                    Padding="-2" Margin="10,4,10,4"
-                    DockPanel.Dock="Right"
-                    BorderBrush="Transparent"                    
-                    Background="{StaticResource LightDarkBackColor}"
-                    Content="{StaticResource CalendarViewImage}"/>
-
-            <Button x:Name="TableViewButton" Height="25" Width="25" 
-                    Margin="10,4,10,4" Padding="-2" 
-                    BorderBrush="Transparent"
-                    Background="{StaticResource LightDarkBackColor}"
-                    DockPanel.Dock="Right"
-                    Content="{StaticResource TableViewImage}"/>
-            <TextBlock x:Name="UsernameTextBlock"
-                        FontSize="14"
-                       
-                        Background="{StaticResource LightDarkBackColor}"
-                        DockPanel.Dock="Right" VerticalAlignment="Center"
-                        Margin="10,4,10,4" Padding="4" Foreground="{StaticResource DarkThemeFontColor}" >
-                Имя пользователя
-            </TextBlock>
-            <Button x:Name="AuthorizationButton" Background="Transparent" BorderBrush="Transparent"
                     Margin="10,4,10,4"
                     DockPanel.Dock="Right"
+                    BorderBrush="Transparent"                    
+                    Background="Transparent"
+                    Content="{StaticResource CalendarViewImage}"
+                    Style="{StaticResource ButtonMousOverStyle}"/>
+
+            <Button x:Name="TableViewButton" Height="25" Width="25" 
+                    Margin="10,4,10,4"  
+                    BorderBrush="Transparent"
+                    Background="Transparent"
+                    DockPanel.Dock="Right"
+                    Content="{StaticResource TableViewImage}"
+                    Style="{StaticResource ButtonMousOverStyle}"/>
+            
+            <TextBlock x:Name="UsernameTextBlock"
+                        FontSize="14"                       
+                        Background="{StaticResource LightDarkBackColor}"
+                        DockPanel.Dock="Right" VerticalAlignment="Center"
+                        Margin="4,4,10,4" Padding="4" Foreground="{StaticResource DarkThemeFontColor}" >
+                Имя пользователя
+            </TextBlock>
+
+            <Button x:Name="LogOffButton" Height="25" Width="25" 
+                    Margin="10,4,10,4" 
+                    BorderBrush="Transparent"
+                    Background="Transparent"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource ButtonMousOverStyle}"
+                    Content="{StaticResource LogOffImage}"/>
+            
+            <Button x:Name="AuthorizationButton" Background="Transparent" BorderBrush="Transparent"
+                    Margin="10,4,4,4"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource ButtonMousOverStyle}"
                     Content="{StaticResource AuthButtonDrawing}"/>
+            
             <ProgressBar x:Name="ManiProgressBar"                  
                          Margin="10,4,10,4"
                          Opacity="1" Minimum="-1" 

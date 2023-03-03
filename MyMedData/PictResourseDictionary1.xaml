@@ -210,5 +210,28 @@
                 </DrawingImage.Drawing>
             </DrawingImage>
         </Image.Source>
-    </Image>    
+    </Image>
+
+    <Image x:Key="LogOffImage">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V600 H600 V0 H0 Z">
+                        <DrawingGroup Opacity="1">
+                            <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M600,600z M0,0z M130,0C58.672245,0,0,58.672245,0,130L0,470C0,541.32776,58.672245,600,130,600L301.57812,600C367.83331,600,423.13643,549.36696,430.67188,485L349.43555,485C343.32179,505.66026,324.7036,520,301.57812,520L130,520C101.60826,520,80,498.39174,80,470L80,130C80,101.60826,101.60826,80,130,80L301.57812,80C324.7036,80,343.32179,94.339739,349.43555,115L430.67188,115C423.13642,50.633038,367.83331,0,301.57812,0L130,0z">
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="{StaticResource BlueConotourColor}" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                                </GeometryDrawing.Pen>
+                            </GeometryDrawing>
+                            <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M600,600z M0,0z M476.86328,179.99911A40,40,0,0,0,448.57812,191.71395A40,40,0,0,0,448.57812,248.28427L460.29297,259.99911 163.72656,259.99911A40,40,0,0,0,123.72656,299.99911A40,40,0,0,0,163.72656,339.99911L460.29297,339.99911 448.57812,351.71395A40,40,0,0,0,448.57812,408.28427A40,40,0,0,0,505.14844,408.28427L577.93945,335.49325A40,40,0,0,0,600,299.99911A40,40,0,0,0,577.5293,264.09481L505.14844,191.71395A40,40,0,0,0,476.86328,179.99911z">
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="{StaticResource BlueConotourColor}" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" />
+                                </GeometryDrawing.Pen>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
 </ResourceDictionary>
