@@ -11,12 +11,8 @@
              d:DesignHeight="50">
     <Border BorderBrush="{Binding ElementName=UserPlaqueControl, Path=BorderBrush}"
             BorderThickness="{Binding ElementName=UserPlaqueControl, Path=BorderThickness}">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="45"/>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Width="45" Height="45">
+        <DockPanel>
+            <Image DockPanel.Dock="Left" Width="45" Height="45" HorizontalAlignment="Left">
                 <Image.Source>
                     <DrawingImage>
                         <DrawingImage.Drawing>
@@ -32,10 +28,10 @@
                     </DrawingImage>
                 </Image.Source>
             </Image>
-            <TextBlock x:Name="UserNameTextBlock" Grid.Column="1" 
+            <TextBlock x:Name="UserNameTextBlock"
                    HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,10,10,10"
                    FontSize="25" Foreground="{StaticResource DarkThemeFontColor}"
                    Text="{Binding ElementName=UserPlaqueControl, Path=Text}"/>
-        </Grid>
+        </DockPanel>
     </Border>
 </UserControl>

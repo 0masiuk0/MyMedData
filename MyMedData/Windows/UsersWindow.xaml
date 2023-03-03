@@ -15,9 +15,9 @@
         </Grid.ColumnDefinitions>
         <ListView x:Name="UsersListBox" Background="{StaticResource LightDarkBackColor}" Grid.Column="0" Margin="5,5,5,5" HorizontalContentAlignment="Stretch">
             <d:ListView.Items>
-                <uc:UserPlaque Foreground="Yellow" Text="Sample Element 1" BorderBrush="White" BorderThickness="3"/>
-                <uc:UserPlaque Foreground="Red" Text="Sample Element 256" BorderBrush="White" BorderThickness="3"/>
-                <uc:UserPlaque Foreground="Green" Text="Sample 3" BorderBrush="White" BorderThickness="3"/>
+                <uc:UserPlaque Foreground="Yellow" Text="Sample Element 1" BorderBrush="White" BorderThickness="1"/>
+                <uc:UserPlaque Foreground="Red" Text="Sample Element 256" BorderBrush="White" BorderThickness="1"/>
+                <uc:UserPlaque Foreground="Green" Text="Sample 3" BorderBrush="White" BorderThickness="1"/>
             </d:ListView.Items>
         </ListView>
         <StackPanel Grid.Column="1">
