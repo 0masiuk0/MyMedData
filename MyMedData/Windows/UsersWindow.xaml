@@ -7,7 +7,7 @@
         xmlns:uc="clr-namespace:MyMedData.Controls"
         mc:Ignorable="d"
         Title="Пользователи"
-        Height="350" MinHeight="210" Width="500" Style="{StaticResource DarkWindowStyle}">
+        Height="350" MinHeight="210" Width="500" Style="{StaticResource DarkWindowStyle}" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />

@@ -94,7 +94,7 @@
                     Margin="10,4,4,4"
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonMousOverStyle}"
-                    Content="{StaticResource AuthButtonDrawing}"/>
+                    Content="{StaticResource AuthButtonDrawing}" Click="AuthorizationButton_Click"/>
             
             <ProgressBar x:Name="ManiProgressBar"                  
                          Margin="10,4,10,4"

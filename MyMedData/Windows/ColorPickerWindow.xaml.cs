@@ -10,26 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MyMedData.Windows;
 
-namespace MyMedData
+namespace MyMedData.Windows
 {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Логика взаимодействия для ColorPickerWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class ColorPickerWindow : Window
 	{
-		public MainWindow()
+		public ColorPickerWindow()
 		{
 			InitializeComponent();
-		}
-
-		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
-		{
-			Window usersWindow = new UsersWindow();
-			usersWindow.ShowDialog();
 		}
 	}
 }
