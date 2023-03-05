@@ -3,7 +3,7 @@
     <SolidColorBrush x:Key="DarkBackColor" Color="#FF27241F"/>
     <SolidColorBrush x:Key="LightBlueFront" Color="#FF87CEFA"/>
     <SolidColorBrush x:Key="LightDarkBackColor" Color="#FF383838"/>
-    <SolidColorBrush x:Key="DarkThemeFontColor" Color="#FFD0D0D0"/>
+    <SolidColorBrush x:Key="DarkThemeFontColor" Color="LightGray"/>
     <SolidColorBrush x:Key="BlueConotourColor" Color="#FF4788C7"/>
     <Style x:Key="DarkWindowStyle" TargetType="Window">
         <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>

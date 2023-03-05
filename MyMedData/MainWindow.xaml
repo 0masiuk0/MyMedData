@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData"
         mc:Ignorable="d"
-        Title="Моя Медкнижка" Height="450" Width="800" MinWidth="700" MinHeight="300" Style="{StaticResource DarkWindowStyle}">
+        Title="Моя Медкнижка" Height="450" Width="800" MinWidth="700" MinHeight="300" Style="{StaticResource DarkWindowStyle}" Loaded="MainWindow1_Loaded">
     <Window.Resources>
         <Style x:Key="ButtonMousOverStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
