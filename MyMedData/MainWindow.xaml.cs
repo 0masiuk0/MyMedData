@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MyMedData.Windows;
+using MyMedData.Windows;
 
 namespace MyMedData
 {
@@ -26,15 +27,45 @@ namespace MyMedData
 			InitializeComponent();
 		}
 
+		private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
+		{
+
+		}
+
 		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
 		{
 			Window usersWindow = new UsersWindow();
 			usersWindow.ShowDialog();
+			if (User.ActiveUser != null)
+			{
+				LoadUserData();
+			}
+			else
+			{
+				LogOff();
+			}
 		}
 
-		private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
-		{
+		private void LogOffButton_Click(object sender, RoutedEventArgs e)
+		{	
+			LogOff();
+		}
 
+		private void LogOff()
+		{
+			User.LogOff();
+			UsernameTextBlock.Text = string.Empty;
+		}
+
+		private void LoadUserData()
+		{
+			throw new NotImplementedException();
+		}		
+
+		private void SettingsdButton_Click(object sender, RoutedEventArgs e)
+		{
+			SettingsWindow settingsWindow = new();
+			settingsWindow.ShowDialog();
 		}
 	}
 }

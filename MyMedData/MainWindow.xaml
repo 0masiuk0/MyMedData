@@ -46,7 +46,7 @@
             <Button x:Name="SettingsdButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
-                    Content="{StaticResource SettingsImage}" Background="{StaticResource LightDarkBackColor}"/>
+                    Content="{StaticResource SettingsImage}" Background="{StaticResource LightDarkBackColor}" Click="SettingsdButton_Click"/>
         </StackPanel>
         <DockPanel x:Name="StatusBarDockPanel"
              VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
@@ -88,7 +88,7 @@
                     Background="Transparent"
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonMousOverStyle}"
-                    Content="{StaticResource LogOffImage}"/>
+                    Content="{StaticResource LogOffImage}" Click="LogOffButton_Click"/>
             
             <Button x:Name="AuthorizationButton" Background="Transparent" BorderBrush="Transparent"
                     Margin="10,4,4,4"

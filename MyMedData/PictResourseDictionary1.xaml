@@ -234,4 +234,22 @@
             </DrawingImage>
         </Image.Source>
     </Image>
+
+    <Image x:Key="EditFiledImage" >
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                        <DrawingGroup Opacity="1">
+                            <GeometryDrawing Brush="#FFF0E800" Geometry="F0 M24,24z M0,0z M14.2322,5.76777C15.2085,4.79146,16.7915,4.79146,17.7678,5.76777L18.4749,6.47487C19.4512,7.45118,19.4512,9.0341,18.4749,10.0104L10.3431,18.1421 7.10051,18.1421C6.54822,18.1421,6.1005,17.6944,6.10051,17.1421L6.10051,13.8995 14.2322,5.76777z M16.3536,7.18198L17.0607,7.88909C17.2559,8.08435,17.2559,8.40093,17.0607,8.59619L16,9.65685 14.5858,8.24264 15.6464,7.18198C15.8417,6.98672,16.1583,6.98672,16.3536,7.18198z M14.5858,11.0711L9.51472,16.1421 8.10051,16.1421 8.10051,14.7279 13.1716,9.65685 14.5858,11.0711z">
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="#FF2485C6" Thickness="0.648" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                                </GeometryDrawing.Pen>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
 </ResourceDictionary>

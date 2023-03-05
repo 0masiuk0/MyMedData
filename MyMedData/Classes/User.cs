@@ -6,15 +6,12 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using LiteDB;
 
-namespace MyMedData.Classes
+namespace MyMedData
 {
-	internal static class UsersDB
+	public class User
 	{
-		public static User ActiveUser { get; private set; }
-	}
+		public static User? ActiveUser { get; private set; }
 
-	internal class User
-	{
 		//public int Id { get; set; }
 		public string Name { get; set; }
 		public Brush AccountColor { get; set; }
@@ -34,6 +31,11 @@ namespace MyMedData.Classes
 			AccountColor = accountColor;
 			PasswordHash = passwordHash;
 			RecordsDBFileName = recordsDBFileName;
+		}
+
+		internal static void LogOff()
+		{
+			ActiveUser = null;
 		}
 	}
 }

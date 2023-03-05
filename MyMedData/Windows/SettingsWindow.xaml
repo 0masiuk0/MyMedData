@@ -6,11 +6,12 @@
         xmlns:local="clr-namespace:MyMedData.Windows"
         mc:Ignorable="d"
         Title="Настройки" Height="300" Width="450" MinHeight="200" MinWidth="200"
-        Style="{StaticResource DarkWindowStyle}">
+        Style="{StaticResource DarkWindowStyle}" Loaded="Window_Loaded">
     <DockPanel Margin="5">
         <StackPanel x:Name="ButtonsStackPanel" Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
-            <Button x:Name="OKbutton" Content="OK" Style="{StaticResource ButtonStyle1}"/>
-            <Button x:Name="CancelButton" Content="Отмена" Style="{StaticResource ButtonStyle1}"/>
+            <Button x:Name="OKbutton" Content="OK" Style="{StaticResource ButtonStyle1}" Click="OKbutton_Click"/>
+            <Button x:Name="Applybutton" Content="Применить" Style="{StaticResource ButtonStyle1}" Click="Applybutton_Click"/>
+            <Button x:Name="CancelButton" Content="Отмена" Style="{StaticResource ButtonStyle1}" Click="CancelButton_Click"/>
         </StackPanel>
         <TabControl x:Name="SettingsMainTabControl" Background="{StaticResource LightDarkBackColor}">
             <TabControl.Resources>
@@ -64,9 +65,16 @@
                         Margin="{StaticResource StackPanelChildMargin}">
                     Файл базы данных пользователей
                     </TextBlock>
-                    <TextBox x:Name="UsersDbFileNameTextBox"
-                         Foreground="{StaticResource DarkThemeFontColor}"
-                         Margin="{StaticResource StackPanelChildMargin}"/>
+                    <DockPanel Margin="{StaticResource StackPanelChildMargin}">
+                        <Button x:Name="EditUserDBFileButton"
+                                DockPanel.Dock="Right" Background = "Transparent" BorderBrush="Transparent"
+                                Width="25" Height="25" VerticalAlignment="Center" Margin="10,0,0,0" Padding="3"
+                                Content="{StaticResource EditFiledImage}" Click="EditUserDBFileButton_Click">                            
+                        </Button>
+                        <TextBox x:Name="UsersDbFileNameTextBox"
+                            VerticalAlignment="Center"        
+                            IsReadOnly="True"/>                        
+                    </DockPanel>
                 </StackPanel>
             </TabItem>
         </TabControl>
