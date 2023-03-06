@@ -23,5 +23,15 @@ namespace MyMedData.Windows
 		{
 			InitializeComponent();
 		}
+
+		private void OKbutton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void CancelButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
 	}
 }

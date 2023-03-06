@@ -16,6 +16,7 @@ using System.IO;
 using LiteDB;
 using System.Collections.ObjectModel;
 using MyMedData.Controls;
+using MyMedData.Windows;
 using System.Windows.Markup;
 
 namespace MyMedData.Windows
@@ -51,13 +52,17 @@ namespace MyMedData.Windows
 					}
 					else
 					{
-						var needToCreateNewUsersDb = MessageBox.Show($"Не найден файл с базой пользователей. Создать пустой по адексу {userDbFileName}?",
+						var needToCreateNewUsersDb = MessageBox.Show($"Не найден файл с базой пользователей. Создать пустой по адресу {userDbFileName}?",
 							"Ошибка!",
 							MessageBoxButton.YesNo, MessageBoxImage.Error);
 
 						if (needToCreateNewUsersDb == MessageBoxResult.Yes)
 						{
 							//Создаем новую базу пользователей
+							using (var usersDB = new LiteDatabase(userDbFileName))
+							{ 
+								
+							}
 						}
 					}
 				}
@@ -77,9 +82,26 @@ namespace MyMedData.Windows
 				UsersListBox.Items.Clear();
 				foreach (User user in usersCollection.FindAll())
 				{
-					UsersListBox.Items.Add(new UserPlaque(user));
+					UserPlaque userPlaque = new UserPlaque(user);
+					UsersListBox.Items.Add(userPlaque);
+					userPlaque.MouseDoubleClick += AuthorizeUser;
 				}
 			}
+		}
+
+		private void AddUserButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void AuthorizeUser(object sender, MouseButtonEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void LoginButton_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 }
