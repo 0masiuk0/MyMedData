@@ -29,7 +29,7 @@
                 </Image.Source>
             </Image>
             <TextBlock x:Name="UserNameTextBlock"
-                   HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,10,10,10"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,10,10,10"
                    FontSize="25" Foreground="{StaticResource DarkThemeFontColor}"
                    Text="{Binding ElementName=UserPlaqueControl, Path=Text}"/>
         </DockPanel>

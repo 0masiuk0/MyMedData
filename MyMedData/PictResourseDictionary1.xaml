@@ -252,4 +252,38 @@
             </DrawingImage>
         </Image.Source>
     </Image>
+
+    <Image x:Key="ColorPickerImage">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V14 H14 V0 H0 Z">
+                        <DrawingGroup Opacity="1" Transform="0.3,0,0,0.3,-0.23126488,-0.2">
+                            <GeometryDrawing Brush="#FFFFC107" Geometry="F1 M14,14z M0,0z M24.639,4C16.039,4 6.209,8.954 6.209,22.947 6.209,33.108 13.842,44 25.519,44L25.694,44C30.079,43.921 34.799,41.082 34.799,35.041 34.799,33.884 34.368,32.882 33.99,31.999 33.888,31.766 33.791,31.537 33.702,31.305 32.838,29.13 33.791,28.334 36.031,26.74 38.568,24.934 42.044,22.462 41.999,15.921 41.999,12.032 37.756,4 24.639,4z M25.199,39.2C22.958,39.2 21.198,37.44 21.198,35.201 21.198,32.96 22.958,31.2 25.199,31.2 27.437,31.2 29.197,32.96 29.197,35.201 29.197,37.44 27.438,39.2 25.199,39.2z" />
+                            <GeometryDrawing Brush="#FF9C27B0">
+                                <GeometryDrawing.Geometry>
+                                    <EllipseGeometry RadiusX="3.5" RadiusY="3.5" Center="34.5,16.5" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                            <GeometryDrawing Brush="#FF2196F3">
+                                <GeometryDrawing.Geometry>
+                                    <EllipseGeometry RadiusX="3.5" RadiusY="3.5" Center="25.5,10.5" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                            <GeometryDrawing Brush="#FF4CAF50">
+                                <GeometryDrawing.Geometry>
+                                    <EllipseGeometry RadiusX="3.5" RadiusY="3.5" Center="15.5,15.5" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                            <GeometryDrawing Brush="#FFFF3D00">
+                                <GeometryDrawing.Geometry>
+                                    <EllipseGeometry RadiusX="3.5" RadiusY="3.5" Center="14.5,26.5" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
 </ResourceDictionary>
