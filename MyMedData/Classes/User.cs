@@ -12,7 +12,8 @@ namespace MyMedData
 	{
 		public static User? ActiveUser { get; private set; }
 
-		//public int Id { get; set; }
+		[BsonId]
+		public int Id { get; set; }
 		public string Name { get; set; }
 		public Brush AccountColor { get; set; }
 		public string? PasswordHash { get; private set; }
@@ -39,6 +40,11 @@ namespace MyMedData
 		public void SetPassword(string password)
 		{
 			PasswordHash = GetPasswordHash(password);
+		}
+
+		public override string ToString()
+		{
+			return Name;
 		}
 
 		internal static void LogOff()
@@ -119,6 +125,6 @@ namespace MyMedData
 		public bool IsValidUser => PasswordHash != null && IsValidUserName(this.Name) && File.Exists(RecordsDbFullPath);
 
 		[BsonIgnore]
-		public string RecordsDbFullPath => Path.Combine(RecordsFolder, $"{Name} MedData Database.db");
+		public string RecordsDbFullPath => Path.Combine(RecordsFolder, $"{Name} MedData.db");
 	}
 }

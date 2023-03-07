@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:MyMedData.Windows"
         xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker"
         mc:Ignorable="d"
-        Title="Выберите цвет" Height="421" Width="200" Background="#FF252525">
+        Title="Выберите цвет" Foreground="{StaticResource DarkThemeFontColor}" Background="{StaticResource DarkBackColor}"
+        ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,9 +15,14 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel>
-        <colorpicker:StandardColorPicker x:Name="TheСolorPicker" Width="200" Height="380" DockPanel.Dock="Top" 
-                                         Style="{StaticResource DefaultColorPickerStyle}"/>
-        <Button x:Name="OKbutton" Content="OK" Width="100" Style="{StaticResource UnsizedDarkButtonStyle}"/>
-    </DockPanel>
+    <StackPanel>
+        <colorpicker:SquarePicker x:Name="TheСolorPicker" DockPanel.Dock="Top" 
+                                  Width="200" Height="200" Margin="15"
+                                  Style="{StaticResource DefaultColorPickerStyle}"
+                                  ColorChanged="TheСolorPicker_ColorChanged"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+            <Button x:Name="OKbutton" Content="OK" Width="100" Height="20" Style="{StaticResource UnsizedDarkButtonStyle}" Margin="0" Click="OKbutton_Click"/>
+            <Button x:Name="CancelButton" Content="Отмена" Width="100" Height="20" Style="{StaticResource UnsizedDarkButtonStyle}" Margin="15, 0,0,0" Click="CancelButton_Click"/>
+        </StackPanel>
+    </StackPanel>
 </Window>
