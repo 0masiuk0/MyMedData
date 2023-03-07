@@ -29,11 +29,13 @@ namespace MyMedData.Windows
 			PasswordTextBox1.PasswordChanged += ValidateData;
 			PasswordTextBox2.PasswordChanged += ValidateData;
 			selectedColor = userPlaque.Foreground;
+			username = "";
 		}
 
+		string username;
 		private void UserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			userPlaque.Text = UserNameTextBox.Text;
+			username = userPlaque.Text = UserNameTextBox.Text;
 		}
 
 		Brush selectedColor;
@@ -53,6 +55,8 @@ namespace MyMedData.Windows
 			{
 				dataFolder = openFolderDialog.SelectedPath;
 			}
+			else
+				dataFolder = null;
 			ValidateData();
 		}
 
@@ -60,22 +64,37 @@ namespace MyMedData.Windows
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
-
+			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFolder);
+			
+			if (!DataBase.CreateUserDocumnetDb(NewUser, RecordsDbCreationOptions.Ask))
+			{
+				//неудача создания базы для пользователя
+				NewUser = null;
+			}
+			Close();
 		}
 
 		private void CancelButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			NewUser = null;
+			Close();
 		}
 
 		private void ValidateData()
 		{
-
+			bool validData = User.IsValidUserName(username)
+				&& User.IsValidPassword(PasswordTextBox1.Password)
+				&& PasswordTextBox1.Password == PasswordTextBox2.Password
+				&& dataFolder != null;
+			
+			OKbutton.IsEnabled = validData;
 		}
 
 		private void ValidateData(object sender, RoutedEventArgs eventArgs)
 		{
 			ValidateData();
 		}
+
+
 	}
 }

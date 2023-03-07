@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using MyMedData.Controls;
 using MyMedData.Windows;
 using System.Windows.Markup;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace MyMedData.Windows
 {
@@ -91,7 +92,21 @@ namespace MyMedData.Windows
 
 		private void AddUserButton_Click(object sender, RoutedEventArgs e)
 		{
+			AddUserWindow addUserWindow = new();
+			addUserWindow.ShowDialog();			
+			if (addUserWindow.NewUser != null)
+			{
+				var newUser = addUserWindow.NewUser;
+				using (var usersDB = new LiteDatabase(newUser.RecordsDbFullPath))
+				{
+					var usersCollection = usersDB.GetCollection<User>();
+					usersCollection.Insert(newUser);
+				}
 
+				UserPlaque userPlaque = new UserPlaque(newUser);
+				UsersListBox.Items.Add(userPlaque);
+				userPlaque.MouseDoubleClick += AuthorizeUser;
+			}
 		}
 
 		private void AuthorizeUser(object sender, MouseButtonEventArgs e)

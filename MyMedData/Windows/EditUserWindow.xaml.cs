@@ -45,7 +45,7 @@ namespace MyMedData.Windows
 
 		private void EditDBFileNameButton_Click(object sender, RoutedEventArgs e)
 		{
-			Li
+			
 		}
 	}
 }
