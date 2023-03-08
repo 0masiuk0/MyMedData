@@ -46,25 +46,17 @@ namespace MyMedData.Windows
 				}
 				else
 				{
-					if (File.Exists(userDbFileName))
+					if (File.Exists(userDbFileName) && DataBase.FastCheckUserDvValidity(userDbFileName))
 					{
 						//читаем
 						ReadUsers((string)userDbFileName);
 					}
 					else
 					{
-						var needToCreateNewUsersDb = MessageBox.Show($"Не найден файл с базой пользователей. Создать пустой по адресу {userDbFileName}?",
+						var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
 							"Ошибка!",
-							MessageBoxButton.YesNo, MessageBoxImage.Error);
-
-						if (needToCreateNewUsersDb == MessageBoxResult.Yes)
-						{
-							//Создаем новую базу пользователей
-							using (var usersDB = new LiteDatabase(userDbFileName))
-							{ 
-								
-							}
-						}
+							MessageBoxButton.OK, MessageBoxImage.Error);
+						Close();
 					}
 				}
 			}

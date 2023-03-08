@@ -123,6 +123,7 @@ namespace MyMedData
 			}
 		}
 
+		public static string DB_COLLECTION_NAME => "Users";
 
 //---------------------------------------------NON-SERIALIZED INSTANCE MEMBERS-------------------------------------
 		[BsonIgnore]

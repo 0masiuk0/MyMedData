@@ -16,6 +16,8 @@ using System.Collections.Specialized;
 using System.Threading.Channels;
 using System.Runtime.CompilerServices;
 using Microsoft.Win32;
+using System.IO;
+using LiteDB;
 
 namespace MyMedData.Windows
 {
@@ -97,6 +99,17 @@ namespace MyMedData.Windows
 			if (openFileDialog.ShowDialog() ?? false)
 			{
 				string newPath = openFileDialog.FileName;
+
+				if (!File.Exists(newPath))
+				{
+
+				}
+				else
+				{
+					sdsadasd
+				}
+
+
 				if (newPath != appSettings["UserDbName"])
 				{
 					_changedSettings["UserDbName"] = newPath;
@@ -105,6 +118,8 @@ namespace MyMedData.Windows
 				{
 					_changedSettings.Remove("UserDbName");
 				}
+
+				
 
 				UsersDbFileNameTextBox.Text = newPath;
 			}
