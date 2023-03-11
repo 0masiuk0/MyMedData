@@ -27,7 +27,7 @@ namespace MyMedData.Controls
 			private set
 			{
 				_user = value;
-				Foreground = _user.AccountColor;
+				Foreground = _user.AccountColoredBrush;
 				Text = _user.Name;
 			}
 		}

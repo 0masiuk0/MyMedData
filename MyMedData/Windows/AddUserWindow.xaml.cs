@@ -28,7 +28,16 @@ namespace MyMedData.Windows
 			UserNameTextBox.TextChanged += ValidateData;
 			PasswordTextBox1.PasswordChanged += ValidateData;
 			PasswordTextBox2.PasswordChanged += ValidateData;
-			selectedColor = userPlaque.Foreground;
+			if (userPlaque.Foreground is SolidColorBrush)
+			{
+				selectedColor = (SolidColorBrush)userPlaque.Foreground;
+			}
+			else
+			{
+				throw new Exception("Этого не должно было произойти. Цвет плашки пользователя не выражен одним цветом. " +
+					"(UserPlaque.Foreground is not SolidColorBrush)");
+			}
+				
 			username = "";
 		}
 
@@ -38,7 +47,7 @@ namespace MyMedData.Windows
 			username = userPlaque.Text = UserNameTextBox.Text;
 		}
 
-		Brush selectedColor;
+		SolidColorBrush selectedColor;
 		private void PickColorButton_Click(object sender, RoutedEventArgs e)
 		{
 			var colorPickerWindow = new ColorPickerWindow();
@@ -64,13 +73,16 @@ namespace MyMedData.Windows
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
-			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFolder);
+#pragma warning disable CS8604 
+			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFolder, OwnDatabaseCheckBox.IsChecked ?? false);
+#pragma warning restore CS8604
 			
 			if (!DataBase.CreateUserDocumnetDb(NewUser, RecordsDbCreationOptions.Ask))
 			{
 				//неудача создания базы для пользователя
 				NewUser = null;
 			}
+			MessageBox.Show("Новый пользователь создан не был.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
 			Close();
 		}
 
@@ -95,6 +107,9 @@ namespace MyMedData.Windows
 			ValidateData();
 		}
 
-
+		private void OwnDatabaseCheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			MessageBox.Show("Эту настройку нельзя изменить после создания пользователя.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+		}
 	}
 }

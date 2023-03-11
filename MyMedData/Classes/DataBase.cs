@@ -15,7 +15,7 @@ namespace MyMedData
 {
 	internal static class DataBase
 	{
-		public static bool CreateUserDocumnetDb(User user, RecordsDbCreationOptions options)
+		public static bool CreateUserDocumnetDb(User user, RecordsDbCreationOptions options = RecordsDbCreationOptions.Ask)
 		{
 			if (Directory.Exists(user.RecordsFolder))
 			{
@@ -155,14 +155,20 @@ namespace MyMedData
 			}
 		}
 
-		private static void CreateFreshRecordDb(string filename)
+		private static void CreateFreshRecordDb(string filename, bool keepsPrivateDoctorsDb = false)
 		{
 			using (var db = new LiteDatabase(filename))
 			{
 				var dcExamins = db.GetCollection<DoctorExamination>(DoctorExamination.DB_COLLECTION_NAME);
-				dcExamins.DeleteAll();
+				dcExamins.EnsureIndex(x => x.Date);
+				dcExamins.DeleteAll();				
 
 				var lbExamins = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DB_COLLECTION_NAME);
+				lbExamins.EnsureIndex(x => x.Date);
+				lbExamins.DeleteAll();
+
+				if (keepsPrivateDoctorsDb)
+					CreateOrClearDoctorsColelctions(db);
 			}
 		}
 
@@ -170,14 +176,27 @@ namespace MyMedData
 		{
 			using (var db = new LiteDatabase(filename))
 			{
-				var users = db.GetCollection<User>(User.DB_COLLECTION_NAME);
-				users.DeleteAll();
-				var docs = db.GetCollection<Doctor>(Doctor.DB_COLLECTION_NAME);
-				docs.DeleteAll();
-				var clinics = db.GetCollection<Clinic>(Clinic.DB_COLLECTION_NAME);
-				clinics.DeleteAll();
-				db.GetCollection<DoctorSpecialty>(DoctorSpecialty.DB_COLLECTION_NAME).DeleteAll();
+				CreateOrClearDoctorsColelctions(db);
 			}
+		}
+
+		private static void CreateOrClearDoctorsColelctions(LiteDatabase db)
+		{
+			var users = db.GetCollection<User>(User.DB_COLLECTION_NAME);
+			users.DeleteAll();
+			users.EnsureIndex(x => x.Id);
+
+			var docs = db.GetCollection<Doctor>(Doctor.DB_COLLECTION_NAME);
+			docs.DeleteAll();
+			docs.EnsureIndex(x => x.DoctorID);
+
+			var clinics = db.GetCollection<Clinic>(Clinic.DB_COLLECTION_NAME);
+			clinics.DeleteAll();
+			clinics.EnsureIndex(x => x.ClinicID);
+
+			var specs = db.GetCollection<DoctorSpecialty>(DoctorSpecialty.DB_COLLECTION_NAME);
+			specs.DeleteAll();
+			specs.EnsureIndex(x => x.Specialty);
 		}
 
 		public static bool FastCheckRecordDbValidity(string filename)

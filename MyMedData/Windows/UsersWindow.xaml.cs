@@ -32,6 +32,8 @@ namespace MyMedData.Windows
 			InitializeComponent();
 		}
 
+		MainWindow mainWindow => (MainWindow)Owner;
+
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			try
@@ -109,6 +111,11 @@ namespace MyMedData.Windows
 		private void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
 
+		}
+
+		private void EditUserButton_Click(object sender, RoutedEventArgs e)
+		{
+			//спроси пароль
 		}
 	}
 }

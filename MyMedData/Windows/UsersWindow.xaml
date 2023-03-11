@@ -22,7 +22,7 @@
         </ListView>
         <StackPanel Grid.Column="1">
             <Button x:Name="LoginButton" Content="Войти" Style="{StaticResource ButtonStyle1}" Click="LoginButton_Click"/>
-            <Button x:Name="EditUserButton" Content="Изменить" Style="{StaticResource ButtonStyle1}"/>
+            <Button x:Name="EditUserButton" Content="Изменить" Style="{StaticResource ButtonStyle1}" Click="EditUserButton_Click"/>
             <Button x:Name="AddUserButton" Content="Добавить" Style="{StaticResource ButtonStyle1}" Click="AddUserButton_Click"/>
             <Button x:Name="DeleteUserButon" Content="Удалить" Style="{StaticResource ButtonStyle1}"/>
         </StackPanel>

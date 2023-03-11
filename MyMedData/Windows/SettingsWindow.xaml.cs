@@ -34,6 +34,8 @@ namespace MyMedData.Windows
 		Dictionary<string, string> _changedSettings = new();
 		NameValueCollection appSettings => ConfigurationManager.AppSettings;
 
+		MainWindow mainWindow => (MainWindow)this.Owner;
+
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			string? userDbFileName = appSettings["UserDbName"];
@@ -92,6 +94,7 @@ namespace MyMedData.Windows
 
 		private void EditUserDBFileButton_Click(object sender, RoutedEventArgs e)
 		{
+			mainWindow.LogOff();
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "LiteDB database|*.db";
 			openFileDialog.DefaultExt = ".db";
@@ -100,26 +103,18 @@ namespace MyMedData.Windows
 			{
 				string newPath = openFileDialog.FileName;
 
-				if (!File.Exists(newPath))
-				{
-
-				}
-				else
-				{
-					sdsadasd
-				}
-
+				if (!DataBase.CreateNewUserstDb(newPath))
+					MessageBox.Show("Создание/перезапись базы дапнных отменена.", "Отмена операци.",
+						MessageBoxButton.OK, MessageBoxImage.Information);				
 
 				if (newPath != appSettings["UserDbName"])
 				{
 					_changedSettings["UserDbName"] = newPath;
 				}
-				else if (_changedSettings.ContainsKey("UserDbName"))
+				else
 				{
 					_changedSettings.Remove("UserDbName");
 				}
-
-				
 
 				UsersDbFileNameTextBox.Text = newPath;
 			}

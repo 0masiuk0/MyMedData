@@ -7,6 +7,7 @@ using System.Windows.Media.Animation;
 using System.IO;
 using Microsoft.VisualBasic.ApplicationServices;
 using System.Windows;
+using System.Configuration;
 
 namespace MyMedData
 {
@@ -17,9 +18,10 @@ namespace MyMedData
 		[BsonId]
 		public int Id { get; set; }
 		public string Name { get; set; }
-		public Brush AccountColor { get; set; }
+		public Color AccountColor { get; set; }
 		public string? PasswordHash { get; private set; }
 		public string RecordsFolder { get; set; }
+		public bool RunsOwnDoctorsCollection { get; set; }
 
 		const int KEY_SIZE = 32;
 		const int ITERATIONS_COUNT = 16;
@@ -27,22 +29,23 @@ namespace MyMedData
 
 		public User()
 		{
-			Name = ""; AccountColor = Brushes.White;
+			Name = ""; AccountColor = Brushes.White.Color;
 			RecordsFolder = "";
 		}	
 
-		public User(string name, Brush accountColor, string password, string recordsFolder)
+		public User(string name, SolidColorBrush accountColor, string password, string recordsFolder, bool runsOwnDoctorsCollection)
 		{
 			Name = name;
-			AccountColor = accountColor;
+			AccountColor = accountColor.Color;
 			SetPassword(password);
 			RecordsFolder = recordsFolder;
+			RunsOwnDoctorsCollection = runsOwnDoctorsCollection;
 		}
 
 		public void SetPassword(string password)
 		{
 			PasswordHash = GetPasswordHash(password);
-		}
+		}		
 
 		public override string ToString()
 		{
@@ -55,8 +58,7 @@ namespace MyMedData
 		{
 			ActiveUser = null;
 		}
-		
-		
+				
 
 		public static bool IsValidUserName(string name)
 		{			
@@ -71,10 +73,10 @@ namespace MyMedData
 
 		public static bool IsValidPassword(string password)
 		{
-			bool validName = password.Length > 3 || password.Length < 30;
+			bool validName = password.Length > 3 && password.Length < 30;
 			foreach (char c in password)
 			{
-				validName |= char.IsLetterOrDigit(c) | c == '_';
+				validName &= (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
 			}
 
 			return validName;
@@ -123,6 +125,28 @@ namespace MyMedData
 			}
 		}
 
+		public static bool UpdateUser(User updatedUser)
+		{
+			var userDbFilename = ConfigurationManager.AppSettings["UserDbName"];
+			using (var db = new LiteDatabase(userDbFilename))
+			{
+				var users = db.GetCollection<User>(DB_COLLECTION_NAME);
+				return users.Update(updatedUser);				
+			}
+		}
+
+		public static User Copy(User user)
+		{
+			var copy = new User();
+			copy.Id = user.Id;
+			copy.Name = user.Name;
+			copy.AccountColor = user.AccountColor;
+			copy.RecordsFolder = user.RecordsFolder;
+			copy.PasswordHash = user.PasswordHash;
+			copy.RunsOwnDoctorsCollection = user.RunsOwnDoctorsCollection;
+			return copy;
+		}
+
 		public static string DB_COLLECTION_NAME => "Users";
 
 //---------------------------------------------NON-SERIALIZED INSTANCE MEMBERS-------------------------------------
@@ -134,6 +158,13 @@ namespace MyMedData
 
 		[BsonIgnore]
 		public string RecordsDbFullPath => Path.Combine(RecordsFolder, $"{Name} MedData.db");
+
+		[BsonIgnore]
+		public SolidColorBrush AccountColoredBrush
+		{
+			get => new SolidColorBrush(AccountColor);
+			set => AccountColor = value.Color;
+		}
 	}
 
 	public enum RecordsDbCreationOptions

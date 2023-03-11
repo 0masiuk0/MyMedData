@@ -35,6 +35,7 @@ namespace MyMedData
 		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
 		{
 			Window usersWindow = new UsersWindow();
+			usersWindow.Owner = this;
 			usersWindow.ShowDialog();
 			if (User.ActiveUser != null)
 			{
@@ -51,7 +52,7 @@ namespace MyMedData
 			LogOff();
 		}
 
-		private void LogOff()
+		public void LogOff()
 		{
 			User.LogOff();
 			UsernameTextBlock.Text = string.Empty;
@@ -65,6 +66,7 @@ namespace MyMedData
 		private void SettingsdButton_Click(object sender, RoutedEventArgs e)
 		{
 			SettingsWindow settingsWindow = new();
+			settingsWindow.Owner = this;
 			settingsWindow.ShowDialog();
 		}
 	}
