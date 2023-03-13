@@ -24,22 +24,17 @@ namespace MyMedData.Windows
 	/// </summary>
 	public partial class EditUserWindow : Window
 	{
-		public EditUserWindow()
-		{
-			InitializeComponent();
-			EditedUser = new();
-			_editedCopyOfUser = new();
-		}
-
-		public EditUserWindow(User user)
+		public EditUserWindow(User user, string password)
 		{
 			InitializeComponent();
 			EditedUser = user;
 			_editedCopyOfUser = User.Copy(user);
+			this.password = password;
 		}
 
 		public User EditedUser { get; private set; }
 		User _editedCopyOfUser;
+		readonly string password;
 
 		private void EditNameButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -79,7 +74,7 @@ namespace MyMedData.Windows
 		{
 			if (EditedUser.RecordsFolder != _editedCopyOfUser.RecordsFolder)
 			{
-				if (!DataBase.CreateUserDocumnetDb(_editedCopyOfUser))				
+				if (!DocumentsDataBase.CreateUserDocumnetDb(_editedCopyOfUser, password))				
 				{
 					MessageBox.Show("Что-то пошло не так при изменении базы данных этого пользователя.", "Ошибка",
 								MessageBoxButton.OK, MessageBoxImage.Error);

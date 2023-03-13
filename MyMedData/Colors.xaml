@@ -6,6 +6,6 @@
     <SolidColorBrush x:Key="DarkThemeFontColor" Color="LightGray"/>
     <SolidColorBrush x:Key="BlueConotourColor" Color="#FF4788C7"/>
     <Style x:Key="DarkWindowStyle" TargetType="Window">
-        <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
+        <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>       
     </Style>
 </ResourceDictionary>

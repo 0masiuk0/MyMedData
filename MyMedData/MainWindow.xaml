@@ -5,7 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData"
         mc:Ignorable="d"
-        Title="Моя Медкнижка" Height="450" Width="800" MinWidth="700" MinHeight="300" Style="{StaticResource DarkWindowStyle}" Loaded="MainWindow1_Loaded">
+        Title="Моя Медкнижка" 
+        Height="450" Width="800" MinWidth="700" MinHeight="300" 
+        Style="{StaticResource DarkWindowStyle}" WindowStyle="None" BorderBrush="{StaticResource DarkBackColor}"
+        Loaded="MainWindow1_Loaded">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="34" />
+    </WindowChrome.WindowChrome>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
+        <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Maximize" />
+        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Minimize" />
+        <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Restore" />
+    </Window.CommandBindings>
     <Window.Resources>
         <Style x:Key="ButtonMousOverStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
@@ -33,6 +45,37 @@
         </Style>
     </Window.Resources>
     <DockPanel x:Name="MainDockPanel">
+        <DockPanel x:Name="customChromePanel" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+            <DockPanel.Resources>         
+                <Style x:Key="ChromeButtonStyle" TargetType="Button">
+                    <Setter Property="Height" Value="22"/>
+                    <Setter Property="Width" Value="22"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Margin" Value="3"/>                    
+                </Style>
+            </DockPanel.Resources>
+
+            <Button x:Name="CloseButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimize"
+                            DockPanel.Dock="Right" Content="{StaticResource CloseWindowIcon}"
+                            Command="{x:Static SystemCommands.CloseWindowCommand}"/>
+
+            <Button x:Name="RestoreButton" Visibility="Collapsed" Style="{StaticResource ChromeButtonStyle}" 
+                            DockPanel.Dock="Right" Content="{StaticResource RestoreWindowIcon}"
+                            Command="{x:Static SystemCommands.RestoreWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
+
+            <Button x:Name="MaximizeButton" Visibility="Visible" Style="{StaticResource ChromeButtonStyle}" 
+                            DockPanel.Dock="Right" Content="{StaticResource MaximizeWindowIcon}"
+                            Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
+            
+            <Button x:Name="MinimizeButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
+                            DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
+                            Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
+
+            <TextBlock Text="{Binding ElementName=MainWindow1, Path=Title}"
+                       DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
+
+        </DockPanel>
         <StackPanel x:Name="MenuStackPanel" Background="{StaticResource DarkBackColor}"
                     DockPanel.Dock="Top" Orientation="Horizontal">
             <Button x:Name="NewAppointmentRecordData"
@@ -73,14 +116,14 @@
                     DockPanel.Dock="Right"
                     Content="{StaticResource TableViewImage}"
                     Style="{StaticResource ButtonMousOverStyle}"/>
-            
+
             <TextBlock x:Name="UsernameTextBlock"
                         FontSize="14"                       
                         Background="{StaticResource LightDarkBackColor}"
-                        DockPanel.Dock="Right" VerticalAlignment="Center"
-                        Margin="4,4,10,4" Padding="4" Foreground="{StaticResource DarkThemeFontColor}" >
-                Имя пользователя
-            </TextBlock>
+                        DockPanel.Dock="Right" VerticalAlignment="Center" MinWidth="120"
+                        Margin="4,4,10,4" Padding="4" Foreground="{StaticResource DarkThemeFontColor}"/>
+
+
 
             <Button x:Name="LogOffButton" Height="25" Width="25" 
                     Margin="10,4,10,4" 

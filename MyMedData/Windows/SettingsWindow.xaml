@@ -44,9 +44,9 @@
                     <TextBlock x:Name="dbTabHeaderTextBlcok" Text="Настройки базы данных" d:Foreground="{StaticResource DarkBackColor}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DarkBackColor}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected, ElementName=dbTabHeaderTextBlcok}">
+                                    <DataTrigger Binding="{Binding IsSelected, ElementName=DbaseTabItem}">
                                         <Setter Property="Foreground" Value="{StaticResource DarkBackColor}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -77,6 +77,13 @@
                     </DockPanel>
                 </StackPanel>
             </TabItem>
+            <d:TabItem>
+                <d:TabItem.Header>
+                    <TextBlock>
+                        sdsdsd
+                    </TextBlock>
+                </d:TabItem.Header>
+            </d:TabItem>
         </TabControl>
     </DockPanel>
 </Window>

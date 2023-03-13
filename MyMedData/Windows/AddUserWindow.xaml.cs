@@ -59,13 +59,17 @@ namespace MyMedData.Windows
 		private void EditDataFolderButton_Click(object sender, RoutedEventArgs e)
 		{
 			var openFolderDialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-			openFolderDialog.Multiselect = false;			
+			openFolderDialog.Multiselect = false;
 			if (openFolderDialog.ShowDialog() ?? false)
 			{
 				dataFolder = openFolderDialog.SelectedPath;
+				DataFolderTextBox.Text = dataFolder;
 			}
 			else
+			{
 				dataFolder = null;
+				DataFolderTextBox.Text = null;
+			}
 			ValidateData();
 		}
 
@@ -77,7 +81,7 @@ namespace MyMedData.Windows
 			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFolder, OwnDatabaseCheckBox.IsChecked ?? false);
 #pragma warning restore CS8604
 			
-			if (!DataBase.CreateUserDocumnetDb(NewUser, RecordsDbCreationOptions.Ask))
+			if (!DocumentsDataBase.CreateUserDocumnetDb(NewUser, PasswordTextBox1.Password, DbCreationOptions.Ask))
 			{
 				//неудача создания базы для пользователя
 				NewUser = null;
