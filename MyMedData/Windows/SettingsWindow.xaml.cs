@@ -18,6 +18,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Win32;
 using System.IO;
 using LiteDB;
+using System.Windows.Forms;
 
 namespace MyMedData.Windows
 {
@@ -64,58 +65,56 @@ namespace MyMedData.Windows
 
 		void AddUpdateAppSettings()
 		{
+			foreach (var settingKeyValue in _changedSettings)
+			{
+				UpdateSetting(settingKeyValue.Key, settingKeyValue.Value);
+			}
+		}
+
+		void UpdateSetting(string settingName, string newValue)
+		{
 			try
 			{
 				var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 				var settings = configFile.AppSettings.Settings;
-				foreach (var settingKeyValue in _changedSettings)
-				{
-					string key = settingKeyValue.Key;
-					string value = settingKeyValue.Value;
 
-					if (settings[key] == null)
-					{
-						settings.Add(key, value);
-					}
-					else
-					{
-						settings[key].Value = value;
-					}
+				if (settings[settingName] == null)
+				{
+					settings.Add(settingName, newValue);
 				}
+				else
+				{
+					settings[settingName].Value = newValue;
+				}
+
 				configFile.Save(ConfigurationSaveMode.Modified);
 				ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
 			}
 			catch (ConfigurationErrorsException)
 			{
-				MessageBox.Show("Ошибка сохранения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-				Close();
+				System.Windows.MessageBox.Show("Ошибка сохранения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);				
 			}
 		}
 
 		private void EditUserDBFileButton_Click(object sender, RoutedEventArgs e)
 		{
 			mainWindow.LogOff();
-			OpenFileDialog openFileDialog = new OpenFileDialog();
+			System.Windows.Forms.OpenFileDialog openFileDialog = new ();
 			openFileDialog.Filter = "LiteDB database|*.db";
 			openFileDialog.DefaultExt = ".db";
 			openFileDialog.CheckFileExists = false;
-			if (openFileDialog.ShowDialog() ?? false)
+			if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.Cancel)
 			{
 				string newPath = openFileDialog.FileName;
 
-				if (!DataBase.CreateNewUserstDb(newPath))
-					MessageBox.Show("Создание/перезапись базы дапнных отменена.", "Отмена операци.",
-						MessageBoxButton.OK, MessageBoxImage.Information);				
-
-				if (newPath != appSettings["UserDbName"])
-				{
-					_changedSettings["UserDbName"] = newPath;
-				}
+				if (UsersDataBase.CreateNewUsersDb(newPath))
+					System.Windows.MessageBox.Show("Создание/перезапись базы данных произвдена.", "",
+						MessageBoxButton.OK, MessageBoxImage.Information);
 				else
-				{
-					_changedSettings.Remove("UserDbName");
-				}
+					System.Windows.MessageBox.Show("Создание/перезапись базы дапнных отменена.", "Отмена операции.",
+						MessageBoxButton.OK, MessageBoxImage.Information);
 
+				UpdateSetting("UserDbName", newPath);
 				UsersDbFileNameTextBox.Text = newPath;
 			}
 		}

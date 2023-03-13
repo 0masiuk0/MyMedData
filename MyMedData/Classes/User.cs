@@ -13,8 +13,6 @@ namespace MyMedData
 {
 	public class User
 	{
-		public static User? ActiveUser { get; private set; }
-
 		[BsonId]
 		public int Id { get; set; }
 		public string Name { get; set; }
@@ -31,7 +29,7 @@ namespace MyMedData
 		{
 			Name = ""; AccountColor = Brushes.White.Color;
 			RecordsFolder = "";
-		}	
+		}
 
 		public User(string name, SolidColorBrush accountColor, string password, string recordsFolder, bool runsOwnDoctorsCollection)
 		{
@@ -44,8 +42,49 @@ namespace MyMedData
 
 		public void SetPassword(string password)
 		{
-			PasswordHash = GetPasswordHash(password);
-		}		
+			using (var algorithm = new Rfc2898DeriveBytes(
+			  password,
+			  SALT_SIZE,
+			  ITERATIONS_COUNT,
+			  HashAlgorithmName.SHA256))
+			{
+				var key = Convert.ToBase64String(algorithm.GetBytes(KEY_SIZE));
+				var salt = Convert.ToBase64String(algorithm.Salt);
+
+				PasswordHash = $"{32}.{salt}.{key}";
+			}
+		}
+
+		public bool CheckPassword(string password)
+		{
+			var hash = PasswordHash;
+
+			var parts = hash.Split('.', 3);
+
+			if (parts.Length != 3)
+			{
+				throw new FormatException("Unexpected hash format. " +
+				  "Should be formatted as `{iterations}.{salt}.{hash}`");
+			}
+
+			var iterations = Convert.ToInt32(parts[0]);
+			var salt = Convert.FromBase64String(parts[1]);
+			var key = Convert.FromBase64String(parts[2]);
+
+			using (var algorithm = new Rfc2898DeriveBytes(
+			  password,
+			  salt,
+			iterations,
+			  HashAlgorithmName.SHA256))
+			{
+				var keyToCheck = algorithm.GetBytes(KEY_SIZE);
+
+				var verified = keyToCheck.SequenceEqual(key);
+
+				return verified;
+			}
+		}
+
 
 		public override string ToString()
 		{
@@ -54,12 +93,6 @@ namespace MyMedData
 
 
 //----------------------------STATIC MEMBERS---------------------------------------------
-		internal static void LogOff()
-		{
-			ActiveUser = null;
-		}
-				
-
 		public static bool IsValidUserName(string name)
 		{			
 			bool validName = name.Length > 0 || name.Length < 30;
@@ -80,50 +113,7 @@ namespace MyMedData
 			}
 
 			return validName;
-		}
-
-		private static string GetPasswordHash(string password)
-		{
-			using (var algorithm = new Rfc2898DeriveBytes(
-			  password,
-			  SALT_SIZE,
-			  ITERATIONS_COUNT,
-			  HashAlgorithmName.SHA256))
-			{
-				var key = Convert.ToBase64String(algorithm.GetBytes(KEY_SIZE));
-				var salt = Convert.ToBase64String(algorithm.Salt);
-
-				return $"{32}.{salt}.{key}";
-			}
-		}
-
-		private static bool CheckPassword(string hash, string password)
-		{
-			var parts = hash.Split('.', 3);
-
-			if (parts.Length != 3)
-			{
-				throw new FormatException("Unexpected hash format. " +
-				  "Should be formatted as `{iterations}.{salt}.{hash}`");
-			}
-
-			var iterations = Convert.ToInt32(parts[0]);
-			var salt = Convert.FromBase64String(parts[1]);
-			var key = Convert.FromBase64String(parts[2]);	
-
-			using (var algorithm = new Rfc2898DeriveBytes(
-			  password,
-			  salt,
-			iterations,
-			  HashAlgorithmName.SHA256))
-			{
-				var keyToCheck = algorithm.GetBytes(KEY_SIZE);
-
-				var verified = keyToCheck.SequenceEqual(key);
-
-				return verified;
-			}
-		}
+		}		
 
 		public static bool UpdateUser(User updatedUser)
 		{
@@ -167,7 +157,7 @@ namespace MyMedData
 		}
 	}
 
-	public enum RecordsDbCreationOptions
+	public enum DbCreationOptions
 	{
 		Override, UseExistingIfFound, Ask
 	}

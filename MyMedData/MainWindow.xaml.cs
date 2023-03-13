@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MyMedData.Windows;
-using MyMedData.Windows;
 
 namespace MyMedData
 {
@@ -22,29 +21,38 @@ namespace MyMedData
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public Session? ActiveSession { get; private set; }
+		User? ActiveUser => ActiveSession != null ? ActiveSession.ActiveUser : null;
+
 		public MainWindow()
 		{
 			InitializeComponent();
+			UsernameTextBlock.MouseDown += new MouseButtonEventHandler(
+				(o, MouseEventArgs) =>
+				{
+					if (MouseEventArgs.ClickCount == 2)				
+						OpenUsersDialog();				
+				});
+
+		
 		}
 
 		private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
 		{
 
-		}
+		}		
 
-		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
+		private void OpenUsersDialog()
 		{
 			Window usersWindow = new UsersWindow();
 			usersWindow.Owner = this;
 			usersWindow.ShowDialog();
-			if (User.ActiveUser != null)
-			{
-				LoadUserData();
-			}
-			else
-			{
-				LogOff();
-			}
+		}
+
+		public void LogIn(Session session)
+		{
+			ActiveSession = session;
+			UsernameTextBlock.Text = ActiveUser.Name;
 		}
 
 		private void LogOffButton_Click(object sender, RoutedEventArgs e)
@@ -54,14 +62,20 @@ namespace MyMedData
 
 		public void LogOff()
 		{
-			User.LogOff();
-			UsernameTextBlock.Text = string.Empty;
+			if (ActiveSession != null)
+			{
+				ActiveSession.Dispose();
+				ActiveSession = null;
+				UsernameTextBlock.Text = string.Empty;
+			}
 		}
 
-		private void LoadUserData()
+		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
 		{
-			throw new NotImplementedException();
-		}		
+			OpenUsersDialog();
+		}
+
+
 
 		private void SettingsdButton_Click(object sender, RoutedEventArgs e)
 		{

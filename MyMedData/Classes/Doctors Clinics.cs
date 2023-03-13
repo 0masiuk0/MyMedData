@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyMedData.Classes
 {
+#pragma warning disable CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
 	public class Doctor
 	{
 		[BsonId]
@@ -34,4 +35,5 @@ namespace MyMedData.Classes
 
 		public static string DB_COLLECTION_NAME = "Specialties";
 	}
+#pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
 }

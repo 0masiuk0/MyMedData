@@ -33,6 +33,7 @@ namespace MyMedData.Windows
 		}
 
 		MainWindow mainWindow => (MainWindow)Owner;
+		string? userDbFileName;
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -40,7 +41,7 @@ namespace MyMedData.Windows
 			{
 				var appSettings = ConfigurationManager.AppSettings;
 
-				string? userDbFileName = appSettings["UserDbName"];
+				userDbFileName = appSettings["UserDbName"];
 				if (userDbFileName == null)
 				{
 					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -48,7 +49,7 @@ namespace MyMedData.Windows
 				}
 				else
 				{
-					if (File.Exists(userDbFileName) && DataBase.FastCheckUserDvValidity(userDbFileName))
+					if (File.Exists(userDbFileName) && UsersDataBase.FastCheckUserDvValidity(userDbFileName))
 					{
 						//читаем
 						ReadUsers((string)userDbFileName);
@@ -79,38 +80,56 @@ namespace MyMedData.Windows
 				{
 					UserPlaque userPlaque = new UserPlaque(user);
 					UsersListBox.Items.Add(userPlaque);
-					userPlaque.MouseDoubleClick += AuthorizeUser;
+					userPlaque.MouseDoubleClick += UserPlaqueMouseDoubleClick;
 				}
 			}
 		}
 
 		private void AddUserButton_Click(object sender, RoutedEventArgs e)
 		{
+			if (userDbFileName == null)
+			{
+				MessageBox.Show("Нет подключения к базе пользователей.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+				return;
+			}
+
 			AddUserWindow addUserWindow = new();
 			addUserWindow.ShowDialog();			
 			if (addUserWindow.NewUser != null)
 			{
 				var newUser = addUserWindow.NewUser;
-				using (var usersDB = new LiteDatabase(newUser.RecordsDbFullPath))
+				using (var usersDB = new LiteDatabase(userDbFileName))
 				{
 					var usersCollection = usersDB.GetCollection<User>();
 					usersCollection.Insert(newUser);
+					usersCollection.EnsureIndex(x => x.Name);
 				}
 
 				UserPlaque userPlaque = new UserPlaque(newUser);
 				UsersListBox.Items.Add(userPlaque);
-				userPlaque.MouseDoubleClick += AuthorizeUser;
+				userPlaque.MouseDoubleClick += UserPlaqueMouseDoubleClick;
 			}
 		}
 
-		private void AuthorizeUser(object sender, MouseButtonEventArgs e)
+		private void UserPlaqueMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			throw new NotImplementedException();
+			UserPlaque userPlaque = (UserPlaque)sender;
+			AuthorizeUser(userPlaque.User);
 		}
 
 		private void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
 
+		}
+
+		private void AuthorizeUser(User user)
+		{
+			EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
+			passwordWindow.ShowDialog();
+			if (passwordWindow.Password != null)
+			{
+				mainWindow.LogIn(new Session(user, passwordWindow.Password));
+			}
 		}
 
 		private void EditUserButton_Click(object sender, RoutedEventArgs e)

@@ -77,7 +77,7 @@ namespace MyMedData.Windows
 			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFolder, OwnDatabaseCheckBox.IsChecked ?? false);
 #pragma warning restore CS8604
 			
-			if (!DataBase.CreateUserDocumnetDb(NewUser, RecordsDbCreationOptions.Ask))
+			if (!DocumentsDataBase.CreateUserDocumnetDb(NewUser, PasswordTextBox1.Password, DbCreationOptions.Ask))
 			{
 				//неудача создания базы для пользователя
 				NewUser = null;
