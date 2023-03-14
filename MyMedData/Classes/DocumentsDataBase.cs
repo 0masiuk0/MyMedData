@@ -110,7 +110,7 @@ namespace MyMedData
 
 		public static string GetConnectionString(User user, string password)
 		{
-			return $"Filename={user.RecordsDbFullPath};Password=\"{password}\"";
+			return GetConnectionString(user.RecordsDbFullPath, password);
 		}
 
 		static string[] AllowedCollectionNames = new string[]
