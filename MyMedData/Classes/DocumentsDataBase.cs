@@ -105,12 +105,12 @@ namespace MyMedData
 
 		public static string GetConnectionString(string filename, string password)
 		{
-			return $"Filname={filename}; Password=\"{password}\"";
+			return $"Filename={filename};Password=\"{password}\"";
 		}
 
 		public static string GetConnectionString(User user, string password)
 		{
-			return $"Filname={user.RecordsDbFullPath}; Password=\"{password}\"";
+			return $"Filename={user.RecordsDbFullPath};Password=\"{password}\"";
 		}
 
 		static string[] AllowedCollectionNames = new string[]
