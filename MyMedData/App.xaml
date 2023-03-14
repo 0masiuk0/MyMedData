@@ -8,25 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="\PictResourseDictionary1.xaml" />
                 <ResourceDictionary Source="\Colors.xaml" />
-                <ResourceDictionary>
-                    <Style x:Key="ButtonStyle1" TargetType="Button">
-                        <Setter Property="Width" Value="100"/>
-                        <Setter Property="Height" Value="40"/>
-                        <Setter Property="Margin" Value="10,5,10,5"/>
-                        <Setter Property="Padding" Value="7"/>
-                        <Setter Property="FontSize" Value="14"/>
-                        <Setter Property="FontWeight" Value="DemiBold"/>
-                        <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-                        <Setter Property="Background" Value="{StaticResource DarkBackColor}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource BlueConotourColor}"/>
-                    </Style>
-                    <Style x:Key="UnsizedDarkButtonStyle" TargetType="Button">                       
-                        <Setter Property="FontWeight" Value="DemiBold"/>
-                        <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-                        <Setter Property="Background" Value="{StaticResource DarkBackColor}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource BlueConotourColor}"/>
-                    </Style>
-                </ResourceDictionary>
+                <ResourceDictionary Source="\AuxDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

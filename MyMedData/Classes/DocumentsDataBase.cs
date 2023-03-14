@@ -1,5 +1,4 @@
 ﻿using LiteDB;
-using MyMedData.Classes;
 using System.IO;
 using System.Linq;
 using System.Windows;
