@@ -78,11 +78,16 @@ namespace MyMedData.Windows
 				UsersListBox.Items.Clear();
 				foreach (User user in usersCollection.FindAll())
 				{
-					UserPlaque userPlaque = new UserPlaque(user);
-					UsersListBox.Items.Add(userPlaque);
-					userPlaque.MouseDoubleClick += UserPlaqueMouseDoubleClick;
+					AddUserPlaque(user);
 				}
 			}
+		}
+
+		private void AddUserPlaque(User user)
+		{
+			UserPlaque userPlaque = new UserPlaque(user);
+			UsersListBox.Items.Add(userPlaque);
+			userPlaque.MouseDoubleClick += UserPlaqueMouseDoubleClick;
 		}
 
 		private void AddUserButton_Click(object sender, RoutedEventArgs e)
@@ -105,9 +110,7 @@ namespace MyMedData.Windows
 					usersCollection.EnsureIndex(x => x.Name);
 				}
 
-				UserPlaque userPlaque = new UserPlaque(newUser);
-				UsersListBox.Items.Add(userPlaque);
-				userPlaque.MouseDoubleClick += UserPlaqueMouseDoubleClick;
+				AddUserPlaque(newUser);
 			}
 		}
 
