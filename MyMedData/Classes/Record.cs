@@ -11,16 +11,21 @@ namespace MyMedData
 	{
 		[BsonId]
 		public int Id { get; set; }
-		public DateOnly Date { get; set; }
-		public List<int> DocumentIDs { get; set; } = new();
-		public int? ClinicId { get; set; }
+		public DateOnly Date { get; set; }	
+		public List<string> Documents { get; set; };
+		
+		[BsonRef(Clinic.DB_COLLECTION_NAME)]
+		public Clinic Clinic { get; set; }
 		public string Comment { get; set; } = "";
 	}
 	
 	public class DoctorExamination : ExaminationRecord
 	{
-		public int? DoctorID;
-		public int? DoctorSpecialistID;
+		[BsonId]
+		public int DoctorID;
+
+		[BsonRef(Clinic.DB_COLLECTION_NAME)]
+		public DoctorSpecialty DoctorSpecialty;
 
 		public static string DB_COLLECTION_NAME => "DoctorExaminations";
 	}
