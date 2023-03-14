@@ -95,10 +95,10 @@ namespace MyMedData
 //----------------------------STATIC MEMBERS---------------------------------------------
 		public static bool IsValidUserName(string name)
 		{			
-			bool validName = name.Length > 0 || name.Length < 30;
+			bool validName = name.Length > 1 && name.Length < 30;
 			foreach (char c in name)
 			{
-				validName |= char.IsLetterOrDigit(c) | c == '_';
+				validName &= char.IsLetterOrDigit(c) || c == '_' || char.IsWhiteSpace(c);
 			}
 
 			return validName;

@@ -34,6 +34,13 @@ namespace MyMedData.Windows
 
 		MainWindow mainWindow => (MainWindow)Owner;
 		string? userDbFileName;
+		ObservableCollection<User> _users = new();
+		public ObservableCollection<User> Users
+		{
+			get => _users;
+			private set { _users = value; }
+		}
+
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -68,6 +75,8 @@ namespace MyMedData.Windows
 				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 				this.Close();
 			}
+
+			Users.Add(new User("Sample user form cs", Brushes.Green, "", "", false));
 		}
 
 		private void ReadUsers(string userDbFileName)
@@ -75,20 +84,13 @@ namespace MyMedData.Windows
 			using (var usersDB = new LiteDatabase(userDbFileName))
 			{
 				var usersCollection = usersDB.GetCollection<User>();
-				UsersListBox.Items.Clear();
 				foreach (User user in usersCollection.FindAll())
 				{
-					AddUserPlaque(user);
+					Users.Add(user);
 				}
 			}
 		}
 
-		private void AddUserPlaque(User user)
-		{
-			UserPlaque userPlaque = new UserPlaque(user);
-			UsersListBox.Items.Add(userPlaque);
-			userPlaque.MouseDoubleClick += UserPlaqueMouseDoubleClick;
-		}
 
 		private void AddUserButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -110,7 +112,7 @@ namespace MyMedData.Windows
 					usersCollection.EnsureIndex(x => x.Name);
 				}
 
-				AddUserPlaque(newUser);
+				Users.Add(newUser);
 			}
 		}
 

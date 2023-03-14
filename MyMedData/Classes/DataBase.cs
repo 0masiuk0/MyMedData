@@ -1,6 +1,5 @@
 ﻿using LiteDB;
 using Microsoft.VisualBasic.ApplicationServices;
-using MyMedData.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

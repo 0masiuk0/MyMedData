@@ -12,7 +12,7 @@ namespace MyMedData
 		[BsonId]
 		public int Id { get; set; }
 		public DateOnly Date { get; set; }	
-		public List<string> Documents { get; set; };
+		public List<string> Documents { get; set; }
 		
 		[BsonRef(Clinic.DB_COLLECTION_NAME)]
 		public Clinic Clinic { get; set; }

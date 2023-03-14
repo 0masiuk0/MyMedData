@@ -39,12 +39,15 @@ namespace MyMedData.Windows
 			}
 				
 			username = "";
+			textBlockDefaultBrush = (Brush)TryFindResource("DarkThemeFontColor");
+			ValidateData();
 		}
 
 		string username;
 		private void UserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			username = userPlaque.Text = UserNameTextBox.Text;
+			ValidateData();
 		}
 
 		SolidColorBrush selectedColor;
@@ -96,19 +99,26 @@ namespace MyMedData.Windows
 			Close();
 		}
 
-		private void ValidateData()
-		{
-			bool validData = User.IsValidUserName(username)
-				&& User.IsValidPassword(PasswordTextBox1.Password)
-				&& PasswordTextBox1.Password == PasswordTextBox2.Password
-				&& dataFolder != null;
-			
-			OKbutton.IsEnabled = validData;
-		}
-
+		bool validUser => User.IsValidUserName(username);
+		bool validPassword => User.IsValidPassword(PasswordTextBox1.Password);
+		bool passwordsMatch => PasswordTextBox1.Password == PasswordTextBox2.Password;
+		bool validDatafolder => dataFolder != null;
+		bool validData => validUser && validPassword && validDatafolder && passwordsMatch;
+					
 		private void ValidateData(object sender, RoutedEventArgs eventArgs)
 		{
-			ValidateData();
+			ValidateData();		
+		}
+
+		Brush textBlockDefaultBrush; 
+		private void ValidateData()
+		{
+
+			UserNameTextBlock.Foreground = validUser ? textBlockDefaultBrush : Brushes.Red;
+			PasswordTextBlock.Foreground = validPassword ? textBlockDefaultBrush : Brushes.Red;
+			RepeatPasswordTextBlock.Foreground = passwordsMatch ? textBlockDefaultBrush : Brushes.Red;
+			DataFolderTextBlock.Foreground = validDatafolder ? textBlockDefaultBrush : Brushes.Red;
+			OKbutton.IsEnabled = validData;
 		}
 
 		private void OwnDatabaseCheckBox_Checked(object sender, RoutedEventArgs e)
