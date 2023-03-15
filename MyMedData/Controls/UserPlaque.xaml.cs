@@ -19,32 +19,12 @@ namespace MyMedData.Controls
 	/// Логика взаимодействия для UserPlaque.xaml
 	/// </summary>
 	public partial class UserPlaque : UserControl
-	{
-		User _user;
-		public User User
-		{
-			get => _user;
-			private set
-			{
-				_user = value;
-				Foreground = _user.AccountColoredBrush;
-				Text = _user.Name;
-			}
-		}
+	{		
 
 		public UserPlaque()
 		{
 			InitializeComponent();
-			_user = new User();
 		}
-
-#pragma warning disable CS8618 
-		public UserPlaque(User user)
-		{
-			InitializeComponent();
-			User = user;
-		}
-#pragma warning restore CS8618
 
 		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
 			"Text", typeof(string),

@@ -76,7 +76,7 @@ namespace MyMedData.Windows
 				this.Close();
 			}
 
-			Users.Add(new User("Sample user form cs", Brushes.Green, "", "", false));
+			Users.Add(new User("Sample user form cs", Brushes.Red, "", "", false));
 		}
 
 		private void ReadUsers(string userDbFileName)
@@ -118,8 +118,7 @@ namespace MyMedData.Windows
 
 		private void UserPlaqueMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			UserPlaque userPlaque = (UserPlaque)sender;
-			AuthorizeUser(userPlaque.User);
+			//
 		}
 
 		private void LoginButton_Click(object sender, RoutedEventArgs e)
