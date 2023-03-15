@@ -1,6 +1,7 @@
 ﻿using Microsoft.Windows.Themes;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,12 +34,7 @@ namespace MyMedData.Windows
 		}
 
 		readonly Color initalColor;
-		public Color SelectedColor { get; private set; }
-
-		private void TheСolorPicker_ColorChanged(object sender, RoutedEventArgs e)
-		{
-			SelectedColor = TheСolorPicker.SelectedColor;
-		}
+		public Color SelectedColor { get; private set; }		
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
@@ -50,6 +46,20 @@ namespace MyMedData.Windows
 		{
 			SelectedColor = initalColor;
 			Close();
-		}		
-	}
+		}
+
+		[ValueConversion(typeof(Color), typeof(SolidColorBrush))]
+		public class ColorToBrushConverter : IValueConverter
+		{
+			public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				return new SolidColorBrush((Color)value);
+			}
+
+			public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				return ((SolidColorBrush)value).Color;
+			}
+		}
+	}	
 }
