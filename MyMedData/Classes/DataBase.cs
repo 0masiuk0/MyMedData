@@ -90,7 +90,7 @@ namespace MyMedData
 
 		private static void GetFreshUsersDb(string filename)
 		{
-			new LiteDatabase(filename);
+			using var db = new LiteDatabase(filename);
 		}
 
 		public static bool FastCheckUserDvValidity(string filename)

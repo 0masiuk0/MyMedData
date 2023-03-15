@@ -61,7 +61,7 @@ namespace MyMedData.Windows
 		string? dataFolder;
 		private void EditDataFolderButton_Click(object sender, RoutedEventArgs e)
 		{
-			var openFolderDialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
+			var openFolderDialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog()
 			openFolderDialog.Multiselect = false;
 			if (openFolderDialog.ShowDialog() ?? false)
 			{

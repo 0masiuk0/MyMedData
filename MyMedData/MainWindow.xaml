@@ -56,7 +56,7 @@
                 </Style>
             </DockPanel.Resources>
 
-            <Button x:Name="CloseButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimize"
+            <Button x:Name="CloseButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
                             DockPanel.Dock="Right" Content="{StaticResource CloseWindowIcon}"
                             Command="{x:Static SystemCommands.CloseWindowCommand}"/>
 
@@ -68,7 +68,7 @@
                             DockPanel.Dock="Right" Content="{StaticResource MaximizeWindowIcon}"
                             Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
             
-            <Button x:Name="MinimizeButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
+            <Button x:Name="MinimizeButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Mimimize"
                             DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
                             Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
 

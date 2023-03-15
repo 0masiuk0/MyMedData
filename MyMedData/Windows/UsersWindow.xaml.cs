@@ -74,9 +74,7 @@ namespace MyMedData.Windows
 			{
 				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 				this.Close();
-			}
-
-			Users.Add(new User("Sample user form cs", Brushes.Red, "", "", false));
+			}			
 		}
 
 		private void ReadUsers(string userDbFileName)
@@ -140,5 +138,10 @@ namespace MyMedData.Windows
 		{
 			//спроси пароль
 		}
-	}
+
+		private void CancelButton_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+        }
+    }
 }
