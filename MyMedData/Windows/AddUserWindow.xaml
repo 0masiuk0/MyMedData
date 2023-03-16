@@ -36,13 +36,13 @@
         <PasswordBox x:Name="PasswordTextBox1" Style="{StaticResource TextBoxkLocalStyle}" DockPanel.Dock="Top"/>
         <TextBlock x:Name="RepeatPasswordTextBlock" Text="Повторите пароль" Style="{StaticResource TextBlockLocalStyle}" DockPanel.Dock="Top"/>
         <PasswordBox x:Name="PasswordTextBox2" Style="{StaticResource TextBoxkLocalStyle}" DockPanel.Dock="Top"/>
-        <TextBlock x:Name="DataFolderTextBlock" Text="Папка для данных" Style="{StaticResource TextBlockLocalStyle}" DockPanel.Dock="Top"/>
+        <TextBlock x:Name="DataFileTextBlock" Text="Файл данных" Style="{StaticResource TextBlockLocalStyle}" DockPanel.Dock="Top"/>
         <DockPanel DockPanel.Dock="Top" Margin="15,5,15,5">
-            <Button x:Name="EditDataFolderButton" Content="{StaticResource EditFiledImage}" 
+            <Button x:Name="EditDataFileButton" Content="{StaticResource EditFiledImage}" 
                     Style="{StaticResource UnsizedDarkButtonStyle}" BorderBrush="Transparent"
                     Width="25" Height="25" Margin="15,0,0,0"
-                    DockPanel.Dock="Right" Click="EditDataFolderButton_Click"/>
-            <TextBox x:Name="DataFolderTextBox" IsReadOnly="True"/>
+                    DockPanel.Dock="Right" Click="EditDataFileButton_Click"/>
+            <TextBox x:Name="DataFileTextBox" IsReadOnly="True"/>
         </DockPanel>
         <CheckBox x:Name="OwnDatabaseCheckBox" IsChecked="False" Checked="OwnDatabaseCheckBox_Checked"
                   DockPanel.Dock="Top" Margin="15,20,15,5" HorizontalAlignment="Center">

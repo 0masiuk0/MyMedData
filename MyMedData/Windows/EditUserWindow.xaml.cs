@@ -61,18 +61,19 @@ namespace MyMedData.Windows
 
 		private void EditDBFileNameButton_Click(object sender, RoutedEventArgs e)
 		{
-			var openFolderDialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-			openFolderDialog.Multiselect = false;
-			if (openFolderDialog.ShowDialog() ?? false)
+			var openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = "LiteDB Data Base|*.db";
+			openFileDialog.Multiselect = false;
+			if (openFileDialog.ShowDialog() ?? false)
 			{
-				_editedCopyOfUser.RecordsFolder = openFolderDialog.SelectedPath;				
+				_editedCopyOfUser.RecordsFile = openFileDialog.FileName;				
 			}
 			
 		}
 
 		private void OKButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (EditedUser.RecordsFolder != _editedCopyOfUser.RecordsFolder)
+			if (EditedUser.RecordsFile != _editedCopyOfUser.RecordsFile)
 			{
 				if (!DocumentsDataBase.CreateUserDocumnetDb(_editedCopyOfUser, password))				
 				{

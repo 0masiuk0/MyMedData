@@ -18,7 +18,6 @@ using System.Collections.ObjectModel;
 using MyMedData.Controls;
 using MyMedData.Windows;
 using System.Windows.Markup;
-using Microsoft.VisualBasic.ApplicationServices;
 
 namespace MyMedData.Windows
 {
@@ -42,7 +41,7 @@ namespace MyMedData.Windows
 		}
 
 
-		private void Window_Loaded(object sender, RoutedEventArgs e)
+		private async void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			try
 			{
@@ -50,9 +49,11 @@ namespace MyMedData.Windows
 
 				userDbFileName = appSettings["UserDbName"];
 				if (userDbFileName == null)
-				{
+				{					
 					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-					this.Close();
+					await Task.Delay(200);
+					ContentRendered += (o, e) => Close();
+					return;
 				}
 				else
 				{
@@ -62,18 +63,20 @@ namespace MyMedData.Windows
 						ReadUsers((string)userDbFileName);
 					}
 					else
-					{
+					{						
 						var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
 							"Ошибка!",
 							MessageBoxButton.OK, MessageBoxImage.Error);
-						Close();
+						ContentRendered += (o, e) => Close();
+						return;
 					}
 				}
 			}
 			catch (ConfigurationErrorsException)
 			{
 				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-				this.Close();
+				ContentRendered += (o, e) => Close();
+				return;
 			}			
 		}
 
@@ -105,7 +108,7 @@ namespace MyMedData.Windows
 				var newUser = addUserWindow.NewUser;
 				using (var usersDB = new LiteDatabase(userDbFileName))
 				{
-					var usersCollection = usersDB.GetCollection<User>();
+					var usersCollection = usersDB.GetCollection<User>(User.DB_COLLECTION_NAME);
 					usersCollection.Insert(newUser);
 					usersCollection.EnsureIndex(x => x.Name);
 				}
@@ -143,5 +146,10 @@ namespace MyMedData.Windows
 		{
 			Close();
         }
-    }
+
+		private void UsersWindowInstance_Closed(object sender, EventArgs e)
+		{
+			
+		}
+	}
 }

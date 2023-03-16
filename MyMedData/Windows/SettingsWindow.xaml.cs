@@ -18,7 +18,6 @@ using System.Runtime.CompilerServices;
 using Microsoft.Win32;
 using System.IO;
 using LiteDB;
-using System.Windows.Forms;
 
 namespace MyMedData.Windows
 {
@@ -99,11 +98,11 @@ namespace MyMedData.Windows
 		private void EditUserDBFileButton_Click(object sender, RoutedEventArgs e)
 		{
 			mainWindow.LogOff();
-			System.Windows.Forms.OpenFileDialog openFileDialog = new ();
+			Microsoft.Win32.OpenFileDialog openFileDialog = new ();
 			openFileDialog.Filter = "LiteDB database|*.db";
 			openFileDialog.DefaultExt = ".db";
 			openFileDialog.CheckFileExists = false;
-			if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.Cancel)
+			if (openFileDialog.ShowDialog() ?? false)
 			{
 				string newPath = openFileDialog.FileName;
 

@@ -9,15 +9,15 @@ namespace MyMedData
 	{
 		public static bool CreateUserDocumnetDb(User user, string password, DbCreationOptions options = DbCreationOptions.Ask)
 		{
-			if (Directory.Exists(user.RecordsFolder))
+			if (File.Exists(user.RecordsFile))
 			{
 				//есть директория
-				if (File.Exists(user.RecordsDbFullPath))
+				if (File.Exists(user.RecordsFile))
 				{
 					//есть файл
 					if (options == DbCreationOptions.UseExistingIfFound)
 					{
-						if (!DocumentsDataBase.FastCheckRecordDbValidity(user.RecordsDbFullPath, password))
+						if (!DocumentsDataBase.FastCheckRecordDbValidity(user.RecordsFile, password))
 						{
 							if (MessageBox.Show("Указанная база не соответствует формату. Отформатировать с очисткой?", "Ошибка!",
 								MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
@@ -38,8 +38,8 @@ namespace MyMedData
 					{
 						try
 						{
-							File.Delete(user.RecordsDbFullPath);
-							DocumentsDataBase.CreateFreshRecordDb(user.RecordsDbFullPath, password);
+							File.Delete(user.RecordsFile);
+							DocumentsDataBase.CreateFreshRecordDb(user.RecordsFile, password);
 							return true;
 						}
 						catch
@@ -76,14 +76,14 @@ namespace MyMedData
 				else
 				{
 					//нет файла
-					DocumentsDataBase.CreateFreshRecordDb(user.RecordsDbFullPath, password);
+					DocumentsDataBase.CreateFreshRecordDb(user.RecordsFile, password);
 					return true;
 				}
 			}
 			else
 			{
-				//папки нет
-				MessageBox.Show($"Папка {user.RecordsFolder} не найдена", "Ошибка!",
+				//файла нет
+				MessageBox.Show($"Файл {user.RecordsFile} не найден", "Ошибка!",
 								MessageBoxButton.OK, MessageBoxImage.Error);
 				return false;
 			}
@@ -99,7 +99,7 @@ namespace MyMedData
 
 		private static void CreateFreshRecordDb(string filename, string password, bool keepsPrivateDoctorsDb = false)
 		{
-			new LiteDatabase(GetConnectionString(filename, password));			
+			using var newDB = new LiteDatabase(GetConnectionString(filename, password));			
 		}
 
 		public static string GetConnectionString(string filename, string password)
@@ -109,7 +109,7 @@ namespace MyMedData
 
 		public static string GetConnectionString(User user, string password)
 		{
-			return GetConnectionString(user.RecordsDbFullPath, password);
+			return GetConnectionString(user.RecordsFile, password);
 		}
 
 		static string[] AllowedCollectionNames = new string[]

@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Ookii.Dialogs;
 using System.IO;
 
 namespace MyMedData.Windows
@@ -58,20 +57,21 @@ namespace MyMedData.Windows
 			userPlaque.Foreground = selectedColor = new SolidColorBrush(colorPickerWindow.SelectedColor);
 		}
 
-		string? dataFolder;
-		private void EditDataFolderButton_Click(object sender, RoutedEventArgs e)
+		string? dataFile;
+		private void EditDataFileButton_Click(object sender, RoutedEventArgs e)
 		{
-			var openFolderDialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog()
-			openFolderDialog.Multiselect = false;
-			if (openFolderDialog.ShowDialog() ?? false)
+			var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+			openFileDialog.Multiselect = false;
+			openFileDialog.Filter = "LiteDB Data Base|*.db";
+			if (openFileDialog.ShowDialog() ?? false)
 			{
-				dataFolder = openFolderDialog.SelectedPath;
-				DataFolderTextBox.Text = dataFolder;
+				dataFile = openFileDialog.FileName;
+				DataFileTextBox.Text = dataFile;
 			}
 			else
 			{
-				dataFolder = null;
-				DataFolderTextBox.Text = null;
+				dataFile = null;
+				DataFileTextBox.Text = null;
 			}
 			ValidateData();
 		}
@@ -80,16 +80,15 @@ namespace MyMedData.Windows
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
-#pragma warning disable CS8604 
-			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFolder, OwnDatabaseCheckBox.IsChecked ?? false);
-#pragma warning restore CS8604
+
+			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFile, OwnDatabaseCheckBox.IsChecked ?? false);
 			
 			if (!DocumentsDataBase.CreateUserDocumnetDb(NewUser, PasswordTextBox1.Password, DbCreationOptions.Ask))
 			{
 				//неудача создания базы для пользователя
 				NewUser = null;
-			}
-			MessageBox.Show("Новый пользователь создан не был.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+				MessageBox.Show("Новый пользователь создан не был.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}			
 			Close();
 		}
 
@@ -102,8 +101,8 @@ namespace MyMedData.Windows
 		bool validUser => User.IsValidUserName(username);
 		bool validPassword => User.IsValidPassword(PasswordTextBox1.Password);
 		bool passwordsMatch => PasswordTextBox1.Password == PasswordTextBox2.Password;
-		bool validDatafolder => dataFolder != null;
-		bool validData => validUser && validPassword && validDatafolder && passwordsMatch;
+		bool validDataFile => dataFile != null;
+		bool validData => validUser && validPassword && validDataFile && passwordsMatch;
 					
 		private void ValidateData(object sender, RoutedEventArgs eventArgs)
 		{
@@ -117,7 +116,7 @@ namespace MyMedData.Windows
 			UserNameTextBlock.Foreground = validUser ? textBlockDefaultBrush : Brushes.Red;
 			PasswordTextBlock.Foreground = validPassword ? textBlockDefaultBrush : Brushes.Red;
 			RepeatPasswordTextBlock.Foreground = passwordsMatch ? textBlockDefaultBrush : Brushes.Red;
-			DataFolderTextBlock.Foreground = validDatafolder ? textBlockDefaultBrush : Brushes.Red;
+			DataFileTextBlock.Foreground = validDataFile ? textBlockDefaultBrush : Brushes.Red;
 			OKbutton.IsEnabled = validData;
 		}
 

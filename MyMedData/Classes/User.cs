@@ -5,7 +5,6 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Media.Animation;
 using System.IO;
-using Microsoft.VisualBasic.ApplicationServices;
 using System.Windows;
 using System.Configuration;
 
@@ -18,7 +17,7 @@ namespace MyMedData
 		public string Name { get; set; }
 		public Color AccountColor { get; set; }
 		public string? PasswordHash { get; private set; }
-		public string RecordsFolder { get; set; }
+		public string RecordsFile { get; set; }
 		public bool RunsOwnDoctorsCollection { get; set; }
 
 		const int KEY_SIZE = 32;
@@ -28,15 +27,15 @@ namespace MyMedData
 		public User()
 		{
 			Name = ""; AccountColor = Brushes.White.Color;
-			RecordsFolder = "";
+			RecordsFile = "";
 		}
 
-		public User(string name, SolidColorBrush accountColor, string password, string recordsFolder, bool runsOwnDoctorsCollection)
+		public User(string name, SolidColorBrush accountColor, string password, string recordsFile, bool runsOwnDoctorsCollection)
 		{
 			Name = name;
 			AccountColor = accountColor.Color;
 			SetPassword(password);
-			RecordsFolder = recordsFolder;
+			RecordsFile = recordsFile;
 			RunsOwnDoctorsCollection = runsOwnDoctorsCollection;
 		}
 
@@ -131,7 +130,7 @@ namespace MyMedData
 			copy.Id = user.Id;
 			copy.Name = user.Name;
 			copy.AccountColor = user.AccountColor;
-			copy.RecordsFolder = user.RecordsFolder;
+			copy.RecordsFile = user.RecordsFile;
 			copy.PasswordHash = user.PasswordHash;
 			copy.RunsOwnDoctorsCollection = user.RunsOwnDoctorsCollection;
 			return copy;
@@ -144,10 +143,7 @@ namespace MyMedData
 		public bool PasswordIsSet => PasswordHash != null; 
 
 		[BsonIgnore]
-		public bool IsValidUser => PasswordHash != null && IsValidUserName(this.Name) && File.Exists(RecordsDbFullPath);
-
-		[BsonIgnore]
-		public string RecordsDbFullPath => Path.Combine(RecordsFolder, $"{Name} MedData.db");
+		public bool IsValidUser => PasswordHash != null && IsValidUserName(this.Name) && File.Exists(RecordsFile);		
 
 		[BsonIgnore]
 		public SolidColorBrush AccountColoredBrush
