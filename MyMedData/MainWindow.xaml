@@ -46,15 +46,6 @@
     </Window.Resources>
     <DockPanel x:Name="MainDockPanel">
         <DockPanel x:Name="customChromePanel" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
-            <DockPanel.Resources>         
-                <Style x:Key="ChromeButtonStyle" TargetType="Button">
-                    <Setter Property="Height" Value="22"/>
-                    <Setter Property="Width" Value="22"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Margin" Value="3"/>                    
-                </Style>
-            </DockPanel.Resources>
 
             <Button x:Name="CloseButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
                             DockPanel.Dock="Right" Content="{StaticResource CloseWindowIcon}"

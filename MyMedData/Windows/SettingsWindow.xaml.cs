@@ -41,7 +41,14 @@ namespace MyMedData.Windows
 			string? userDbFileName = appSettings["UserDbName"];
 			if (userDbFileName != null)
 			{
-				UsersDbFileNameTextBox.Text = userDbFileName;
+				if (File.Exists(userDbFileName) && UsersDataBase.FastCheckUserDvValidity(userDbFileName))
+				{
+					UsersDbFileNameTextBox.Text = userDbFileName;
+				}
+				else
+				{
+					appSettings.Remove(userDbFileName);
+				}
 			}
 		}		
 

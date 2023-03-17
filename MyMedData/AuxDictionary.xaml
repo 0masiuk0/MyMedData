@@ -57,4 +57,12 @@
         <Setter Property="FontWeight" Value="DemiBold"/>
     </Style>
 
+    <Style x:Key="ChromeButtonStyle" TargetType="Button">
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="Width" Value="22"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Margin" Value="3"/>
+    </Style>
+
 </ResourceDictionary>

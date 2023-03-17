@@ -26,21 +26,27 @@ namespace MyMedData.Windows
 		{
 			InitializeComponent();
 			_user = user;
+			Loaded += (o, e) => PasswrodBox.Focus();
 		}
 
 		public string? Password{ get; private set; }
 
-		private void OKbutton_Click(object sender, RoutedEventArgs e)
+		private void TryAuthorize(object sender, RoutedEventArgs e) => TryAuthorize();
+
+		private void TryAuthorize()
 		{
-			if (_user.CheckPassword(PasswrodBox.Password))
+			if (PasswrodBox.Password is string pswrd)
 			{
-				Password = PasswrodBox.Password;
-				Close();
-			}
-			else
-			{
-				Password = null;
-				MessageBox.Show("Неверный пароль.", "Неудача.", MessageBoxButton.OK, MessageBoxImage.Warning);
+				if (_user.CheckPassword(pswrd))
+				{
+					Password = pswrd;
+					Close();
+				}
+				else
+				{
+					Password = null;
+					MessageBox.Show("Неверный пароль.", "Неудача.", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
 			}
 		}
 
@@ -48,6 +54,12 @@ namespace MyMedData.Windows
 		{
 			Password = null;
 			Close();
+		}
+
+		private void PasswrodBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter) 
+				TryAuthorize();
 		}
 	}
 }

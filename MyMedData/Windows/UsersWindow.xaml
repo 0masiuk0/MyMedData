@@ -10,7 +10,7 @@
         x:Name="UsersWindowInstance"
         Title="Пользователи" WindowStyle="None"
         Height="350" MinHeight="210" Width="500" Style="{StaticResource DarkWindowStyle}" Loaded="Window_Loaded"
-        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=Users}" Closed="UsersWindowInstance_Closed">
+        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=Users}">
     <WindowChrome.WindowChrome x:Uid="1234">
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>
@@ -21,7 +21,7 @@
         </Grid.ColumnDefinitions>
         
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="32"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
  
@@ -29,12 +29,16 @@
                     Text="{Binding ElementName=UsersWindowInstance, Path=Title}" 
                     Foreground="{Binding ElementName=UsersWindowInstance, Path=Foreground}"/>
 
+        <Button x:Name="CloseButton" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                Width="22" Height="22" Margin="0,3,5,3" WindowChrome.IsHitTestVisibleInChrome="True"
+                Style="{StaticResource ChromeButtonStyle}" Content="{StaticResource CloseWindowIcon}" Click="CloseButton_Click"/>
+
         <ListBox x:Name="UsersListBox" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:UsersWindow}, Path=Users}"
                  Background="{StaticResource LightDarkBackColor}" Grid.Column="0" Grid.Row="1" Margin="5,5,5,5" 
                  HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <uc:UserPlaque/>
+                    <uc:UserPlaque MouseDoubleClick="UserPlaque_MouseDoubleClick"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>           
         </ListBox>

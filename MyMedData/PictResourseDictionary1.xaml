@@ -287,7 +287,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="CloseWindowIcon">
+    <Image x:Key="CloseWindowIcon" x:Shared="False">
         <Image.Source>    
             <DrawingImage>
                 <DrawingImage.Drawing>

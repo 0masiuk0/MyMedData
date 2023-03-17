@@ -62,6 +62,7 @@ namespace MyMedData.Windows
 		{
 			var openFileDialog = new Microsoft.Win32.OpenFileDialog();
 			openFileDialog.Multiselect = false;
+			openFileDialog.CheckFileExists = false;
 			openFileDialog.Filter = "LiteDB Data Base|*.db";
 			if (openFileDialog.ShowDialog() ?? false)
 			{

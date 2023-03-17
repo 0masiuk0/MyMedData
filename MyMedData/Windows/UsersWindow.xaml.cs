@@ -51,7 +51,6 @@ namespace MyMedData.Windows
 				if (userDbFileName == null)
 				{					
 					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-					await Task.Delay(200);
 					ContentRendered += (o, e) => Close();
 					return;
 				}
@@ -84,7 +83,7 @@ namespace MyMedData.Windows
 		{
 			using (var usersDB = new LiteDatabase(userDbFileName))
 			{
-				var usersCollection = usersDB.GetCollection<User>();
+				var usersCollection = usersDB.GetCollection<User>(User.DB_COLLECTION_NAME);
 				foreach (User user in usersCollection.FindAll())
 				{
 					Users.Add(user);
@@ -117,19 +116,27 @@ namespace MyMedData.Windows
 			}
 		}
 
-		private void UserPlaqueMouseDoubleClick(object sender, MouseButtonEventArgs e)
-		{
-			//
-		}
-
 		private void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
+			if (UsersListBox.SelectedItem is User user) 
+			{
+				AuthorizeUser(user);
+			}
+		}
 
+		private void UserPlaque_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			UserPlaque plaque = (UserPlaque)sender;
+			User user = plaque.DataContext as User;
+			AuthorizeUser(user);
 		}
 
 		private void AuthorizeUser(User user)
 		{
 			EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
+			passwordWindow.Owner = this;
+			passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
 			passwordWindow.ShowDialog();
 			if (passwordWindow.Password != null)
 			{
@@ -147,9 +154,9 @@ namespace MyMedData.Windows
 			Close();
         }
 
-		private void UsersWindowInstance_Closed(object sender, EventArgs e)
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
-			
+			Close();
 		}
 	}
 }

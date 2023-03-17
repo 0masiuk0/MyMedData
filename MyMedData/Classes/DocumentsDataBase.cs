@@ -11,61 +11,40 @@ namespace MyMedData
 		{
 			if (File.Exists(user.RecordsFile))
 			{
-				//есть директория
-				if (File.Exists(user.RecordsFile))
+
+				//есть файл
+				if (options == DbCreationOptions.UseExistingIfFound)
 				{
-					//есть файл
-					if (options == DbCreationOptions.UseExistingIfFound)
+					if (!DocumentsDataBase.FastCheckRecordDbValidity(user.RecordsFile, password))
 					{
-						if (!DocumentsDataBase.FastCheckRecordDbValidity(user.RecordsFile, password))
+						if (MessageBox.Show("Указанная база не соответствует формату. Отформатировать с очисткой?", "Ошибка!",
+							MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
 						{
-							if (MessageBox.Show("Указанная база не соответствует формату. Отформатировать с очисткой?", "Ошибка!",
-								MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-							{
-								return CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
-							}
-							else
-							{
-								return false;
-							}
+							return CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
 						}
 						else
 						{
-							return true;
-						}
-					}
-					else if (options == DbCreationOptions.Override)
-					{
-						try
-						{
-							File.Delete(user.RecordsFile);
-							DocumentsDataBase.CreateFreshRecordDb(user.RecordsFile, password);
-							return true;
-						}
-						catch
-						{
-							if (MessageBox.Show("Не удается удалить существующий файл. Повторить попытку?", "Ошибка!",
-								MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-							{
-								return CreateUserDocumnetDb(user, password, options);
-							}
-							else
-							{
-								return false;
-							}
+							return false;
 						}
 					}
 					else
 					{
-						var answer = MessageBox.Show("Найден существующий файл.\n Да - использовать его.\n Нет - файл будет очищен.", "Ошибка!",
-								MessageBoxButton.YesNoCancel, MessageBoxImage.Error);
-						if (answer == MessageBoxResult.Yes)
+						return true;
+					}
+				}
+				else if (options == DbCreationOptions.Override)
+				{
+					try
+					{
+						File.Delete(user.RecordsFile);
+						return CreateFreshRecordDb(user.RecordsFile, password);
+					}
+					catch
+					{
+						if (MessageBox.Show("Не удается удалить существующий файл. Повторить попытку?", "Ошибка!",
+							MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
 						{
-							return CreateUserDocumnetDb(user, password, DbCreationOptions.UseExistingIfFound);
-						}
-						else if (answer == MessageBoxResult.No)
-						{
-							return CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
+							return CreateUserDocumnetDb(user, password, options);
 						}
 						else
 						{
@@ -75,17 +54,25 @@ namespace MyMedData
 				}
 				else
 				{
-					//нет файла
-					DocumentsDataBase.CreateFreshRecordDb(user.RecordsFile, password);
-					return true;
+					var answer = MessageBox.Show("Найден существующий файл.\n Да - использовать его.\n Нет - файл будет очищен.", "Ошибка!",
+							MessageBoxButton.YesNoCancel, MessageBoxImage.Error);
+					if (answer == MessageBoxResult.Yes)
+					{
+						return CreateUserDocumnetDb(user, password, DbCreationOptions.UseExistingIfFound);
+					}
+					else if (answer == MessageBoxResult.No)
+					{
+						return CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
+					}
+					else
+					{
+						return false;
+					}
 				}
 			}
 			else
 			{
-				//файла нет
-				MessageBox.Show($"Файл {user.RecordsFile} не найден", "Ошибка!",
-								MessageBoxButton.OK, MessageBoxImage.Error);
-				return false;
+				return CreateFreshRecordDb(user.RecordsFile, password);
 			}
 		}
 
@@ -97,9 +84,18 @@ namespace MyMedData
 			}
 		}
 
-		private static void CreateFreshRecordDb(string filename, string password, bool keepsPrivateDoctorsDb = false)
+		private static bool CreateFreshRecordDb(string filename, string password, bool keepsPrivateDoctorsDb = false)
 		{
-			using var newDB = new LiteDatabase(GetConnectionString(filename, password));			
+			try
+			{
+				using var newDB = new LiteDatabase(GetConnectionString(filename, password));
+				return true;
+			}
+			catch(System.Exception ex)
+			{
+				MessageBox.Show("При создании базы данных возникла ошибка.\n" + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+				return false;
+			}
 		}
 
 		public static string GetConnectionString(string filename, string password)
