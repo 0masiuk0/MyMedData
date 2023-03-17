@@ -30,11 +30,11 @@ namespace MyMedData
 			RecordsFile = "";
 		}
 
-		public User(string name, SolidColorBrush accountColor, string password, string recordsFile, bool runsOwnDoctorsCollection)
+		public User(string name, SolidColorBrush accountColor, string? password, string recordsFile, bool runsOwnDoctorsCollection)
 		{
 			Name = name;
 			AccountColor = accountColor.Color;
-			SetPassword(password);
+			SetPassword(password ?? "");
 			RecordsFile = recordsFile;
 			RunsOwnDoctorsCollection = runsOwnDoctorsCollection;
 		}
@@ -50,13 +50,13 @@ namespace MyMedData
 				var key = Convert.ToBase64String(algorithm.GetBytes(KEY_SIZE));
 				var salt = Convert.ToBase64String(algorithm.Salt);
 
-				PasswordHash = $"{32}.{salt}.{key}";
+				PasswordHash = $"{ITERATIONS_COUNT}.{salt}.{key}";
 			}
 		}
 
 		public bool CheckPassword(string password)
 		{
-			var hash = PasswordHash;
+			var hash = PasswordHash ?? "";
 
 			var parts = hash.Split('.', 3);
 

@@ -127,8 +127,7 @@ namespace MyMedData.Windows
 		private void UserPlaque_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			UserPlaque plaque = (UserPlaque)sender;
-			User user = plaque.DataContext as User;
-			AuthorizeUser(user);
+			if(plaque.DataContext is User user) AuthorizeUser(user);
 		}
 
 		private void AuthorizeUser(User user)
@@ -141,6 +140,7 @@ namespace MyMedData.Windows
 			if (passwordWindow.Password != null)
 			{
 				mainWindow.LogIn(new Session(user, passwordWindow.Password));
+				Close();
 			}
 		}
 

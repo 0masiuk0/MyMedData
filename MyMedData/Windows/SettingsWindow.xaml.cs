@@ -47,7 +47,7 @@ namespace MyMedData.Windows
 				}
 				else
 				{
-					appSettings.Remove(userDbFileName);
+					UpdateSetting("UserDbName", "");
 				}
 			}
 		}		
