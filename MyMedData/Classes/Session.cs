@@ -17,7 +17,7 @@ namespace MyMedData
 		{
 			ActiveUser = user;
 			//Password = password;
-			DocumentsDatabaseContext = new LiteDatabase(DocumentsDataBase.GetConnectionString(user, password));
+			DocumentsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
 		}
 
 		public void Dispose()

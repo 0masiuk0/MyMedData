@@ -17,7 +17,8 @@
         </Style>
     </UserControl.Style>
     <Border BorderBrush="{Binding ElementName=UserPlaqueControl, Path=BorderBrush}"
-            BorderThickness="{Binding ElementName=UserPlaqueControl, Path=BorderThickness}">
+            BorderThickness="{Binding ElementName=UserPlaqueControl, Path=BorderThickness}"
+            Background="Transparent">
         <DockPanel>
             <Image DockPanel.Dock="Left" Width="45" Height="45" HorizontalAlignment="Left">
                 <Image.Source>

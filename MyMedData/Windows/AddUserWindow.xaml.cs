@@ -84,7 +84,7 @@ namespace MyMedData.Windows
 
 			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFile, OwnDatabaseCheckBox.IsChecked ?? false);
 			
-			if (!DocumentsDataBase.CreateUserDocumnetDb(NewUser, PasswordTextBox1.Password, DbCreationOptions.Ask))
+			if (!RecordsDataBase.CreateUserDocumnetDb(NewUser, PasswordTextBox1.Password, DbCreationOptions.Ask))
 			{
 				//неудача создания базы для пользователя
 				NewUser = null;

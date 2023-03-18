@@ -7,6 +7,7 @@ using System.Windows.Media.Animation;
 using System.IO;
 using System.Windows;
 using System.Configuration;
+using System.Windows.Controls;
 
 namespace MyMedData
 {
@@ -17,7 +18,7 @@ namespace MyMedData
 		public string Name { get; set; }
 		public Color AccountColor { get; set; }
 		public string? PasswordHash { get; private set; }
-		public string RecordsFile { get; set; }
+		public string DatabaseFile { get; set; }
 		public bool RunsOwnDoctorsCollection { get; set; }
 
 		const int KEY_SIZE = 32;
@@ -27,7 +28,7 @@ namespace MyMedData
 		public User()
 		{
 			Name = ""; AccountColor = Brushes.White.Color;
-			RecordsFile = "";
+			DatabaseFile = "";
 		}
 
 		public User(string name, SolidColorBrush accountColor, string? password, string recordsFile, bool runsOwnDoctorsCollection)
@@ -35,7 +36,7 @@ namespace MyMedData
 			Name = name;
 			AccountColor = accountColor.Color;
 			SetPassword(password ?? "");
-			RecordsFile = recordsFile;
+			DatabaseFile = recordsFile;
 			RunsOwnDoctorsCollection = runsOwnDoctorsCollection;
 		}
 
@@ -84,6 +85,29 @@ namespace MyMedData
 			}
 		}
 
+		public bool ChangePasswordAndRebuildDb(string oldPassword, string newPassword)
+		{
+			if (MessageBox.Show("Смена пароля может занять значительное время по причине перешифровки базы данных.", "Внимание!",
+					MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) == MessageBoxResult.OK)
+			{
+				try
+				{
+					SetPassword(newPassword);
+					RecordsDataBase.ChnageDBEncryptionPassword(DatabaseFile, oldPassword, newPassword);
+					return true;
+				}
+				catch (Exception ex)
+				{
+					SetPassword(oldPassword);
+					MessageBox.Show("Сбой при смене пароля в базе.\n " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);					
+					return false;
+				}
+
+			}
+			else
+				return false;
+		}
+
 
 		public override string ToString()
 		{
@@ -130,7 +154,7 @@ namespace MyMedData
 			copy.Id = user.Id;
 			copy.Name = user.Name;
 			copy.AccountColor = user.AccountColor;
-			copy.RecordsFile = user.RecordsFile;
+			copy.DatabaseFile = user.DatabaseFile;
 			copy.PasswordHash = user.PasswordHash;
 			copy.RunsOwnDoctorsCollection = user.RunsOwnDoctorsCollection;
 			return copy;
@@ -138,12 +162,15 @@ namespace MyMedData
 
 		public static string DB_COLLECTION_NAME => "Users";
 
-//---------------------------------------------NON-SERIALIZED INSTANCE MEMBERS-------------------------------------
+		//---------------------------------------------NON-SERIALIZED INSTANCE MEMBERS-------------------------------------
+		[BsonIgnore]
+		public string DatabaseShortFileName => Path.GetFileName(DatabaseFile);
+		
 		[BsonIgnore]
 		public bool PasswordIsSet => PasswordHash != null; 
 
 		[BsonIgnore]
-		public bool IsValidUser => PasswordHash != null && IsValidUserName(this.Name) && File.Exists(RecordsFile);		
+		public bool IsValidUser => PasswordHash != null && IsValidUserName(this.Name) && File.Exists(DatabaseFile);		
 
 		[BsonIgnore]
 		public SolidColorBrush AccountColoredBrush

@@ -30,6 +30,7 @@ namespace MyMedData.Windows
 			EditedUser = user;
 			_editedCopyOfUser = User.Copy(user);
 			this.password = password;
+			DialogResult = false;
 		}
 
 		public User EditedUser { get; private set; }
@@ -66,16 +67,17 @@ namespace MyMedData.Windows
 			openFileDialog.Multiselect = false;
 			if (openFileDialog.ShowDialog() ?? false)
 			{
-				_editedCopyOfUser.RecordsFile = openFileDialog.FileName;				
+				if (RecordsDataBase.FastCheckRecordDbValidity())
+				_editedCopyOfUser.DatabaseFile = openFileDialog.FileName;				
 			}
 			
 		}
 
 		private void OKButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (EditedUser.RecordsFile != _editedCopyOfUser.RecordsFile)
+			if (EditedUser.DatabaseFile != _editedCopyOfUser.DatabaseFile)
 			{
-				if (!DocumentsDataBase.CreateUserDocumnetDb(_editedCopyOfUser, password))				
+				if (!RecordsDataBase.CreateUserDocumnetDb(_editedCopyOfUser, password))				
 				{
 					MessageBox.Show("Что-то пошло не так при изменении базы данных этого пользователя.", "Ошибка",
 								MessageBoxButton.OK, MessageBoxImage.Error);
@@ -92,6 +94,17 @@ namespace MyMedData.Windows
 				MessageBox.Show("Что-то пошло не так при обновлении базы данных пользователей.", "Ошибка",
 				MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+			
+			if (Owner is UsersWindow ownerWindow)
+			{
+				if (ownerWindow.MainWindow.ActiveUser != null && ownerWindow.MainWindow.ActiveUser.Id == EditedUser.Id) 
+				{
+					MessageBox.Show("Пользователь будет разлогинен.", "Редакция текцщего пользователя", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+					ownerWindow.MainWindow.LogOff();
+				}
+			}
+
+			Close();
 		}	
 
 		private void CancelButton_Click(object sender, RoutedEventArgs e)

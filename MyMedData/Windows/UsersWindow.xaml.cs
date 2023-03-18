@@ -31,7 +31,8 @@ namespace MyMedData.Windows
 			InitializeComponent();
 		}
 
-		MainWindow mainWindow => (MainWindow)Owner;
+		public MainWindow MainWindow => (MainWindow)Owner;
+
 		string? userDbFileName;
 		ObservableCollection<User> _users = new();
 		public ObservableCollection<User> Users
@@ -89,6 +90,11 @@ namespace MyMedData.Windows
 					Users.Add(user);
 				}
 			}
+
+			if (UsersListBox.Items.Count > 0)
+			{
+				UsersListBox.SelectedIndex = 0;
+			}
 		}
 
 
@@ -139,14 +145,28 @@ namespace MyMedData.Windows
 			passwordWindow.ShowDialog();
 			if (passwordWindow.Password != null)
 			{
-				mainWindow.LogIn(new Session(user, passwordWindow.Password));
+				MainWindow.LogIn(new Session(user, passwordWindow.Password));
 				Close();
 			}
 		}
 
 		private void EditUserButton_Click(object sender, RoutedEventArgs e)
 		{
-			//спроси пароль
+			if (UsersListBox.SelectedItem is User user)
+			{
+				EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
+				passwordWindow.Owner = this;
+				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+				passwordWindow.ShowDialog();
+
+				if (passwordWindow.Password == null)
+					return;
+
+				EditUserWindow editUserWindow = new(user, passwordWindow.Password);
+				editUserWindow.Owner = this;
+				editUserWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+				editUserWindow.ShowDialog();
+			}
 		}
 
 		private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -157,6 +177,11 @@ namespace MyMedData.Windows
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
+		}
+
+		private void UsersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			EditUserButton.IsEnabled = UsersListBox.SelectedItem is User;
 		}
 	}
 }

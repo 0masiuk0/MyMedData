@@ -19,13 +19,17 @@ namespace MyMedData.Windows
 	/// </summary>
 	public partial class ChangePasswordWindow : Window
 	{
-		User _user;
+		User user;
+		string? newPassword;
+		readonly string oldPassword;
+		public string? NewPassword => newPassword;
 
-		public ChangePasswordWindow(User user)
+		public ChangePasswordWindow(User user, string oldPassword)
 		{
 			InitializeComponent();
 			DialogResult = false;
-			_user = user;
+			this.user = user;
+			this.oldPassword = oldPassword;
 		}
 
 		private void OKButtonClick(object sender, RoutedEventArgs e)
@@ -41,10 +45,8 @@ namespace MyMedData.Windows
 				return;
 			}
 
-			_user.SetPassword(PasswordBox1.Password);
-			DialogResult = true;
-			Close();
-			
+			DialogResult = user.ChangePasswordAndRebuildDb(oldPassword, PasswordBox1.Password);
+			Close();			
 		}
 
 		private void CancelButtonClick(object sender, RoutedEventArgs e)

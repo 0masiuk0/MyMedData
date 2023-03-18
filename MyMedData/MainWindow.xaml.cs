@@ -23,7 +23,7 @@ namespace MyMedData
 	public partial class MainWindow : Window
 	{
 		public Session? ActiveSession { get; private set; }
-		User? ActiveUser => ActiveSession != null ? ActiveSession.ActiveUser : null;
+		public User? ActiveUser => ActiveSession != null ? ActiveSession.ActiveUser : null;
 
 		string _statusText = "";
 		public string StatusText

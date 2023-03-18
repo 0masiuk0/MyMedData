@@ -1,21 +1,22 @@
 ﻿using LiteDB;
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
 
 namespace MyMedData
 {
-	public static class DocumentsDataBase
+	public static class RecordsDataBase
 	{
 		public static bool CreateUserDocumnetDb(User user, string password, DbCreationOptions options = DbCreationOptions.Ask)
 		{
-			if (File.Exists(user.RecordsFile))
+			if (File.Exists(user.DatabaseFile))
 			{
 
 				//есть файл
 				if (options == DbCreationOptions.UseExistingIfFound)
 				{
-					if (!DocumentsDataBase.FastCheckRecordDbValidity(user.RecordsFile, password))
+					if (!RecordsDataBase.FastCheckRecordDbValidity(user.DatabaseFile, password))
 					{
 						if (MessageBox.Show("Указанная база не соответствует формату. Отформатировать с очисткой?", "Ошибка!",
 							MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
@@ -36,8 +37,8 @@ namespace MyMedData
 				{
 					try
 					{
-						File.Delete(user.RecordsFile);
-						return CreateFreshRecordDb(user.RecordsFile, password);
+						File.Delete(user.DatabaseFile);
+						return CreateFreshRecordDb(user.DatabaseFile, password);
 					}
 					catch
 					{
@@ -72,7 +73,7 @@ namespace MyMedData
 			}
 			else
 			{
-				return CreateFreshRecordDb(user.RecordsFile, password);
+				return CreateFreshRecordDb(user.DatabaseFile, password);
 			}
 		}
 
@@ -81,6 +82,32 @@ namespace MyMedData
 			using (var db = new LiteDatabase(GetConnectionString(filename, password)))
 			{
 				return db.GetCollectionNames().All(name => AllowedCollectionNames.Contains(name));
+			}
+		}
+
+		public static bool ChnageDBEncryptionPassword(string filename, string oldPassword, string newPassword)
+		{
+			using (var tempDbFile = new TemporaryFile(Environment.CurrentDirectory, "~temp " + Path.GetFileName(filename)))
+			{
+				File.Copy(filename, tempDbFile.FilePath, true);
+
+
+				LiteDB.Engine.RebuildOptions rebuildOptions = new LiteDB.Engine.RebuildOptions();
+				rebuildOptions.Password = newPassword;
+				try
+				{
+					using (var db = new LiteDatabase(GetConnectionString(tempDbFile.FilePath, oldPassword)))
+					{
+						db.Rebuild(rebuildOptions);						
+					}			
+
+					File.Copy(tempDbFile.FilePath, filename, true);
+					return true;
+				}
+				catch
+				{
+					return false;
+				}
 			}
 		}
 
@@ -105,7 +132,7 @@ namespace MyMedData
 
 		public static string GetConnectionString(User user, string password)
 		{
-			return GetConnectionString(user.RecordsFile, password);
+			return GetConnectionString(user.DatabaseFile, password);
 		}
 
 		static string[] AllowedCollectionNames = new string[]
