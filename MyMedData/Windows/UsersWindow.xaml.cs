@@ -33,7 +33,7 @@ namespace MyMedData.Windows
 
 		public MainWindow MainWindow => (MainWindow)Owner;
 
-		string? userDbFileName;
+		public string? UsersDbFileName { get; private set; }
 		ObservableCollection<User> _users = new();
 		public ObservableCollection<User> Users
 		{
@@ -48,8 +48,8 @@ namespace MyMedData.Windows
 			{
 				var appSettings = ConfigurationManager.AppSettings;
 
-				userDbFileName = appSettings["UserDbName"];
-				if (userDbFileName == null)
+				UsersDbFileName = appSettings["UserDbName"];
+				if (UsersDbFileName == null)
 				{					
 					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 					ContentRendered += (o, e) => Close();
@@ -57,10 +57,10 @@ namespace MyMedData.Windows
 				}
 				else
 				{
-					if (File.Exists(userDbFileName) && UsersDataBase.FastCheckUserDvValidity(userDbFileName))
+					if (File.Exists(UsersDbFileName) && UsersDataBase.FastCheckUserDvValidity(UsersDbFileName))
 					{
 						//читаем
-						ReadUsers((string)userDbFileName);
+						ReadUsers((string)UsersDbFileName);
 					}
 					else
 					{						
@@ -100,7 +100,7 @@ namespace MyMedData.Windows
 
 		private void AddUserButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (userDbFileName == null)
+			if (UsersDbFileName == null)
 			{
 				MessageBox.Show("Нет подключения к базе пользователей.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
@@ -111,7 +111,7 @@ namespace MyMedData.Windows
 			if (addUserWindow.NewUser != null)
 			{
 				var newUser = addUserWindow.NewUser;
-				using (var usersDB = new LiteDatabase(userDbFileName))
+				using (var usersDB = new LiteDatabase(UsersDbFileName))
 				{
 					var usersCollection = usersDB.GetCollection<User>(User.DB_COLLECTION_NAME);
 					usersCollection.Insert(newUser);
@@ -154,6 +154,13 @@ namespace MyMedData.Windows
 		{
 			if (UsersListBox.SelectedItem is User user)
 			{
+				if (MainWindow.ActiveUser != null && MainWindow.ActiveUser.Id == user.Id)
+				{					
+					MessageBox.Show("Пользователь будет разлогинен для редактирования.", "Редакция текцщего пользователя", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+					MainWindow.LogOff();
+				}
+				
+
 				EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
 				passwordWindow.Owner = this;
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -161,6 +168,7 @@ namespace MyMedData.Windows
 
 				if (passwordWindow.Password == null)
 					return;
+				
 
 				EditUserWindow editUserWindow = new(user, passwordWindow.Password);
 				editUserWindow.Owner = this;

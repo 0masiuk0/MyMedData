@@ -28,36 +28,45 @@ namespace MyMedData.Windows
 		{
 			InitializeComponent();
 			EditedUser = user;
-			_editedCopyOfUser = User.Copy(user);
-			this.password = password;
-			DialogResult = false;
+			this.Password = password;			
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{	
+			usersDbFileName = (Owner as UsersWindow).UsersDbFileName;
 		}
 
 		public User EditedUser { get; private set; }
-		User _editedCopyOfUser;
-		readonly string password;
+		public string Password { get; private set; }
+		string usersDbFileName;
 
 		private void EditNameButton_Click(object sender, RoutedEventArgs e)
 		{
 			var editUserNameWindow = new EditUserNameWindow();
 			if (editUserNameWindow.ShowDialog() ?? false)
 			{
-				EditedUserPlaque.Text = _editedCopyOfUser.Name = editUserNameWindow.Name;
+				EditedUserPlaque.Text = editUserNameWindow.Name;
+				UsersDataBase.UpdateUser(EditedUser, usersDbFileName);
 			}
 		}
 
 		private void EditColorButton_Click(object sender, RoutedEventArgs e)
 		{
-			var colorPickerWindow = new ColorPickerWindow(_editedCopyOfUser.AccountColor);
+			var colorPickerWindow = new ColorPickerWindow(EditedUser.AccountColor);
 			colorPickerWindow.ShowDialog();
-			_editedCopyOfUser.AccountColor = colorPickerWindow.SelectedColor;
-			EditedUserPlaque.Foreground = _editedCopyOfUser.AccountColoredBrush;
+			EditedUser.AccountColor = colorPickerWindow.SelectedColor;
+			EditedUserPlaque.Foreground = EditedUser.AccountColoredBrush;
+			UsersDataBase.UpdateUser(EditedUser, usersDbFileName);
 		}
 
 		private void EditPasswordButton_Click(object sender, RoutedEventArgs e)
 		{
-			ChangePasswordWindow changePasswordWindow = new(_editedCopyOfUser);
+			ChangePasswordWindow changePasswordWindow = new(EditedUser, Password);
 			changePasswordWindow.ShowDialog();
+			if (changePasswordWindow.DialogResult ?? false)
+			{
+				Password = changePasswordWindow.NewPassword ?? "";				
+			}
 		}
 
 		private void EditDBFileNameButton_Click(object sender, RoutedEventArgs e)
@@ -67,49 +76,19 @@ namespace MyMedData.Windows
 			openFileDialog.Multiselect = false;
 			if (openFileDialog.ShowDialog() ?? false)
 			{
-				if (RecordsDataBase.FastCheckRecordDbValidity())
-				_editedCopyOfUser.DatabaseFile = openFileDialog.FileName;				
-			}
-			
-		}
-
-		private void OKButton_Click(object sender, RoutedEventArgs e)
-		{
-			if (EditedUser.DatabaseFile != _editedCopyOfUser.DatabaseFile)
-			{
-				if (!RecordsDataBase.CreateUserDocumnetDb(_editedCopyOfUser, password))				
+				if (!RecordsDataBase.CreateUserDocumnetDb(EditedUser, Password))
 				{
 					MessageBox.Show("Что-то пошло не так при изменении базы данных этого пользователя.", "Ошибка",
-								MessageBoxButton.OK, MessageBoxImage.Error);
-					return;
+								MessageBoxButton.OK, MessageBoxImage.Error);					
 				}
-			}
-
-			if (User.UpdateUser(_editedCopyOfUser))
-			{
-				EditedUser = _editedCopyOfUser;
-			}
-			else
-			{
-				MessageBox.Show("Что-то пошло не так при обновлении базы данных пользователей.", "Ошибка",
-				MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			
-			if (Owner is UsersWindow ownerWindow)
-			{
-				if (ownerWindow.MainWindow.ActiveUser != null && ownerWindow.MainWindow.ActiveUser.Id == EditedUser.Id) 
-				{
-					MessageBox.Show("Пользователь будет разлогинен.", "Редакция текцщего пользователя", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-					ownerWindow.MainWindow.LogOff();
-				}
-			}
-
-			Close();
-		}	
-
-		private void CancelButton_Click(object sender, RoutedEventArgs e)
-		{
-			Close();
 		}
+
+		private void EditNameButton_Click(object sender, MouseButtonEventArgs e)
+		{
+			EditNameButton_Click(sender, e);
+		}
+	
 	}
 }

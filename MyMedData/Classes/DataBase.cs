@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,11 +95,28 @@ namespace MyMedData
 
 		public static bool FastCheckUserDvValidity(string filename)
 		{
-			using (var db = new LiteDatabase(filename))
+			try
 			{
-				var collections = db.GetCollectionNames();
-				return collections.All(name => AllowedCollectionNames.Contains(name));
+				using (var db = new LiteDatabase(filename))
+				{
+					var collections = db.GetCollectionNames();
+					return collections.All(name => AllowedCollectionNames.Contains(name));
+				}
 			}
+			catch(LiteException) { return false; }
+		}
+
+		public static bool UpdateUser(User user, string usersDBfilename)
+		{
+			try
+			{
+				using (var db = new LiteDatabase(usersDBfilename))
+				{
+					var usersCollection = db.GetCollection<User>(User.DB_COLLECTION_NAME);
+					return usersCollection.Update(user);
+				}
+			}
+			catch (LiteException) { return false; }
 		}
 
 		static string[] AllowedCollectionNames = new string[]

@@ -8,22 +8,45 @@ using System.IO;
 using System.Windows;
 using System.Configuration;
 using System.Windows.Controls;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MyMedData
 {
-	public class User
+	public class User : INotifyPropertyChanged
 	{
 		[BsonId]
 		public int Id { get; set; }
-		public string Name { get; set; }
-		public Color AccountColor { get; set; }
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				_name = value;
+				NotifyPropertyChanged(nameof(Name));
+			}
+		}
+		public Color AccountColor
+		{
+			get => _accountColor;
+			set
+			{
+				_accountColor = value;
+				NotifyPropertyChanged(nameof(AccountColor));
+			}
+		}
 		public string? PasswordHash { get; private set; }
 		public string DatabaseFile { get; set; }
 		public bool RunsOwnDoctorsCollection { get; set; }
 
+		[BsonIgnore]
+		string _name;
+		[BsonIgnore]
+		Color _accountColor;
+
 		const int KEY_SIZE = 32;
 		const int ITERATIONS_COUNT = 16;
-		const int SALT_SIZE = 16;
+		const int SALT_SIZE = 16;		
 
 		public User()
 		{
@@ -106,6 +129,13 @@ namespace MyMedData
 			}
 			else
 				return false;
+		}
+
+//-----------------------------INTERFACES AND OVERRIDES----------------------------------
+		public event PropertyChangedEventHandler? PropertyChanged;
+		private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 

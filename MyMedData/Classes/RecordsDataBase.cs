@@ -79,10 +79,14 @@ namespace MyMedData
 
 		public static bool FastCheckRecordDbValidity(string filename, string password)
 		{
-			using (var db = new LiteDatabase(GetConnectionString(filename, password)))
+			try
 			{
-				return db.GetCollectionNames().All(name => AllowedCollectionNames.Contains(name));
+				using (var db = new LiteDatabase(GetConnectionString(filename, password)))
+				{
+					return db.GetCollectionNames().All(name => AllowedCollectionNames.Contains(name));
+				}
 			}
+			catch(LiteException ex) { return false; }
 		}
 
 		public static bool ChnageDBEncryptionPassword(string filename, string oldPassword, string newPassword)

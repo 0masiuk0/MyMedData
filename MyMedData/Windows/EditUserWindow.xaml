@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:MyMedData.Windows"
         xmlns:uc="clr-namespace:MyMedData.Controls"
         mc:Ignorable="d"
-        Title="Редактировать пользователя" Height="173" Width="536" ResizeMode="NoResize"
+        Title="Редактировать пользователя" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Loaded="Window_Loaded"
         Style="{StaticResource DarkWindowStyle}">
     <Window.Resources>
         <Style x:Key="LocalButtonStyle" TargetType="Button" BasedOn="{StaticResource UnsizedDarkButtonStyle}">
@@ -21,11 +22,8 @@
             <Button x:Name="EditNameButton" Content="Назначить имя" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditNameButton_Click"/>
             <Button x:Name="EditColorButton" Content="Назначить цвет" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditColorButton_Click"/>
             <Button x:Name="EditPasswordButton" Content="Назначить пароль" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditPasswordButton_Click"/>
-            <Button x:Name="EditDBFileNameButton" Content="Назначить папку" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditDBFileNameButton_Click"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-            <Button x:Name="OKButton" Content="OK" Style="{StaticResource LocalButtonStyle}" Click="OKButton_Click"/>
-            <Button x:Name="CancelButton" Content="Отмена" Style="{StaticResource LocalButtonStyle}" Click="CancelButton_Click"/>
-        </StackPanel>
+            <Button x:Name="EditDBFileNameButton" Content="Назначить файл"
+                    Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditDBFileNameButton_Click"/>
+        </StackPanel>        
     </StackPanel>
 </Window>

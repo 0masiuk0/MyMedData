@@ -46,6 +46,9 @@ namespace MyMedData.Windows
 			}
 
 			DialogResult = user.ChangePasswordAndRebuildDb(oldPassword, PasswordBox1.Password);
+			newPassword = (DialogResult ?? false) ? PasswordBox1.Password : null;
+			MessageBox.Show("Пароль изменен.", "Успех операции", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
 			Close();			
 		}
 
