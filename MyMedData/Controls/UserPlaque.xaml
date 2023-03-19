@@ -8,8 +8,8 @@
              xmlns:mdl="clr-namespace:MyMedData"
              mc:Ignorable="d" 
              x:Name="UserPlaqueControl"                  
-             d:DesignHeight="50" 
-             BorderBrush="White" BorderThickness="1">
+             d:DesignHeight="50"
+             BorderBrush="White" BorderThickness="1"> 
     <UserControl.Style>
         <Style>
             <Setter Property="uc:UserPlaque.Text" Value="{Binding Name}"/>

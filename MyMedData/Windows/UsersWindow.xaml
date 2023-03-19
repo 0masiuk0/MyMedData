@@ -9,8 +9,7 @@
         mc:Ignorable="d"
         x:Name="UsersWindowInstance"
         Title="Пользователи" WindowStyle="None"
-        Height="350" MinHeight="210" Width="500" Style="{StaticResource DarkWindowStyle}" Loaded="Window_Loaded"
-        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=Users}">
+        Height="350" MinHeight="210" Width="500" Style="{StaticResource DarkWindowStyle}" Loaded="Window_Loaded">
     <WindowChrome.WindowChrome x:Uid="1234">
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>

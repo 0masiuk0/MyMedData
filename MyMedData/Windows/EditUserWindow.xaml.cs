@@ -27,12 +27,21 @@ namespace MyMedData.Windows
 		public EditUserWindow(User user, string password)
 		{
 			InitializeComponent();
+			
 			EditedUser = user;
-			this.Password = password;			
+			this.Password = password;
+
+			EditedUserPlaque.Text = user.Name;
+			EditedUserPlaque.Foreground = user.AccountColoredBrush;
+
+			/*var userBinding = new Binding(nameof(EditedUser));
+			userBinding.Source = EditedUser;
+			userBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+			EditedUserPlaque.DataContext = userBinding;*/
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
-		{	
+		{
 			usersDbFileName = (Owner as UsersWindow).UsersDbFileName;
 		}
 

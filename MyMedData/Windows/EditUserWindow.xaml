@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:MyMedData.Windows"
         xmlns:uc="clr-namespace:MyMedData.Controls"
         mc:Ignorable="d"
-        Title="Редактировать пользователя" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Title="Редактировать пользователя" Name="editUserWindow"
+        SizeToContent="WidthAndHeight" ResizeMode="NoResize"
         Loaded="Window_Loaded"
         Style="{StaticResource DarkWindowStyle}">
     <Window.Resources>
