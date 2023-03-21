@@ -30,14 +30,6 @@ namespace MyMedData.Windows
 			
 			EditedUser = user;
 			this.Password = password;
-
-			EditedUserPlaque.Text = user.Name;
-			EditedUserPlaque.Foreground = user.AccountColoredBrush;
-
-			/*var userBinding = new Binding(nameof(EditedUser));
-			userBinding.Source = EditedUser;
-			userBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-			EditedUserPlaque.DataContext = userBinding;*/
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -54,7 +46,7 @@ namespace MyMedData.Windows
 			var editUserNameWindow = new EditUserNameWindow();
 			if (editUserNameWindow.ShowDialog() ?? false)
 			{
-				EditedUserPlaque.Text = editUserNameWindow.Name;
+				EditedUser.Name = editUserNameWindow.UserName;
 				UsersDataBase.UpdateUser(EditedUser, usersDbFileName);
 			}
 		}
@@ -64,7 +56,6 @@ namespace MyMedData.Windows
 			var colorPickerWindow = new ColorPickerWindow(EditedUser.AccountColor);
 			colorPickerWindow.ShowDialog();
 			EditedUser.AccountColor = colorPickerWindow.SelectedColor;
-			EditedUserPlaque.Foreground = EditedUser.AccountColoredBrush;
 			UsersDataBase.UpdateUser(EditedUser, usersDbFileName);
 		}
 
@@ -85,6 +76,7 @@ namespace MyMedData.Windows
 			openFileDialog.Multiselect = false;
 			if (openFileDialog.ShowDialog() ?? false)
 			{
+				EditedUser.DatabaseFile = openFileDialog.FileName;
 				if (!RecordsDataBase.CreateUserDocumnetDb(EditedUser, Password))
 				{
 					MessageBox.Show("Что-то пошло не так при изменении базы данных этого пользователя.", "Ошибка",
@@ -92,11 +84,6 @@ namespace MyMedData.Windows
 				}
 			}
 			
-		}
-
-		private void EditNameButton_Click(object sender, MouseButtonEventArgs e)
-		{
-			EditNameButton_Click(sender, e);
 		}
 	
 	}

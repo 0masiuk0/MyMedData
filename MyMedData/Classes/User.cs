@@ -33,6 +33,7 @@ namespace MyMedData
 			{
 				_accountColor = value;
 				NotifyPropertyChanged(nameof(AccountColor));
+				NotifyPropertyChanged(nameof(AccountColoredBrush));
 			}
 		}
 		public string? PasswordHash { get; private set; }
@@ -62,6 +63,10 @@ namespace MyMedData
 			DatabaseFile = recordsFile;
 			RunsOwnDoctorsCollection = runsOwnDoctorsCollection;
 		}
+
+		public User(string name, Color accountColor, string? password, string recordsFile, bool runsOwnDoctorsCollection)
+			: this(name, new SolidColorBrush(accountColor), password, recordsFile, runsOwnDoctorsCollection)
+		{ }
 
 		public void SetPassword(string password)
 		{
@@ -133,9 +138,12 @@ namespace MyMedData
 
 //-----------------------------INTERFACES AND OVERRIDES----------------------------------
 		public event PropertyChangedEventHandler? PropertyChanged;
-		private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+		private void NotifyPropertyChanged(String propertyName)
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 
 

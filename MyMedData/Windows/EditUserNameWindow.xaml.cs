@@ -24,9 +24,14 @@ namespace MyMedData.Windows
 			InitializeComponent();
 		}
 
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			UsernameTextBox.Focus();
+		}
+
 		public string? UserName { get; private set; }
 
-		private void OKbutton_click(object sender, RoutedEventArgs e)
+		private void ProcessAndClose()
 		{
 			var newName = UsernameTextBox.Text;
 
@@ -40,7 +45,11 @@ namespace MyMedData.Windows
 			{
 				MessageBox.Show("Разрешены непустые имена из букв, цифр и _. ", "Недопустимое имя!", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+		}
 
+		private void OKbutton_click(object sender, RoutedEventArgs e)
+		{
+			ProcessAndClose();
 		}
 
 		private void CancelButton_click(object sender, RoutedEventArgs e)
@@ -49,5 +58,10 @@ namespace MyMedData.Windows
 			this.DialogResult = false;
 			Close();
 		}
+
+		private void UsernameTextBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) { ProcessAndClose(); }
+        }		
 	}
 }

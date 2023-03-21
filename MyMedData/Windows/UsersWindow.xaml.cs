@@ -108,7 +108,7 @@ namespace MyMedData.Windows
 
 			AddUserWindow addUserWindow = new();
 			addUserWindow.ShowDialog();			
-			if (addUserWindow.NewUser != null)
+			if (addUserWindow.DialogResult == true)
 			{
 				var newUser = addUserWindow.NewUser;
 				using (var usersDB = new LiteDatabase(UsersDbFileName))

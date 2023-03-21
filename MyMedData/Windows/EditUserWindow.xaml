@@ -8,17 +8,18 @@
         mc:Ignorable="d"
         Title="Редактировать пользователя" Name="editUserWindow"
         SizeToContent="WidthAndHeight" ResizeMode="NoResize"
-        Loaded="Window_Loaded"
+        Loaded="Window_Loaded"        
         Style="{StaticResource DarkWindowStyle}">
     <Window.Resources>
         <Style x:Key="LocalButtonStyle" TargetType="Button" BasedOn="{StaticResource UnsizedDarkButtonStyle}">
             <Setter Property="Width" Value="120"/>
-            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Margin" Value="5"/>            
         </Style>
-    </Window.Resources>
+    </Window.Resources> 
     <StackPanel Orientation="Vertical">
-        <uc:UserPlaque x:Name="EditedUserPlaque" Margin="5,10,5,0" HorizontalAlignment="Center" Width="350" BorderBrush="{StaticResource DarkBackColor}" BorderThickness="1"
-                      MouseLeftButtonUp="EditNameButton_Click"/>
+        <uc:UserPlaque x:Name="EditedUserPlaque" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=EditedUser}"
+                        Margin="5,10,5,0" HorizontalAlignment="Center" Width="350"
+                        BorderBrush="{StaticResource DarkBackColor}" BorderThickness="1"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
             <Button x:Name="EditNameButton" Content="Назначить имя" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditNameButton_Click"/>
             <Button x:Name="EditColorButton" Content="Назначить цвет" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditColorButton_Click"/>

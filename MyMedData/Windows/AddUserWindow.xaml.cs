@@ -24,40 +24,32 @@ namespace MyMedData.Windows
 		public AddUserWindow()
 		{
 			InitializeComponent();
+
 			UserNameTextBox.TextChanged += ValidateData;
 			PasswordTextBox1.PasswordChanged += ValidateData;
-			PasswordTextBox2.PasswordChanged += ValidateData;
-			if (userPlaque.Foreground is SolidColorBrush)
-			{
-				selectedColor = (SolidColorBrush)userPlaque.Foreground;
-			}
-			else
-			{
-				throw new Exception("Этого не должно было произойти. Цвет плашки пользователя не выражен одним цветом. " +
-					"(UserPlaque.Foreground is not SolidColorBrush)");
-			}
-				
-			username = "";
+			PasswordTextBox2.PasswordChanged += ValidateData;					
+
 			textBlockDefaultBrush = (Brush)TryFindResource("DarkThemeFontColor");
 			ValidateData();
+
+			userPlaque.DataContext = NewUser;
 		}
 
-		string username;
+		public User NewUser = new("", Colors.White, "", "", false);
+	
 		private void UserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			username = userPlaque.Text = UserNameTextBox.Text;
+			NewUser.Name = UserNameTextBox.Text;
 			ValidateData();
 		}
-
-		SolidColorBrush selectedColor;
+	
 		private void PickColorButton_Click(object sender, RoutedEventArgs e)
 		{
 			var colorPickerWindow = new ColorPickerWindow();
 			colorPickerWindow.ShowDialog();
-			userPlaque.Foreground = selectedColor = new SolidColorBrush(colorPickerWindow.SelectedColor);
+			NewUser.AccountColor = colorPickerWindow.SelectedColor;
 		}
 
-		string? dataFile;
 		private void EditDataFileButton_Click(object sender, RoutedEventArgs e)
 		{
 			var openFileDialog = new Microsoft.Win32.OpenFileDialog();
@@ -66,43 +58,50 @@ namespace MyMedData.Windows
 			openFileDialog.Filter = "LiteDB Data Base|*.db";
 			if (openFileDialog.ShowDialog() ?? false)
 			{
-				dataFile = openFileDialog.FileName;
-				DataFileTextBox.Text = dataFile;
+				NewUser.DatabaseFile = openFileDialog.FileName;
+				DataFileTextBox.Text = openFileDialog.FileName;
 			}
 			else
 			{
-				dataFile = null;
+				NewUser.DatabaseFile = "";
 				DataFileTextBox.Text = null;
 			}
 			ValidateData();
 		}
 
-		public User? NewUser;
-
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
-
-			NewUser = new User(username, selectedColor, PasswordTextBox1.Password, dataFile, OwnDatabaseCheckBox.IsChecked ?? false);
+			if (!validData) return; // в теории невозможно
 			
 			if (!RecordsDataBase.CreateUserDocumnetDb(NewUser, PasswordTextBox1.Password, DbCreationOptions.Ask))
 			{
-				//неудача создания базы для пользователя
-				NewUser = null;
+				//неудача создания базы для пользователя		
 				MessageBox.Show("Новый пользователь создан не был.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
-			}			
+			}
+			DialogResult = true;
 			Close();
 		}
 
 		private void CancelButton_Click(object sender, RoutedEventArgs e)
 		{
-			NewUser = null;
 			Close();
 		}
 
-		bool validUser => User.IsValidUserName(username);
+		bool validUser => User.IsValidUserName(NewUser.Name);
 		bool validPassword => User.IsValidPassword(PasswordTextBox1.Password);
 		bool passwordsMatch => PasswordTextBox1.Password == PasswordTextBox2.Password;
-		bool validDataFile => dataFile != null;
+		bool validDataFile
+		{
+			get
+			{
+				try
+				{
+					System.IO.Path.GetFullPath(NewUser.DatabaseFile);
+					return true;
+				}
+				catch { return false; }
+			}
+		}
 		bool validData => validUser && validPassword && validDataFile && passwordsMatch;
 					
 		private void ValidateData(object sender, RoutedEventArgs eventArgs)
@@ -124,6 +123,11 @@ namespace MyMedData.Windows
 		private void OwnDatabaseCheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 			MessageBox.Show("Эту настройку нельзя изменить после создания пользователя.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+		}		
+
+		private void Window_ContentRendered(object sender, EventArgs e)
+		{
+			DialogResult = false;
 		}
 	}
 }
