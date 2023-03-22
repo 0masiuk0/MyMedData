@@ -121,7 +121,7 @@ namespace MyMedData
 				try
 				{
 					SetPassword(newPassword);
-					RecordsDataBase.ChnageDBEncryptionPassword(DatabaseFile, oldPassword, newPassword);
+					RecordsDataBase.ChangeDBEncryptionPassword(DatabaseFile, oldPassword, newPassword);
 					return true;
 				}
 				catch (Exception ex)
@@ -167,13 +167,13 @@ namespace MyMedData
 
 		public static bool IsValidPassword(string password)
 		{
-			bool validName = password.Length > 3 && password.Length < 30;
+			bool validPassword = password.Length < 30;
 			foreach (char c in password)
 			{
-				validName &= (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || char.IsDigit(c);
+				validPassword &= (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || char.IsDigit(c);
 			}
 
-			return validName;
+			return validPassword;
 		}		
 
 		public static bool UpdateUser(User updatedUser)

@@ -19,22 +19,12 @@ namespace MyMedData.Controls
 	/// Логика взаимодействия для UserPlaque.xaml
 	/// </summary>
 	public partial class UserPlaque : UserControl
-	{		
+	{
 
 		public UserPlaque()
 		{
 			InitializeComponent();
 		}
 
-		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-			"Text", typeof(string),
-			typeof(UserPlaque)
-			);
-
-		public string Text
-		{
-			get => (string)GetValue(TextProperty);
-			set => SetValue(TextProperty, value);
-		}
 	}
 }

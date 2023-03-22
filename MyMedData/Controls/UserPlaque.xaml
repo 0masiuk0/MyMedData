@@ -35,7 +35,7 @@
                 <TextBlock x:Name="UserNameTextBlock"
                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,10,10,10"
                    FontSize="25" Foreground="{StaticResource DarkThemeFontColor}"
-                   Text="{Binding ElementName=UserPlaqueControl, Path=DataContext.Name,UpdateSourceTrigger=PropertyChanged}"/>
+                   Text="{Binding ElementName=UserPlaqueControl, Path=DataContext.Name, UpdateSourceTrigger=PropertyChanged}"/>
             </Viewbox>
         </DockPanel>
     </Border>

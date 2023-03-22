@@ -30,7 +30,12 @@ namespace MyMedData.Windows
 			PasswordTextBox2.PasswordChanged += ValidateData;					
 
 			textBlockDefaultBrush = (Brush)TryFindResource("DarkThemeFontColor");
-			ValidateData();			
+			ValidateData();
+
+			Binding userPlaqContextBinding = new();
+			userPlaqContextBinding.Source = NewUser;
+			userPlaqContextBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+			BindingOperations.SetBinding(userPlaque, DataContextProperty, userPlaqContextBinding);
 		}
 
 		public User NewUser = new("", Colors.White, "", "", false);
@@ -70,8 +75,10 @@ namespace MyMedData.Windows
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
 			if (!validData) return; // в теории невозможно
-			
-			if (!RecordsDataBase.CreateUserDocumnetDb(NewUser, PasswordTextBox1.Password, DbCreationOptions.Ask))
+			var password = PasswordTextBox1.Password;
+
+			NewUser.SetPassword(password);
+			if (!RecordsDataBase.CreateUserDocumnetDb(NewUser, password, DbCreationOptions.Ask))
 			{
 				//неудача создания базы для пользователя		
 				MessageBox.Show("Новый пользователь создан не был.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -121,11 +128,6 @@ namespace MyMedData.Windows
 		private void OwnDatabaseCheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 			MessageBox.Show("Эту настройку нельзя изменить после создания пользователя.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
-		}		
-
-		private void Window_ContentRendered(object sender, EventArgs e)
-		{
-			DialogResult = false;
-		}
+		}	
 	}
 }

@@ -26,8 +26,7 @@ namespace MyMedData.Windows
 
 		public ChangePasswordWindow(User user, string oldPassword)
 		{
-			InitializeComponent();
-			DialogResult = false;
+			InitializeComponent();			
 			this.user = user;
 			this.oldPassword = oldPassword;
 		}
@@ -45,16 +44,15 @@ namespace MyMedData.Windows
 				return;
 			}
 
-			DialogResult = user.ChangePasswordAndRebuildDb(oldPassword, PasswordBox1.Password);
-			newPassword = (DialogResult ?? false) ? PasswordBox1.Password : null;
+			bool success= user.ChangePasswordAndRebuildDb(oldPassword, PasswordBox1.Password);
+			newPassword = success ? PasswordBox1.Password : null;
 			MessageBox.Show("Пароль изменен.", "Успех операции", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-
-			Close();			
+			DialogResult = success;				
 		}
 
 		private void CancelButtonClick(object sender, RoutedEventArgs e)
 		{
-			Close();
+			DialogResult = false;
 		}
 	}
 }

@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData.Windows"
         mc:Ignorable="d"
+        x:Name="AddUserWindowInstance"
         xmlns:uc="clr-namespace:MyMedData.Controls" WindowStyle="None"
-        Title="AddUserWindow" Height="500" Width="604" Style="{StaticResource DarkWindowStyle}" ContentRendered="Window_ContentRendered"
-        >
+        Title="AddUserWindow" Height="500" Width="604" Style="{StaticResource DarkWindowStyle}">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34"/>
     </WindowChrome.WindowChrome>
@@ -28,9 +28,7 @@
         <DockPanel DockPanel.Dock="Top"  Margin="15" >
             <Button x:Name="PickColorButton" Content="{StaticResource ColorPickerImage}" DockPanel.Dock="Right"
                     Style="{StaticResource UnsizedDarkButtonStyle}" Width="25" Height="25" Margin="15,0,0,0" BorderBrush="Transparent" Click="PickColorButton_Click"/>
-            <uc:UserPlaque x:Name="userPlaque" DataContext="{Binding RelativeSource={RelativeSource AncestorType=AddUserWindow}, Path=NewUser}"
-                    d:Text="Sample Text"  
-                    BorderBrush="{StaticResource DarkBackColor}" BorderThickness="1"/>
+            <uc:UserPlaque x:Name="userPlaque" BorderBrush="{StaticResource DarkBackColor}" BorderThickness="1"/>
         </DockPanel>
         <TextBlock x:Name="UserNameTextBlock" Text="Имя пользователя" Style="{StaticResource TextBlockLocalStyle}" DockPanel.Dock="Top"/>
         <TextBox x:Name="UserNameTextBox" Style="{StaticResource TextBoxkLocalStyle}" DockPanel.Dock="Top" TextChanged="UserNameTextBox_TextChanged"/>

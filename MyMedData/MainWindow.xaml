@@ -72,15 +72,17 @@
             <Button x:Name="NewAppointmentRecordData"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
-                    Content="{StaticResource NewRecordDrawingImage}" Background="{StaticResource LightDarkBackColor}"/>
+                    Content="{StaticResource NewRecordDrawingImage}" ToolTip="Добавить запись о приеме"
+                    Background="{StaticResource LightDarkBackColor}"/>
             <Button x:Name="NewAnalysisButon"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
-                    Content="{StaticResource AnalisysImage}" Background="{StaticResource LightDarkBackColor}"/>
+                    Content="{StaticResource AnalisysImage}" ToolTip="Добавить запись об анализе"
+                    Background="{StaticResource LightDarkBackColor}"/>
             <Button x:Name="SettingsdButton"
                     Height="40" Width="40" BorderBrush="Transparent"
-                    Margin="5" Padding="2"
-                    Content="{StaticResource SettingsImage}" Background="{StaticResource LightDarkBackColor}" Click="SettingsdButton_Click"/>
+                    Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
+                    Content="{StaticResource SettingsImage}" ToolTip="Настойки" Click="SettingsdButton_Click"/>
         </StackPanel>
         <DockPanel x:Name="StatusBarDockPanel"
              VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
@@ -98,7 +100,8 @@
                     BorderBrush="Transparent"                    
                     Background="Transparent"
                     Content="{StaticResource CalendarViewImage}"
-                    Style="{StaticResource ButtonMousOverStyle}"/>
+                    Style="{StaticResource ButtonMousOverStyle}"
+                    ToolTip="Календарный вид"/>
 
             <Button x:Name="TableViewButton" Height="25" Width="25" 
                     Margin="10,4,10,4"  
@@ -106,7 +109,8 @@
                     Background="Transparent"
                     DockPanel.Dock="Right"
                     Content="{StaticResource TableViewImage}"
-                    Style="{StaticResource ButtonMousOverStyle}"/>
+                    Style="{StaticResource ButtonMousOverStyle}"
+                    ToolTip="Табличный вид"/>
 
             <TextBlock x:Name="UsernameTextBlock"
                         FontSize="14"                       
@@ -122,13 +126,15 @@
                     Background="Transparent"
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonMousOverStyle}"
-                    Content="{StaticResource LogOffImage}" Click="LogOffButton_Click"/>
+                    Content="{StaticResource LogOffImage}" Click="LogOffButton_Click"
+                    ToolTip="Выход"/>
             
             <Button x:Name="AuthorizationButton" Background="Transparent" BorderBrush="Transparent"
                     Margin="10,4,4,4"
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonMousOverStyle}"
-                    Content="{StaticResource AuthButtonDrawing}" Click="AuthorizationButton_Click"/>
+                    Content="{StaticResource AuthButtonDrawing}" Click="AuthorizationButton_Click"
+                    ToolTip="Авторизация и управление пользователями"/>
             
             <ProgressBar x:Name="ManiProgressBar"                  
                          Margin="10,4,10,4"

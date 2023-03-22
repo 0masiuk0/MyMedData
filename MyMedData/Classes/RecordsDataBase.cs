@@ -2,7 +2,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
+using System.Security.Cryptography;
 
 namespace MyMedData
 {
@@ -12,6 +14,8 @@ namespace MyMedData
 		{
 			if (File.Exists(user.DatabaseFile))
 			{
+				if (!user.CheckPassword(password))
+					throw new InvalidDataException($"Попытка создать файл базы данных с ключом шифрования, отличным от пароля пользователя {user.Name}");
 
 				//есть файл
 				if (options == DbCreationOptions.UseExistingIfFound)
@@ -89,7 +93,7 @@ namespace MyMedData
 			catch(LiteException ex) { return false; }
 		}
 
-		public static bool ChnageDBEncryptionPassword(string filename, string oldPassword, string newPassword)
+		public static bool ChangeDBEncryptionPassword(string filename, string oldPassword, string newPassword)
 		{
 			using (var tempDbFile = new TemporaryFile(Environment.CurrentDirectory, "~temp " + Path.GetFileName(filename)))
 			{
@@ -131,7 +135,7 @@ namespace MyMedData
 
 		public static string GetConnectionString(string filename, string password)
 		{
-			return $"Filename={filename};Password=\"{password}\"";
+			return $"Filename={filename};Password=\"{HashString16(password)}\"";
 		}
 
 		public static string GetConnectionString(User user, string password)
@@ -144,5 +148,22 @@ namespace MyMedData
 			DoctorExamination.DB_COLLECTION_NAME, LabExaminationRecord.DB_COLLECTION_NAME,
 			Doctor.DB_COLLECTION_NAME, Clinic.DB_COLLECTION_NAME,DoctorSpecialty.DB_COLLECTION_NAME
 		};
+
+		public static string HashString16(string text)
+		{			
+			byte[] bytes = Encoding.UTF8.GetBytes(text);
+			char[] allowedPasswordHashChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
+			int allowedCharsCount = allowedPasswordHashChars.Length;
+
+			using SHA256 sha256 = SHA256.Create();
+			byte[] hash = sha256.ComputeHash(bytes);
+			StringBuilder passwordStringHash16 = new StringBuilder();
+			for (int i = 0; i < 16; i++)
+			{
+				passwordStringHash16.Append(allowedPasswordHashChars[hash[i] % allowedCharsCount]);	
+			}
+
+			return passwordStringHash16.ToString();
+		}
 	}
 }
