@@ -30,9 +30,7 @@ namespace MyMedData.Windows
 			PasswordTextBox2.PasswordChanged += ValidateData;					
 
 			textBlockDefaultBrush = (Brush)TryFindResource("DarkThemeFontColor");
-			ValidateData();
-
-			userPlaque.DataContext = NewUser;
+			ValidateData();			
 		}
 
 		public User NewUser = new("", Colors.White, "", "", false);

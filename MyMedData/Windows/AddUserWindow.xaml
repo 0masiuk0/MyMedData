@@ -28,7 +28,8 @@
         <DockPanel DockPanel.Dock="Top"  Margin="15" >
             <Button x:Name="PickColorButton" Content="{StaticResource ColorPickerImage}" DockPanel.Dock="Right"
                     Style="{StaticResource UnsizedDarkButtonStyle}" Width="25" Height="25" Margin="15,0,0,0" BorderBrush="Transparent" Click="PickColorButton_Click"/>
-            <uc:UserPlaque x:Name="userPlaque" d:Text="Sample Text"  
+            <uc:UserPlaque x:Name="userPlaque" DataContext="{Binding RelativeSource={RelativeSource AncestorType=AddUserWindow}, Path=NewUser}"
+                    d:Text="Sample Text"  
                     BorderBrush="{StaticResource DarkBackColor}" BorderThickness="1"/>
         </DockPanel>
         <TextBlock x:Name="UserNameTextBlock" Text="Имя пользователя" Style="{StaticResource TextBlockLocalStyle}" DockPanel.Dock="Top"/>
