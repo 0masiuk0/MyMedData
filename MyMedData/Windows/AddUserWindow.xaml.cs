@@ -55,6 +55,7 @@ namespace MyMedData.Windows
 
 		private void EditDataFileButton_Click(object sender, RoutedEventArgs e)
 		{
+			_validDataFile = null;
 			var openFileDialog = new Microsoft.Win32.OpenFileDialog();
 			openFileDialog.Multiselect = false;
 			openFileDialog.CheckFileExists = false;
@@ -95,18 +96,32 @@ namespace MyMedData.Windows
 		bool validUser => User.IsValidUserName(NewUser.Name);
 		bool validPassword => User.IsValidPassword(PasswordTextBox1.Password);
 		bool passwordsMatch => PasswordTextBox1.Password == PasswordTextBox2.Password;
-		bool validDataFile
+		
+		//IO call and exception processing is too slow to do each TextboxChange.
+		//Hence lazy implementation. 
+		//_validDataFile = null; is invalidates value and is called each time DataFile is edited;
+		bool? _validDataFile;
+		bool   validDataFile
 		{
 			get
 			{
-				try
+				if (_validDataFile == null)
 				{
-					System.IO.Path.GetFullPath(NewUser.DatabaseFile);
-					return true;
+					try
+					{					
+						System.IO.Path.GetFullPath(NewUser.DatabaseFile);
+						_validDataFile = true;
+					}
+					catch 
+					{ _validDataFile = false; }
+					
+					return _validDataFile'
 				}
-				catch { return false; }
+				else 
+					return _validDataFile;
 			}
 		}
+
 		bool validData => validUser && validPassword && validDataFile && passwordsMatch;
 					
 		private void ValidateData(object sender, RoutedEventArgs eventArgs)
