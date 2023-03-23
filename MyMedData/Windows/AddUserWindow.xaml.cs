@@ -114,11 +114,11 @@ namespace MyMedData.Windows
 					}
 					catch 
 					{ _validDataFile = false; }
-					
-					return _validDataFile'
+
+					return (bool)_validDataFile;
 				}
 				else 
-					return _validDataFile;
+					return (bool)_validDataFile;
 			}
 		}
 

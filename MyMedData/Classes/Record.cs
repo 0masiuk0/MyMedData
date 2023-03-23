@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LiteDB;
+using System.Security.Cryptography;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiteDB;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MyMedData
 {
@@ -101,9 +103,9 @@ namespace MyMedData
 		}
 	}
 	
-	public class DoctorExamination : ExaminationRecord
+	public class DoctorExaminationRecord : ExaminationRecord
 	{		
-		private int _doctor;
+		private Doctor _doctor;
 		[BsonRef(Doctor.DB_COLLECTION_NAME)]
 		public Doctor Doctor
 		{

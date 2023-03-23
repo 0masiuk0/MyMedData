@@ -145,7 +145,7 @@ namespace MyMedData
 
 		static string[] AllowedCollectionNames = new string[]
 		{
-			DoctorExamination.DB_COLLECTION_NAME, LabExaminationRecord.DB_COLLECTION_NAME,
+			DoctorExaminationRecord.DB_COLLECTION_NAME, LabExaminationRecord.DB_COLLECTION_NAME,
 			Doctor.DB_COLLECTION_NAME, Clinic.DB_COLLECTION_NAME,DoctorSpecialty.DB_COLLECTION_NAME
 		};
 

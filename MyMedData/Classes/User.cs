@@ -17,6 +17,7 @@ namespace MyMedData
 	{
 		[BsonId]
 		public int Id { get; set; }
+
 		public string Name
 		{
 			get => _name;
@@ -26,6 +27,7 @@ namespace MyMedData
 				NotifyPropertyChanged(nameof(Name));
 			}
 		}
+
 		public Color AccountColor
 		{
 			get => _accountColor;
@@ -36,13 +38,15 @@ namespace MyMedData
 				NotifyPropertyChanged(nameof(AccountColoredBrush));
 			}
 		}
+
 		public string? PasswordHash { get; private set; }
+
 		public string DatabaseFile { get; set; }
+
 		public bool RunsOwnDoctorsCollection { get; set; }
 
-		[BsonIgnore]
+
 		string _name;
-		[BsonIgnore]
 		Color _accountColor;
 
 		const int KEY_SIZE = 32;

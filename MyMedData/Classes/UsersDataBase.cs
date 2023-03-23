@@ -119,6 +119,53 @@ namespace MyMedData
 			catch (LiteException) { return false; }
 		}
 
+		public static bool DeleteUser(User user, bool deleteFile, string usersDBfilename)
+		{
+			bool dbDeletionSuccess;
+
+			try
+			{
+				using (var db = new LiteDatabase(usersDBfilename))
+				{
+					var usersCollection = db.GetCollection<User>(User.DB_COLLECTION_NAME);
+					dbDeletionSuccess = usersCollection.Delete(user.Id);
+				}
+			}
+			catch (LiteException) { dbDeletionSuccess = false; }
+
+			if (dbDeletionSuccess)
+			{
+				if (deleteFile)
+				{
+				deletionAttempt:
+					try
+					{
+						File.Delete(user.DatabaseFile);
+					}
+					catch
+					{
+						if (MessageBox.Show($"Не удалось удалить файл {user.DatabaseFile}. попытаться еще раз?", "Неудача",
+								MessageBoxButton.OKCancel, MessageBoxImage.Error) == MessageBoxResult.OK)
+						{
+							goto deletionAttempt;
+						}
+						else { return false; }
+					}
+				}
+				else
+				{
+					MessageBox.Show($"База данныз зашифрована. Базу данных можно будет в будущем использвать только если у нового пользвателья"+
+						"будет такой же пароль!", "Инофрмация.", MessageBoxButton.OK, MessageBoxImage.Information);
+				}
+				return true;
+			}
+			else
+			{
+				MessageBox.Show($"Не удалось удалить пользователя {user}.", "Неудача", MessageBoxButton.OK, MessageBoxImage.Error);
+				return false;
+			}
+		}
+
 		static string[] AllowedCollectionNames = new string[]
 		{
 			User.DB_COLLECTION_NAME, Doctor.DB_COLLECTION_NAME, Clinic.DB_COLLECTION_NAME,DoctorSpecialty.DB_COLLECTION_NAME

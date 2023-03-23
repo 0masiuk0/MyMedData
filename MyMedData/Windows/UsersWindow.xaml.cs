@@ -154,13 +154,6 @@ namespace MyMedData.Windows
 		{
 			if (UsersListBox.SelectedItem is User user)
 			{
-				if (MainWindow.ActiveUser != null && MainWindow.ActiveUser.Id == user.Id)
-				{					
-					MessageBox.Show("Пользователь будет разлогинен для редактирования.", "Редакция текцщего пользователя", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-					MainWindow.LogOff();
-				}
-				
-
 				EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
 				passwordWindow.Owner = this;
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -168,12 +161,67 @@ namespace MyMedData.Windows
 
 				if (passwordWindow.Password == null)
 					return;
-				
+
+				if (MainWindow.ActiveUser != null && MainWindow.ActiveUser.Id == user.Id)
+				{
+					MessageBox.Show("Пользователь будет разлогинен для редактирования.", "Редакция текцщего пользователя", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+					MainWindow.LogOff();
+				}
 
 				EditUserWindow editUserWindow = new(user, passwordWindow.Password);
 				editUserWindow.Owner = this;
 				editUserWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 				editUserWindow.ShowDialog();
+			}
+		}
+
+		private void DeleteUserButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (UsersListBox.SelectedItem is User user)
+			{
+				EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
+				passwordWindow.Owner = this;
+				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+				passwordWindow.ShowDialog();
+
+				if (passwordWindow.Password == null)
+					return;
+
+				if (MainWindow.ActiveUser != null && MainWindow.ActiveUser.Id == user.Id)
+				{					
+					MainWindow.LogOff();
+				}
+
+				MessageBoxResult databaseDeletionAnswer = MessageBox.Show(
+					"Удалить базу данных пользователя?", "Удаление данных", 
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+				bool databaseDeletion;
+
+				switch(databaseDeletionAnswer) 
+				{
+					case MessageBoxResult.Yes:
+						{
+							switch(MessageBox.Show("Вы уверены, что требуется удалить все данные пользвателя?", "Удаления данных",
+										MessageBoxButton.YesNoCancel))
+							{
+								case MessageBoxResult.Yes: databaseDeletion = true; break;
+								case MessageBoxResult.No: databaseDeletion = false; break;
+								default: return;
+							}
+							break;
+						}
+					case MessageBoxResult.No: databaseDeletion = false; break; 
+					default: return;
+				}
+
+				bool success = UsersDataBase.DeleteUser(user, databaseDeletion, UsersDbFileName);
+
+				if (success) 
+				{
+					Users.Remove(user);
+					if (Users.Count > 0)
+						UsersListBox.SelectedIndex = 0;
+				}
 			}
 		}
 
@@ -189,7 +237,7 @@ namespace MyMedData.Windows
 
 		private void UsersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			EditUserButton.IsEnabled = UsersListBox.SelectedItem is User;
-		}
-	}
+			LoginButton.IsEnabled = DeleteUserButton.IsEnabled = EditUserButton.IsEnabled = UsersListBox.SelectedItem is User;
+		}		
+    }
 }
