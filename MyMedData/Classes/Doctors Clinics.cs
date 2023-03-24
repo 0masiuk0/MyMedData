@@ -11,7 +11,6 @@ namespace MyMedData
 	public class Doctor
 	{
 		[BsonId]
-		public int DoctorID { get; set;}
 		public string Name { get; set; }
 		public string Comment { get; set; }
 
@@ -21,17 +20,16 @@ namespace MyMedData
 	public class Clinic
 	{
 		[BsonId]
-		public int ClinicID { get; set; }
 		public string Name { get; set; }
 		public string Comment { get; set; }
 
 		public const string DB_COLLECTION_NAME = "Clinics";
 	}
 
-	public class DoctorSpecialty
+	public class ExaminationType
 	{
 		[BsonId]
-		public string Specialty { get; set; }
+		public string ExminationTypeTitle { get; set; }
 		public string Comment { get; set; }
 
 		public const string DB_COLLECTION_NAME = "Specialties";

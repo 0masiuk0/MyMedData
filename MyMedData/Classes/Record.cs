@@ -6,6 +6,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Reflection.Metadata;
+using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace MyMedData
 {
@@ -40,22 +43,16 @@ namespace MyMedData
 			}
 		}
 
-		private ObservableCollection<string> _documents = new ObservableCollection<string>();
-		public ObservableCollection<string> Documents
+		private List<ArchivedDocument> _documents = new List<ArchivedDocument>();
+		[BsonRef(ArchivedDocument.DB_COLLECTION_NAME)]
+		public List<ArchivedDocument> Documents
 		{
 			get => _documents;
 			set
 			{
 				if (_documents != value)
 				{
-					if (_documents != null)
-						_documents.CollectionChanged -= Documents_CollectionChanged;
-
 					_documents = value;
-
-					if (_documents != null)
-						_documents.CollectionChanged += Documents_CollectionChanged;
-
 					OnPropertyChanged(nameof(Documents));
 				}
 			}
@@ -90,6 +87,8 @@ namespace MyMedData
 			}
 		}
 
+		public abstract string GetTitle();
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected void OnPropertyChanged(string propertyName)
@@ -118,9 +117,9 @@ namespace MyMedData
 		}
 
 		
-		private DoctorSpecialty _doctorSpecialty;
-		[BsonRef(DoctorSpecialty.DB_COLLECTION_NAME)]
-		public DoctorSpecialty DoctorSpecialty
+		private ExaminationType _doctorSpecialty;
+		[BsonRef(ExaminationType.DB_COLLECTION_NAME)]
+		public ExaminationType DoctorSpecialty
 		{
 			get { return _doctorSpecialty; }
 			set
@@ -130,11 +129,35 @@ namespace MyMedData
 			}
 		}
 
+		public override string GetTitle()
+		{
+			return $"{_doctorSpecialty.ExminationTypeTitle}: {_doctor.Name}";
+		}
+
 		public static string DB_COLLECTION_NAME => "DoctorExaminations";
 	}
 
 	public class LabExaminationRecord : ExaminationRecord
 	{
+		private string _title;
+		public string Title
+		{
+			get => _title;
+			set
+			{
+				if (_title != value)
+				{
+					_title = value;
+					OnPropertyChanged(nameof(_title));
+				}
+			}
+		}
+
+		public override string GetTitle()
+		{
+			return Title;
+		}
+
 		public static string DB_COLLECTION_NAME => "LabExaminations";
 	}
 }

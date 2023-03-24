@@ -1,7 +1,9 @@
 ﻿using LiteDB;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -166,9 +168,14 @@ namespace MyMedData
 			}
 		}
 
+		public static string? GetUsersDbFileNameFromConfig()
+		{
+			return ConfigurationManager.AppSettings["UserDbName"];			
+		}
+
 		static string[] AllowedCollectionNames = new string[]
 		{
-			User.DB_COLLECTION_NAME, Doctor.DB_COLLECTION_NAME, Clinic.DB_COLLECTION_NAME,DoctorSpecialty.DB_COLLECTION_NAME
+			User.DB_COLLECTION_NAME, Doctor.DB_COLLECTION_NAME, Clinic.DB_COLLECTION_NAME,ExaminationType.DB_COLLECTION_NAME
 		};
 	}
 }
