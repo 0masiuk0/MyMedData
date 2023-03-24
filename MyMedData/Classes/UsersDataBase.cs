@@ -154,8 +154,8 @@ namespace MyMedData
 				}
 				else
 				{
-					MessageBox.Show($"База данныз зашифрована. Базу данных можно будет в будущем использвать только если у нового пользвателья"+
-						"будет такой же пароль!", "Инофрмация.", MessageBoxButton.OK, MessageBoxImage.Information);
+					MessageBox.Show($"База данных зашифрована. Базу данных можно будет в будущем использвать только если у нового пользователя"+
+						" будет такой же пароль!", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
 				}
 				return true;
 			}

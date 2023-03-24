@@ -19,13 +19,14 @@ namespace MyMedData.Windows
 	/// </summary>
 	public partial class EditUserNameWindow : Window
 	{
-		public EditUserNameWindow()
+		public EditUserNameWindow(User user)
 		{
 			InitializeComponent();
+			UsernameTextBox.Text = user.Name;
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
-		{
+		{			
 			UsernameTextBox.Focus();
 		}
 
