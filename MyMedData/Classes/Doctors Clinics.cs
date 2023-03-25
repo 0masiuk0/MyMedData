@@ -63,7 +63,8 @@ namespace MyMedData
 
 		public override string ToString() => ExminationTypeTitle;
 
-		public const string DB_COLLECTION_NAME = "Specialties";
+		public const string DOCTOR_TYPES_DB_COLLECTION_NAME = "Specialties";
+		public const string ANALYSIS_TYPES_DB_COLLECTION_NAME = "LabTests";
 	}
 #pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
 }

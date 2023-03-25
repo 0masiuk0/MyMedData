@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Reflection.Metadata;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace MyMedData
 {
@@ -73,17 +74,9 @@ namespace MyMedData
 			}
 		}
 
-		private ExaminationType _examinationType;
-		[BsonRef(ExaminationType.DB_COLLECTION_NAME)]
-		public ExaminationType ExaminationType
-		{
-			get { return _examinationType; }
-			set
-			{
-				_examinationType = value;
-				OnPropertyChanged(nameof(ExaminationType));
-			}
-		}
+		protected ExaminationType _examinationType;
+		public abstract ExaminationType ExaminationType { get; set; }
+		
 
 		private string _comment = "";
 		public string Comment
@@ -98,6 +91,13 @@ namespace MyMedData
 				}
 			}
 		}
+
+		//--------------------------------NON-SERIALIZEABLE FIELDS----------------------------
+
+		[BsonIgnore]
+		public abstract string Title { get; }
+
+		//------------------------------------------------------------------------------------
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -124,13 +124,39 @@ namespace MyMedData
 				_doctor = value;
 				OnPropertyChanged(nameof(Doctor));
 			}
-		}	
+		}
+
+		[BsonRef(ExaminationType.DOCTOR_TYPES_DB_COLLECTION_NAME)]
+		public override ExaminationType ExaminationType
+		{
+			get { return _examinationType; }
+			set
+			{
+				_examinationType = value;
+				OnPropertyChanged(nameof(ExaminationType));
+			}
+		}
+
+		public override string Title => $"{ExaminationType} - {Doctor}";
 
 		public static string DB_COLLECTION_NAME => "DoctorExaminations";
 	}
 
 	public class LabExaminationRecord : ExaminationRecord
 	{
+		[BsonRef(ExaminationType.ANALYSIS_TYPES_DB_COLLECTION_NAME)]
+		public override ExaminationType ExaminationType
+		{
+			get { return _examinationType; }
+			set
+			{
+				_examinationType = value;
+				OnPropertyChanged(nameof(ExaminationType));
+			}
+		}
+
+		public override string Title => ExaminationType.ToString();
+
 		public static string DB_COLLECTION_NAME => "LabExaminations";
 	}
 }

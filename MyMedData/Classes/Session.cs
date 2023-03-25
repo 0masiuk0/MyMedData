@@ -17,7 +17,8 @@ namespace MyMedData
 				
 		public ObservableCollection<ExaminationRecord> ExaminationRecords = new();
 		public List<string> DoctorNameCache = new List<string>();
-		public List<string> ExaminationTypeCache = new List<string>();
+		public List<string> LabTestTypes = new List<string>();
+		public List<string> DoctorTypes = new List<string>();
 		public List<string> ClinicNameCache = new List<string>();
 
 
@@ -35,6 +36,7 @@ namespace MyMedData
 				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DB_COLLECTION_NAME);
 			var labExaminationRecords = DocumentsDatabaseContext
 				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DB_COLLECTION_NAME);
+
 			foreach(var docExam in docExaminationRecords.FindAll())
 			{
 				ExaminationRecords.Add(docExam);
@@ -66,7 +68,10 @@ namespace MyMedData
 			DoctorNameCache = db.GetCollection<Doctor>(Doctor.DB_COLLECTION_NAME)
 					.FindAll().Select(doctor => doctor.Name).ToList();
 
-			ExaminationTypeCache = db.GetCollection<ExaminationType>(ExaminationType.DB_COLLECTION_NAME)
+			LabTestTypes = db.GetCollection<ExaminationType>(ExaminationType.ANALYSIS_TYPES_DB_COLLECTION_NAME)
+				.FindAll().Select(type => type.ExminationTypeTitle).ToList();
+
+			DoctorTypes = db.GetCollection<ExaminationType>(ExaminationType.DOCTOR_TYPES_DB_COLLECTION_NAME)
 				.FindAll().Select(type => type.ExminationTypeTitle).ToList();
 
 			ClinicNameCache = db.GetCollection<Clinic>(Clinic.DB_COLLECTION_NAME)
