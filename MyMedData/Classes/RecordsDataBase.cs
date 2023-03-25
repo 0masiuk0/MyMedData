@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace MyMedData
 {
@@ -164,6 +165,53 @@ namespace MyMedData
 			}
 
 			return passwordStringHash16.ToString();
+		}
+
+		public static List<ExaminationRecord> GenerateSampleExaminationRecordList(int count) => GenerateSampleRecords(count).ToList();
+		
+		static IEnumerable<ExaminationRecord> GenerateSampleRecords(int count)
+		{
+			List<ExaminationRecord> records = new List<ExaminationRecord>();
+			records.Add(new DoctorExaminationRecord
+			{
+				Date = new DateOnly(1989, 01, 20),
+				Comment = "TestComment1",
+				Doctor = new Doctor("Test doc 1", "comemnt for a doctor"),
+				Documents = new(),
+				ExaminationType = new ExaminationType("Sample examiunation type", "Comemnt for type")
+			}
+			);
+
+			records.Add(new DoctorExaminationRecord
+			{
+				Date = new DateOnly(2002, 12, 31),
+				Comment = "TestComment2",
+				Doctor = new Doctor("Иванов И. И.", "comemnt for a Иванов"),
+				Documents = new(),
+				ExaminationType = new ExaminationType("Терапевт", "Commеnt for терапевт")
+			}
+			);
+
+			records.Add(new LabExaminationRecord
+			{
+				Date = new DateOnly(2020, 10, 1),
+				Comment = "Lab test comment",				
+				Documents = new(),
+				ExaminationType = new ExaminationType("ОАК", "Comemnt for ОАК")
+			}
+			);
+
+			int n = 0;
+			while(true)
+			{
+				foreach(var rec in records)
+				{
+					yield return rec;
+					n++;
+					if (n == count)
+						yield break;
+				}
+			}
 		}
 	}
 }

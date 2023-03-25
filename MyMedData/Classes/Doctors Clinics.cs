@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MyMedData
 {
@@ -14,6 +15,16 @@ namespace MyMedData
 		public string Name { get; set; }
 		public string Comment { get; set; }
 
+		public Doctor() { }
+
+		public Doctor(string name, string comment="")
+		{
+			Name = name;
+			Comment = comment;
+		}
+
+		public override string ToString() => Name;
+
 		public const string DB_COLLECTION_NAME = "Doctors";
 	}
 
@@ -23,6 +34,16 @@ namespace MyMedData
 		public string Name { get; set; }
 		public string Comment { get; set; }
 
+		public Clinic() { }
+
+		public Clinic(string name, string comment="")
+		{
+			Name = name;
+			Comment = comment;
+		}
+
+		public override string ToString() => Name;		
+
 		public const string DB_COLLECTION_NAME = "Clinics";
 	}
 
@@ -31,6 +52,16 @@ namespace MyMedData
 		[BsonId]
 		public string ExminationTypeTitle { get; set; }
 		public string Comment { get; set; }
+
+		public ExaminationType() { }
+
+		public ExaminationType(string exminationTypeTitle, string comment = "")
+		{
+			ExminationTypeTitle = exminationTypeTitle;
+			Comment = comment;
+		}
+
+		public override string ToString() => ExminationTypeTitle;
 
 		public const string DB_COLLECTION_NAME = "Specialties";
 	}

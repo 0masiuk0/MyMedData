@@ -43,7 +43,7 @@ namespace MyMedData.Windows
 
 		private void EditNameButton_Click(object sender, RoutedEventArgs e)
 		{
-			var editUserNameWindow = new EditUserNameWindow();
+			var editUserNameWindow = new EditUserNameWindow(EditedUser);
 			if (editUserNameWindow.ShowDialog() ?? false)
 			{
 				EditedUser.Name = editUserNameWindow.UserName;

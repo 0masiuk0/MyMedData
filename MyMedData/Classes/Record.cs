@@ -73,6 +73,18 @@ namespace MyMedData
 			}
 		}
 
+		private ExaminationType _examinationType;
+		[BsonRef(ExaminationType.DB_COLLECTION_NAME)]
+		public ExaminationType ExaminationType
+		{
+			get { return _examinationType; }
+			set
+			{
+				_examinationType = value;
+				OnPropertyChanged(nameof(ExaminationType));
+			}
+		}
+
 		private string _comment = "";
 		public string Comment
 		{
@@ -86,8 +98,6 @@ namespace MyMedData
 				}
 			}
 		}
-
-		public abstract string GetTitle();
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -114,50 +124,13 @@ namespace MyMedData
 				_doctor = value;
 				OnPropertyChanged(nameof(Doctor));
 			}
-		}
-
-		
-		private ExaminationType _doctorSpecialty;
-		[BsonRef(ExaminationType.DB_COLLECTION_NAME)]
-		public ExaminationType DoctorSpecialty
-		{
-			get { return _doctorSpecialty; }
-			set
-			{
-				_doctorSpecialty = value;
-				OnPropertyChanged(nameof(DoctorSpecialty));
-			}
-		}
-
-		public override string GetTitle()
-		{
-			return $"{_doctorSpecialty.ExminationTypeTitle}: {_doctor.Name}";
-		}
+		}	
 
 		public static string DB_COLLECTION_NAME => "DoctorExaminations";
 	}
 
 	public class LabExaminationRecord : ExaminationRecord
 	{
-		private string _title;
-		public string Title
-		{
-			get => _title;
-			set
-			{
-				if (_title != value)
-				{
-					_title = value;
-					OnPropertyChanged(nameof(_title));
-				}
-			}
-		}
-
-		public override string GetTitle()
-		{
-			return Title;
-		}
-
 		public static string DB_COLLECTION_NAME => "LabExaminations";
 	}
 }

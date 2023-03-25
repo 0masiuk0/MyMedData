@@ -64,11 +64,13 @@ namespace MyMedData
 		{
 			ActiveSession = session;
 			UsernameTextBlock.Text = ActiveUser.Name;
+			DataContext = RecordsDataBase.GenerateSampleExaminationRecordList(10);
 		}
 
 		private void LogOffButton_Click(object sender, RoutedEventArgs e)
 		{	
 			LogOff();
+			DataContext = null;
 		}
 
 		public void LogOff()

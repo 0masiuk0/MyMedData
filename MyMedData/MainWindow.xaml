@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData"
+        xmlns:uc="clr-namespace:MyMedData.Controls"
         mc:Ignorable="d"
         Title="Моя Медкнижка" 
         Height="450" Width="800" MinWidth="700" MinHeight="300" 
@@ -142,6 +143,8 @@
                          Foreground="{StaticResource BlueConotourColor}" Background="{DynamicResource LightDarkBackColor}"/>
         </DockPanel>
         <Grid>
+            <uc:TableDisplay x:Name="RecordsTableDisplay" 
+                             />
             
         </Grid>
     </DockPanel>
