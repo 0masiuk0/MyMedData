@@ -6,9 +6,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="\PictResourseDictionary1.xaml" />
-                <ResourceDictionary Source="\Colors.xaml" />
-                <ResourceDictionary Source="\AuxDictionary.xaml"/>
+                <ResourceDictionary Source="Dictionaries\PictResourseDictionary1.xaml" />
+                <ResourceDictionary Source="Dictionaries\Colors.xaml" />
+                <ResourceDictionary Source="Dictionaries\AuxDictionary.xaml"/>
+                <ResourceDictionary Source="Dictionaries\SrollBarStyleDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

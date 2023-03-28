@@ -97,7 +97,11 @@ namespace MyMedData
 		[BsonIgnore]
 		public abstract string Title { get; }
 
-		//------------------------------------------------------------------------------------
+		//------------------------------------METHODS------------------------------------------
+
+		public abstract ExaminationRecord Copy();
+
+		//---------------------------------EVENTS-------------------------------------------
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -137,6 +141,15 @@ namespace MyMedData
 			}
 		}
 
+		public override ExaminationRecord Copy()
+		{
+			var copy = new DoctorExaminationRecord { Id = Id, Date = Date, Clinic = Clinic,
+			Comment = Comment, Doctor = Doctor, Documents = new List<ArchivedDocument>(Documents), 
+			ExaminationType = ExaminationType};
+
+			return copy;
+		}
+
 		public override string Title => $"{ExaminationType} - {Doctor}";
 
 		public static string DB_COLLECTION_NAME => "DoctorExaminations";
@@ -153,6 +166,21 @@ namespace MyMedData
 				_examinationType = value;
 				OnPropertyChanged(nameof(ExaminationType));
 			}
+		}
+
+		public override ExaminationRecord Copy()
+		{
+			var copy = new LabExaminationRecord
+			{
+				Id = Id,
+				Date = Date,
+				Clinic = Clinic,
+				Comment = Comment,
+				Documents = new List<ArchivedDocument>(Documents),
+				ExaminationType = ExaminationType
+			};
+
+			return copy;
 		}
 
 		public override string Title => ExaminationType.ToString();

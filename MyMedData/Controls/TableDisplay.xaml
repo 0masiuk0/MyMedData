@@ -21,14 +21,20 @@
         </Grid.RowDefinitions>
         <DataGrid x:Name="RecordsDataGrid" AutoGenerateColumns="False"
                   Grid.Row="1" Background="{StaticResource LightDarkBackColor}"
-                  Foreground="Transparent"
+                  Foreground="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                   ItemsSource="{Binding DataContext, ElementName=RecordsDataGrid}"
                   CanUserReorderColumns="False" CanUserDeleteRows="False"
                   CanUserAddRows="False" CanUserResizeRows="False"
-                  HeadersVisibility="Column" Loaded="RecordsDataGrid_Loaded">
+                  HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                  SelectionMode="Single" SelectionUnit="FullRow"
+                  Loaded="RecordsDataGrid_Loaded"
+                  SelectionChanged="RecordsDataGrid_SelectionChanged">
             <DataGrid.Resources>
                 <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
                     <Setter Property="Margin" Value="5,10,5,10" />
+                </Style>
+                <Style TargetType="ScrollBar">
+                    <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />                    
                 </Style>
             </DataGrid.Resources>
             <DataGrid.ColumnHeaderStyle>
@@ -42,7 +48,7 @@
                     <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
                     <Setter Property="BorderThickness" Value="1"/>
                 </Style>
-            </DataGrid.ColumnHeaderStyle>            
+            </DataGrid.ColumnHeaderStyle>
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
@@ -51,16 +57,16 @@
                     <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
                     <Setter Property="BorderThickness" Value="1"/>
                 </Style>
-            </DataGrid.RowStyle>           
+            </DataGrid.RowStyle>          
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Обследование" Binding="{Binding Title}" IsReadOnly="True"
-                                    Width="2*" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                                    Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>
                 <DataGridTextColumn Header="Дата" Binding="{Binding Date, StringFormat=d, ConverterCulture=ru-RU}" 
                                     IsReadOnly="True"
-                                    Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>                
+                                    Width="90" ElementStyle="{StaticResource ColumnElementStyle}"/>                
                 <DataGridTextColumn Header="Примечание" Binding="{Binding Comment}" IsReadOnly="False"
-                                    Width="2*" ElementStyle="{StaticResource ColumnElementStyle}"/>
-             </DataGrid.Columns>
+                                    Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>
+            </DataGrid.Columns>            
         </DataGrid>
     </Grid>
 </UserControl>

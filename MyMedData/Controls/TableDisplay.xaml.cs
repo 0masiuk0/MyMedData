@@ -36,6 +36,9 @@ namespace MyMedData.Controls
 		
 		}
 
-		
+		private void RecordsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+
+		}
 	}
 }

@@ -207,7 +207,7 @@ namespace MyMedData
 			{
 				foreach(var rec in records)
 				{
-					yield return rec;
+					yield return rec.Copy();
 					n++;
 					if (n == count)
 						yield break;
