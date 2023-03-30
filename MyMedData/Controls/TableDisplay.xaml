@@ -16,12 +16,12 @@
             <ColumnDefinition Width="220"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="55"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <DataGrid x:Name="RecordsDataGrid" AutoGenerateColumns="False"
                   Grid.Row="1" Background="{StaticResource LightDarkBackColor}"
-                  Foreground="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  Foreground="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4, 0, 4, 4"
                   ItemsSource="{Binding DataContext, RelativeSource={RelativeSource Self}}"
                   CanUserReorderColumns="False" CanUserDeleteRows="False"
                   CanUserAddRows="False" CanUserResizeRows="False"
@@ -59,14 +59,34 @@
                 </Style>
             </DataGrid.RowStyle>          
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Обследование" Binding="{Binding Title}" IsReadOnly="True"
+                <DataGridTextColumn x:Name="TitleDataGridColumn"
+                                    Header="Обследование" Binding="{Binding Title}" IsReadOnly="True"
                                     Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Дата" Binding="{Binding Date, StringFormat=d, ConverterCulture=ru-RU}" 
-                                    IsReadOnly="True"
-                                    Width="90" ElementStyle="{StaticResource ColumnElementStyle}"/>                
-                <DataGridTextColumn Header="Примечание" Binding="{Binding Comment}" IsReadOnly="False"
+                <DataGridTextColumn x:Name="DateDataGridColumn"
+                                    Header="Дата" Binding="{Binding Date, StringFormat=d, ConverterCulture=ru-RU}" 
+                                    IsReadOnly="True" CanUserResize="False"
+                                    Width="105" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn x:Name="CommentDataGridColumn"
+                                    Header="Примечание" Binding="{Binding Comment}" IsReadOnly="False"
                                     Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>
             </DataGrid.Columns>            
         </DataGrid>
+        <Grid x:Name="FilterGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="titleFilterColumn"
+                                  Width="{Binding ElementName=TitleDataGridColumn, Path=ActualWidth}"/>
+                <ColumnDefinition x:Name="dateFilterColumn" Width="{Binding ElementName=DateDataGridColumn, Path=ActualWidth}"/>
+                <ColumnDefinition x:Name="commentFilterColumn" Width="{Binding ElementName=CommentDataGridColumn, Path=ActualWidth}"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="TitleFilterTextBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,4,-2,4"
+                     Height="25" FontSize="18"/>
+            <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,-2,0">                
+                <DatePicker x:Name="fromDateFilterDatePicker" 
+                            VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <DatePicker x:Name="toDateFilterDatePicker" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <TextBox x:Name="CommentFilterTextBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,-4,4" 
+                     Height="25" FontSize="18" Grid.Column="2"/>
+        </Grid>
     </Grid>
 </UserControl>
