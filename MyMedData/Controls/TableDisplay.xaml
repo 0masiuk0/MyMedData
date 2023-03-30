@@ -22,7 +22,7 @@
         <DataGrid x:Name="RecordsDataGrid" AutoGenerateColumns="False"
                   Grid.Row="1" Background="{StaticResource LightDarkBackColor}"
                   Foreground="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  ItemsSource="{Binding DataContext, ElementName=RecordsDataGrid}"
+                  ItemsSource="{Binding DataContext, RelativeSource={RelativeSource Self}}"
                   CanUserReorderColumns="False" CanUserDeleteRows="False"
                   CanUserAddRows="False" CanUserResizeRows="False"
                   HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
