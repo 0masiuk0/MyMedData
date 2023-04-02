@@ -59,7 +59,7 @@ namespace MyMedData
 			}
 		}
 				
-		private Clinic _clinic;
+		private Clinic? _clinic;
 		[BsonRef(Clinic.DB_COLLECTION_NAME)]
 		public Clinic Clinic
 		{
@@ -103,7 +103,7 @@ namespace MyMedData
 
 		//---------------------------------EVENTS-------------------------------------------
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 
 		protected void OnPropertyChanged(string propertyName)
 		{

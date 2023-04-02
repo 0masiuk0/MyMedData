@@ -72,8 +72,8 @@
                     DockPanel.Dock="Top" Orientation="Horizontal">
             <Button x:Name="NewAppointmentRecordData"
                     Height="40" Width="40" BorderBrush="Transparent"
-                    Margin="5" Padding="2"
-                    Content="{StaticResource NewRecordDrawingImage}" ToolTip="Добавить запись о приеме"
+                    Margin="5" Padding="0"
+                    Content="{StaticResource StethoscopeImage}" ToolTip="Добавить запись о приеме"
                     Background="{StaticResource LightDarkBackColor}"/>
             <Button x:Name="NewAnalysisButon"
                     Height="40" Width="40" BorderBrush="Transparent"
