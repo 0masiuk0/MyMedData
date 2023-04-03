@@ -30,14 +30,15 @@
                 <ColumnDefinition x:Name="commentFilterColumn" Width="{Binding ElementName=CommentDataGridColumn, Path=ActualWidth}"/>
             </Grid.ColumnDefinitions>
             <TextBox x:Name="TitleFilterTextBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,4,-2,4"
-                     Height="25" FontSize="18"/>
+                     Height="25" FontSize="18" Background="#FF424242" Foreground="{StaticResource DarkThemeFontColor}"/>
             <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,-2,0">
-                <DatePicker x:Name="fromDateFilterDatePicker" 
+                <DatePicker x:Name="fromDateFilterDatePicker"  Style="{StaticResource DarkDatePicker}"
                             VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <DatePicker x:Name="toDateFilterDatePicker" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <DatePicker x:Name="toDateFilterDatePicker" Style="{StaticResource DarkDatePicker}"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </StackPanel>
             <TextBox x:Name="CommentFilterTextBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,-4,4" 
-                     Height="25" FontSize="18" Grid.Column="2"/>
+                     Height="25" FontSize="18" Grid.Column="2" Background="#FF383838" Foreground="{StaticResource DarkThemeFontColor}"/>
         </Grid>
         <DataGrid x:Name="RecordsDataGrid" AutoGenerateColumns="False"
                   ItemsSource="{Binding Source={StaticResource RecordsCollectionViewSource}}"
@@ -91,6 +92,9 @@
                                     Header="Примечание" Binding="{Binding Comment}" 
                                     Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>
             </DataGrid.Columns>            
-        </DataGrid>            
+        </DataGrid>
+        <local:RecordDisplay x:Name="recordDisplay"
+            Grid.Column="1" Grid.RowSpan="2"
+            DataContext="{Binding ElementName=RecordsDataGrid, Path=SelectedItem}"/>
     </Grid>
 </UserControl>

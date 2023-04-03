@@ -5,8 +5,54 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyMedData.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="270">
-    <Grid>
-            
-    </Grid>
+             d:DesignHeight="450" d:DesignWidth="270"
+             DataContextChanged="UserControl_DataContextChanged">
+    <UserControl.Resources>
+        <local:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
+        <Style x:Key="HeaderLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontFamily" Value="Calibri"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
+            <Setter Property="Margin" Value="10,10,0,0"/>
+        </Style>
+        <Style x:Key="TextBox" TargetType="TextBox">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
+            <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+        </Style>
+    </UserControl.Resources>
+    <Border BorderBrush="{StaticResource BlueConotourColor}" CornerRadius="10" BorderThickness="1" Padding="10,0,10,10">
+        <DockPanel>
+            <TextBlock x:Name="DateLabel" 
+                   DockPanel.Dock="Top"
+                   Text="Дата" Style="{StaticResource HeaderLabel}"/>
+            <DatePicker x:Name="RecordDatePciker" 
+                    DockPanel.Dock="Top"       
+                    FontSize="16" 
+                    Style="{StaticResource DarkDatePicker}"
+                    SelectedDate="{Binding Date, Converter={StaticResource DateTimeToDateOnlyConverter}}"/>
+            <TextBlock x:Name="ExamniantionTypleLabel" 
+                   DockPanel.Dock="Top"
+                   Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
+            <TextBox x:Name="ExaminationTypeTextBox" Style="{StaticResource TextBox}"
+                 DockPanel.Dock="Top"/>
+            <TextBlock x:Name="DoctorLabel" 
+                   DockPanel.Dock="Top"
+                   Text="Врач" Style="{StaticResource HeaderLabel}"/>
+            <TextBox x:Name="ВщсещкTextBox" Style="{StaticResource TextBox}"
+                 DockPanel.Dock="Top"/>
+            <TextBlock x:Name="ClinicLabel" 
+                   DockPanel.Dock="Top"
+                   Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
+            <TextBox x:Name="ClinicTextBox" Style="{StaticResource TextBox}"
+                 DockPanel.Dock="Top"/>
+            <TextBlock x:Name="DocumentsLabel" 
+                   DockPanel.Dock="Top"
+                   Text="Документы" Style="{StaticResource HeaderLabel}"/>
+            <ListBox x:Name="DocumentsListBox" Background="Transparent"
+                 ItemsSource="{Binding Documents}" d:ItemsSource="{d:SampleData ItemCount=5}">
+            </ListBox>
+        </DockPanel>
+    </Border>
 </UserControl>
