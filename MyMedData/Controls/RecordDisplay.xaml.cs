@@ -42,7 +42,7 @@ namespace MyMedData.Controls
 			}
 
 			return DependencyProperty.UnsetValue;
-		}
+	}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
