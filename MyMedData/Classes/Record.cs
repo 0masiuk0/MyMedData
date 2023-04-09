@@ -45,7 +45,7 @@ namespace MyMedData
 		}
 
 		private List<ArchivedDocument> _documents = new List<ArchivedDocument>();
-		[BsonRef(ArchivedDocument.DB_COLLECTION_NAME)]
+		[BsonRef(ArchivedDocument.DbCollectionName)]
 		public List<ArchivedDocument> Documents
 		{
 			get => _documents;
@@ -60,8 +60,8 @@ namespace MyMedData
 		}
 				
 		private Clinic? _clinic;
-		[BsonRef(Clinic.DB_COLLECTION_NAME)]
-		public Clinic Clinic
+		[BsonRef(Clinic.DbCollectionName)]
+		public Clinic? Clinic
 		{
 			get => _clinic;
 			set
@@ -74,8 +74,8 @@ namespace MyMedData
 			}
 		}
 
-		protected ExaminationType _examinationType;
-		public abstract ExaminationType ExaminationType { get; set; }
+		protected ExaminationType? _examinationType;
+		public abstract ExaminationType? ExaminationType { get; set; }
 		
 
 		private string _comment = "";
@@ -118,11 +118,11 @@ namespace MyMedData
 	
 	public class DoctorExaminationRecord : ExaminationRecord
 	{		
-		private Doctor _doctor;
-		[BsonRef(Doctor.DB_COLLECTION_NAME)]
-		public Doctor Doctor
+		private Doctor? _doctor;
+		[BsonRef(Doctor.DbCollectionName)]
+		public Doctor? Doctor
 		{
-			get { return _doctor; }
+			get => _doctor;
 			set
 			{
 				_doctor = value;
@@ -130,10 +130,10 @@ namespace MyMedData
 			}
 		}
 
-		[BsonRef(ExaminationType.DOCTOR_TYPES_DB_COLLECTION_NAME)]
-		public override ExaminationType ExaminationType
+		[BsonRef(ExaminationType.DoctorTypesDbCollectionName)]
+		public override ExaminationType? ExaminationType
 		{
-			get { return _examinationType; }
+			get => _examinationType;
 			set
 			{
 				_examinationType = value;
@@ -152,15 +152,15 @@ namespace MyMedData
 
 		public override string Title => $"{ExaminationType} - {Doctor}";
 
-		public static string DB_COLLECTION_NAME => "DoctorExaminations";
+		public static string DbCollectionName => "DoctorExaminations";
 	}
 
 	public class LabExaminationRecord : ExaminationRecord
 	{
-		[BsonRef(ExaminationType.ANALYSIS_TYPES_DB_COLLECTION_NAME)]
-		public override ExaminationType ExaminationType
+		[BsonRef(ExaminationType.AnalysisTypesDbCollectionName)]
+		public override ExaminationType? ExaminationType
 		{
-			get { return _examinationType; }
+			get => _examinationType;
 			set
 			{
 				_examinationType = value;
@@ -185,6 +185,6 @@ namespace MyMedData
 
 		public override string Title => ExaminationType.ToString();
 
-		public static string DB_COLLECTION_NAME => "LabExaminations";
+		public static string DbCollectionName => "LabExaminations";
 	}
 }

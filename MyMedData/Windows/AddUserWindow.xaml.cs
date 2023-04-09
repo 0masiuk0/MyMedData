@@ -29,7 +29,7 @@ namespace MyMedData.Windows
 			PasswordTextBox1.PasswordChanged += ValidateData;
 			PasswordTextBox2.PasswordChanged += ValidateData;					
 
-			textBlockDefaultBrush = (Brush)TryFindResource("DarkThemeFontColor");
+			_textBlockDefaultBrush = (Brush)TryFindResource("DarkThemeFontColor");
 			ValidateData();
 
 			Binding userPlaqContextBinding = new();
@@ -75,7 +75,7 @@ namespace MyMedData.Windows
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
-			if (!validData) return; // в теории невозможно
+			if (!ValidData) return; // в теории невозможно
 			var password = PasswordTextBox1.Password;
 
 			NewUser.SetPassword(password);
@@ -93,15 +93,16 @@ namespace MyMedData.Windows
 			Close();
 		}
 
-		bool validUser => User.IsValidUserName(NewUser.Name);
-		bool validPassword => User.IsValidPassword(PasswordTextBox1.Password);
-		bool passwordsMatch => PasswordTextBox1.Password == PasswordTextBox2.Password;
+		private bool ValidUser => User.IsValidUserName(NewUser.Name);
+		private bool ValidPassword => User.IsValidPassword(PasswordTextBox1.Password);
+		private bool PasswordsMatch => PasswordTextBox1.Password == PasswordTextBox2.Password;
 		
 		//IO call and exception processing is too slow to do each TextboxChange.
 		//Hence lazy implementation. 
 		//_validDataFile = null; is invalidates value and is called each time DataFile is edited;
-		bool? _validDataFile;
-		bool   validDataFile
+		private bool? _validDataFile;
+
+		private bool   ValidDataFile
 		{
 			get
 			{
@@ -122,22 +123,22 @@ namespace MyMedData.Windows
 			}
 		}
 
-		bool validData => validUser && validPassword && validDataFile && passwordsMatch;
+		private bool ValidData => ValidUser && ValidPassword && ValidDataFile && PasswordsMatch;
 					
 		private void ValidateData(object sender, RoutedEventArgs eventArgs)
 		{
 			ValidateData();		
 		}
 
-		Brush textBlockDefaultBrush; 
+		private Brush _textBlockDefaultBrush; 
 		private void ValidateData()
 		{
 
-			UserNameTextBlock.Foreground = validUser ? textBlockDefaultBrush : Brushes.Red;
-			PasswordTextBlock.Foreground = validPassword ? textBlockDefaultBrush : Brushes.Red;
-			RepeatPasswordTextBlock.Foreground = passwordsMatch ? textBlockDefaultBrush : Brushes.Red;
-			DataFileTextBlock.Foreground = validDataFile ? textBlockDefaultBrush : Brushes.Red;
-			OKbutton.IsEnabled = validData;
+			UserNameTextBlock.Foreground = ValidUser ? _textBlockDefaultBrush : Brushes.Red;
+			PasswordTextBlock.Foreground = ValidPassword ? _textBlockDefaultBrush : Brushes.Red;
+			RepeatPasswordTextBlock.Foreground = PasswordsMatch ? _textBlockDefaultBrush : Brushes.Red;
+			DataFileTextBlock.Foreground = ValidDataFile ? _textBlockDefaultBrush : Brushes.Red;
+			OKbutton.IsEnabled = ValidData;
 		}
 
 		private void OwnDatabaseCheckBox_Checked(object sender, RoutedEventArgs e)

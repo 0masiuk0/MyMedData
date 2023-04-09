@@ -15,27 +15,34 @@ namespace MyMedData
 		public readonly LiteDatabase DocumentsDatabaseContext;
 		//public string Password { private get; set; }
 				
-		public ObservableCollection<ExaminationRecord> ExaminationRecords = new();
-		public List<string> DoctorNameCache = new List<string>();
-		public List<string> LabTestTypes = new List<string>();
-		public List<string> DoctorTypes = new List<string>();
-		public List<string> ClinicNameCache = new List<string>();
+		public ObservableCollection<ExaminationRecord> ExaminationRecords { get; private set; }
+		public ObservableCollection<string> LabTestTypesCache { get;private set; }	 
+		public ObservableCollection<string> DoctorNameCache  { get; private set;} 	 
+		public ObservableCollection<string> DoctorTypesCache { get; private set;}	 
+		public ObservableCollection<string> ClinicNameCache  { get; private set;}	 
 
 
 		public Session(User user, string password)
 		{
 			ActiveUser = user;
 			//Password = password;
+			
+			ExaminationRecords = new();
+			DoctorNameCache = new ObservableCollection<string>();
+			LabTestTypesCache = new ObservableCollection<string>();
+			DoctorTypesCache = new ObservableCollection<string>();
+			ClinicNameCache = new ObservableCollection<string>();
+
 			DocumentsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
-			ReadDataBase();	
+			ReadDataBase();
 		}
 
 		private void ReadDataBase()
 		{
 			var docExaminationRecords = DocumentsDatabaseContext
-				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DB_COLLECTION_NAME);
+				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
 			var labExaminationRecords = DocumentsDatabaseContext
-				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DB_COLLECTION_NAME);
+				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
 
 			foreach(var docExam in docExaminationRecords.FindAll())
 			{
@@ -45,6 +52,11 @@ namespace MyMedData
 			{
 				ExaminationRecords.Add(labExam);
 			}
+
+//-----------------------------------DEBUG------------------------------------------------------------------------
+			foreach(var rec in RecordsDataBase.GenerateSampleRecords(10))
+			{ ExaminationRecords.Add(rec);}
+//----------------------------------DEBUG------------------------------------------------------------------------
 
 			if (ActiveUser.RunsOwnDoctorsCollection)
 			{
@@ -65,17 +77,17 @@ namespace MyMedData
 
 		private void CacheAutoComplete(LiteDatabase db)
 		{
-			DoctorNameCache = db.GetCollection<Doctor>(Doctor.DB_COLLECTION_NAME)
-					.FindAll().Select(doctor => doctor.Name).ToList();
+			DoctorNameCache = new (db.GetCollection<Doctor>(Doctor.DbCollectionName)
+					.FindAll().Select(doctor => doctor.Name));
 
-			LabTestTypes = db.GetCollection<ExaminationType>(ExaminationType.ANALYSIS_TYPES_DB_COLLECTION_NAME)
-				.FindAll().Select(type => type.ExminationTypeTitle).ToList();
+			LabTestTypesCache = new(db.GetCollection<ExaminationType>(ExaminationType.AnalysisTypesDbCollectionName)
+				.FindAll().Select(type => type.ExminationTypeTitle).ToList());
 
-			DoctorTypes = db.GetCollection<ExaminationType>(ExaminationType.DOCTOR_TYPES_DB_COLLECTION_NAME)
-				.FindAll().Select(type => type.ExminationTypeTitle).ToList();
+			DoctorTypesCache = new(db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName)
+				.FindAll().Select(type => type.ExminationTypeTitle).ToList());
 
-			ClinicNameCache = db.GetCollection<Clinic>(Clinic.DB_COLLECTION_NAME)
-				.FindAll().Select(clinic => clinic.Name).ToList();
+			ClinicNameCache = new(db.GetCollection<Clinic>(Clinic.DbCollectionName)
+				.FindAll().Select(clinic => clinic.Name).ToList());
 		}		
 
 		public void Dispose()

@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMedData", "MyMedData\MyMedData.csproj", "{CBA898BA-ABAB-42BB-A9EB-6661B765A748}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMedTest", "MyMedTest\MyMedTest.csproj", "{0F16679F-A0A1-4B54-B1A1-723A2B0C1465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMedTest", "MyMedTest\MyMedTest.csproj", "{0F16679F-A0A1-4B54-B1A1-723A2B0C1465}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aviad.WPF.Controls", "..\..\WPF combobox\ArticleSource\ACTB\Aviad.WPF.Controls.csproj", "{952E558B-6E94-49A5-BA50-EC50C044709C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0F16679F-A0A1-4B54-B1A1-723A2B0C1465}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F16679F-A0A1-4B54-B1A1-723A2B0C1465}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F16679F-A0A1-4B54-B1A1-723A2B0C1465}.Release|Any CPU.Build.0 = Release|Any CPU
+		{952E558B-6E94-49A5-BA50-EC50C044709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{952E558B-6E94-49A5-BA50-EC50C044709C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{952E558B-6E94-49A5-BA50-EC50C044709C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{952E558B-6E94-49A5-BA50-EC50C044709C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

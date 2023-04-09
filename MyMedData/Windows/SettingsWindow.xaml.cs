@@ -31,14 +31,14 @@ namespace MyMedData.Windows
 			InitializeComponent();			
 		}
 
-		Dictionary<string, string> _changedSettings = new();
-		NameValueCollection appSettings => ConfigurationManager.AppSettings;
+		private Dictionary<string, string> _changedSettings = new();
+		private NameValueCollection AppSettings => ConfigurationManager.AppSettings;
 
-		MainWindow mainWindow => (MainWindow)this.Owner;
+		private MainWindow MainWindow => (MainWindow)this.Owner;
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			string? userDbFileName = appSettings["UserDbName"];
+			string? userDbFileName = AppSettings["UserDbName"];
 			if (userDbFileName != null)
 			{
 				if (File.Exists(userDbFileName) && UsersDataBase.FastCheckUserDvValidity(userDbFileName))
@@ -69,7 +69,7 @@ namespace MyMedData.Windows
 			Close();
 		}
 
-		void AddUpdateAppSettings()
+		private void AddUpdateAppSettings()
 		{
 			foreach (var settingKeyValue in _changedSettings)
 			{
@@ -77,7 +77,7 @@ namespace MyMedData.Windows
 			}
 		}
 
-		void UpdateSetting(string settingName, string newValue)
+		private void UpdateSetting(string settingName, string newValue)
 		{
 			try
 			{
@@ -104,7 +104,7 @@ namespace MyMedData.Windows
 
 		private void EditUserDBFileButton_Click(object sender, RoutedEventArgs e)
 		{
-			mainWindow.LogOff();
+			MainWindow.LogOff();
 			Microsoft.Win32.OpenFileDialog openFileDialog = new ();
 			openFileDialog.Filter = "LiteDB database|*.db";
 			openFileDialog.DefaultExt = ".db";

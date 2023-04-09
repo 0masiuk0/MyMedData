@@ -102,7 +102,7 @@ namespace MyMedData
 				using (var db = new LiteDatabase(filename))
 				{
 					var collections = db.GetCollectionNames();
-					return collections.All(name => AllowedCollectionNames.Contains(name));
+					return collections.All(name => _allowedCollectionNames.Contains(name));
 				}
 			}
 			catch(LiteException) { return false; }
@@ -114,7 +114,7 @@ namespace MyMedData
 			{
 				using (var db = new LiteDatabase(usersDBfilename))
 				{
-					var usersCollection = db.GetCollection<User>(User.DB_COLLECTION_NAME);
+					var usersCollection = db.GetCollection<User>(User.DbCollectionName);
 					return usersCollection.Update(user);
 				}
 			}
@@ -129,7 +129,7 @@ namespace MyMedData
 			{
 				using (var db = new LiteDatabase(usersDBfilename))
 				{
-					var usersCollection = db.GetCollection<User>(User.DB_COLLECTION_NAME);
+					var usersCollection = db.GetCollection<User>(User.DbCollectionName);
 					dbDeletionSuccess = usersCollection.Delete(user.Id);
 				}
 			}
@@ -173,10 +173,10 @@ namespace MyMedData
 			return ConfigurationManager.AppSettings["UserDbName"];			
 		}
 
-		static string[] AllowedCollectionNames = new string[]
+		private static string[] _allowedCollectionNames = new string[]
 		{
-			User.DB_COLLECTION_NAME, Doctor.DB_COLLECTION_NAME, Clinic.DB_COLLECTION_NAME,
-			ExaminationType.ANALYSIS_TYPES_DB_COLLECTION_NAME, ExaminationType.DOCTOR_TYPES_DB_COLLECTION_NAME
+			User.DbCollectionName, Doctor.DbCollectionName, Clinic.DbCollectionName,
+			ExaminationType.AnalysisTypesDbCollectionName, ExaminationType.DoctorTypesDbCollectionName
 		};
 	}
 }

@@ -27,52 +27,38 @@ namespace MyMedData.Controls
 		{
 			InitializeComponent();
 
-			recordsCollectionsViewSource = (CollectionViewSource)Resources["RecordsCollectionViewSource"];
-
-			// Get a reference to the FrameworkElement whose DataContext you want to monitor
-			FrameworkElement element = RecordsDataGrid;
-
-			// Use the DependencyPropertyDescriptor to get a descriptor for the DataContext property
-			DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(
-				FrameworkElement.DataContextProperty, typeof(FrameworkElement));
-
-			// Add a PropertyChangedCallback to the descriptor's AddValueChanged method
-			dpd.AddValueChanged(element, OnDataContextChanged);
+			_recordsCollectionsViewSource = (CollectionViewSource)Resources["RecordsCollectionViewSource"];
 		}
 
-		bool dataContextIsSet = false;
-		TextChangedEventHandler TitleFilterChagedHandler => (o, e) => recordsCollectionsViewSource.View.Refresh();
-		EventHandler<System.Windows.Controls.SelectionChangedEventArgs> fromDateEventHandler => (o, e) => recordsCollectionsViewSource.View.Refresh();
-		EventHandler<System.Windows.Controls.SelectionChangedEventArgs> toDateEventHandler => (o, e) => recordsCollectionsViewSource.View.Refresh();
-		TextChangedEventHandler CommentFilterChagedHandler => (o, e) => recordsCollectionsViewSource.View.Refresh();
+		private bool _dataContextIsSet = false;
+		private TextChangedEventHandler TitleFilterChagedHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
+		private EventHandler<System.Windows.Controls.SelectionChangedEventArgs> FromDateEventHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
+		private EventHandler<System.Windows.Controls.SelectionChangedEventArgs> ToDateEventHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
+		private TextChangedEventHandler CommentFilterChagedHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
 
-		private void OnDataContextChanged(object? sender, EventArgs e)
+		private void RecordsTableDisplay_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (!dataContextIsSet && DataContext is ICollection<ExaminationRecord> recordsColelction)
+			if (!_dataContextIsSet && DataContext is Session session)
 			{
 				TitleFilterTextBox.TextChanged += TitleFilterChagedHandler;
-				fromDateFilterDatePicker.SelectedDateChanged += fromDateEventHandler;
-				toDateFilterDatePicker.SelectedDateChanged += toDateEventHandler;
+				fromDateFilterDatePicker.SelectedDateChanged += FromDateEventHandler;
+				toDateFilterDatePicker.SelectedDateChanged += ToDateEventHandler;
 				CommentFilterTextBox.TextChanged += CommentFilterChagedHandler;
-				dataContextIsSet = true;
+				_dataContextIsSet = true;
+				RecordDisplay.DataContext = session;
 			}
 			else
 			{
 				TitleFilterTextBox.TextChanged -= TitleFilterChagedHandler;
-				fromDateFilterDatePicker.SelectedDateChanged -= fromDateEventHandler;
-				toDateFilterDatePicker.SelectedDateChanged -= toDateEventHandler;
+				fromDateFilterDatePicker.SelectedDateChanged -= FromDateEventHandler;
+				toDateFilterDatePicker.SelectedDateChanged -= ToDateEventHandler;
 				CommentFilterTextBox.TextChanged -= CommentFilterChagedHandler;
-				dataContextIsSet = false;
+				_dataContextIsSet = false;
+				RecordDisplay.DataContext = null;
 			}
-
 		}
 
-		private void RecordsTableDisplay_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-		{
-			
-		}
-
-		CollectionViewSource recordsCollectionsViewSource;
+		private readonly CollectionViewSource _recordsCollectionsViewSource;
 
 		private void RecordsDataGrid_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -135,6 +121,8 @@ namespace MyMedData.Controls
 			{
 				throw new Exception("Source item in table datagrid is not ExaminationRecord somehow.");
 			}
-		}		
+		}
+
+		
 	}
 }

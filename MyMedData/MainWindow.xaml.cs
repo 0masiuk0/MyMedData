@@ -25,23 +25,20 @@ namespace MyMedData
 		public Session? ActiveSession { get; private set; }
 		public User? ActiveUser => ActiveSession != null ? ActiveSession.ActiveUser : null;
 
-		string _statusText = "";
+		private string _statusText = "";
 		public string StatusText
 		{
 			get => _statusText;
-			set
-			{
-				StatusTextBlock.Text = _statusText = value;				 
-			}
+			set => StatusTextBlock.Text = _statusText = value;
 		}
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			UsernameTextBlock.MouseDown += new MouseButtonEventHandler(
-				(o, MouseEventArgs) =>
+				(o, mouseEventArgs) =>
 				{
-					if (MouseEventArgs.ClickCount == 2)				
+					if (mouseEventArgs.ClickCount == 2)				
 						OpenUsersDialog();				
 				});
 
@@ -64,17 +61,17 @@ namespace MyMedData
 		{
 			ActiveSession = session;
 			UsernameTextBlock.Text = ActiveUser.Name;
-			DataContext = RecordsDataBase.GenerateSampleExaminationRecordList(10);
+			DataContext = session;
 		}
 
 		private void LogOffButton_Click(object sender, RoutedEventArgs e)
 		{	
-			LogOff();
-			DataContext = null;
+			LogOff();			
 		}
 
 		public void LogOff()
 		{
+			DataContext = null;
 			if (ActiveSession != null)
 			{
 				ActiveSession.Dispose();
@@ -146,6 +143,5 @@ namespace MyMedData
 		}
 		#endregion
 	}
-
 
 }

@@ -13,6 +13,11 @@ namespace MyMedData
 		{
 			return new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
 		}
+
+		public static DateTime ToDateTime(this DateOnly date)
+		{
+			return new DateTime(date.Year, date.Month, date.Day);
+		}
 	}
 
 }

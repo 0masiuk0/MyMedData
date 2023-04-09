@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="DarkBackColor" Color="#FF27241F"/>
-    <SolidColorBrush x:Key="LightBlueFront" Color="#FF87CEFA"/>
+    <SolidColorBrush x:Key="LightBlueFont" Color="#FF87CEFA"/>
     <SolidColorBrush x:Key="LightDarkBackColor" Color="#FF383838"/>
     <SolidColorBrush x:Key="DarkThemeFontColor" Color="LightGray"/>
     <SolidColorBrush x:Key="BlueConotourColor" Color="#FF4788C7"/>
     <Style x:Key="DarkWindowStyle" TargetType="Window">
-        <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
+        <Setter Property="Background" Value="{StaticResource DarkBackColor}"/>
         <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
     </Style>
 

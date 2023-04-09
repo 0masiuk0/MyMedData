@@ -34,11 +34,11 @@ namespace MyMedData.Windows
 		public MainWindow MainWindow => (MainWindow)Owner;
 
 		public string? UsersDbFileName { get; private set; }
-		ObservableCollection<User> _users = new();
+		private ObservableCollection<User> _users = new();
 		public ObservableCollection<User> Users
 		{
 			get => _users;
-			private set { _users = value; }
+			private set => _users = value;
 		}
 
 
@@ -82,9 +82,9 @@ namespace MyMedData.Windows
 
 		private void ReadUsers(string userDbFileName)
 		{
-			using (var usersDB = new LiteDatabase(userDbFileName))
+			using (var usersDb = new LiteDatabase(userDbFileName))
 			{
-				var usersCollection = usersDB.GetCollection<User>(User.DB_COLLECTION_NAME);
+				var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
 				foreach (User user in usersCollection.FindAll())
 				{
 					Users.Add(user);
@@ -111,9 +111,9 @@ namespace MyMedData.Windows
 			if (addUserWindow.DialogResult == true)
 			{
 				var newUser = addUserWindow.NewUser;
-				using (var usersDB = new LiteDatabase(UsersDbFileName))
+				using (var usersDb = new LiteDatabase(UsersDbFileName))
 				{
-					var usersCollection = usersDB.GetCollection<User>(User.DB_COLLECTION_NAME);
+					var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
 					usersCollection.Insert(newUser);
 					usersCollection.EnsureIndex(x => x.Name);
 				}
