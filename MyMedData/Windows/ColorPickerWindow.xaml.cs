@@ -24,16 +24,16 @@ namespace MyMedData.Windows
 		public ColorPickerWindow()
 		{
 			InitializeComponent();
-			initalColor = TheСolorPicker.SelectedColor = Colors.White;
+			_initalColor = TheСolorPicker.SelectedColor = Colors.White;
 		}
 
 		public ColorPickerWindow(Color color)
 		{
 			InitializeComponent();
-			initalColor = TheСolorPicker.SelectedColor = color;
+			_initalColor = TheСolorPicker.SelectedColor = color;
 		}
 
-		readonly Color initalColor;
+		private readonly Color _initalColor;
 		public Color SelectedColor { get; private set; }		
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
@@ -44,7 +44,7 @@ namespace MyMedData.Windows
 
 		private void CancelButton_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedColor = initalColor;
+			SelectedColor = _initalColor;
 			Close();
 		}
 

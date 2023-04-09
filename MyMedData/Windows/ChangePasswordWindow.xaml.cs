@@ -19,19 +19,19 @@ namespace MyMedData.Windows
 	/// </summary>
 	public partial class ChangePasswordWindow : Window
 	{
-		User user;
-		string? newPassword;
-		readonly string oldPassword;
-		public string? NewPassword => newPassword;
+		private User _user;
+		private string? _newPassword;
+		private readonly string _oldPassword;
+		public string? NewPassword => _newPassword;
 
 		public ChangePasswordWindow(User user, string oldPassword)
 		{
 			InitializeComponent();			
-			this.user = user;
-			this.oldPassword = oldPassword;
+			this._user = user;
+			this._oldPassword = oldPassword;
 		}
 
-		private void OKButtonClick(object sender, RoutedEventArgs e)
+		private void OkButtonClick(object sender, RoutedEventArgs e)
 		{
 			if (PasswordBox1.Password != PasswordBox2.Password)
 			{
@@ -44,8 +44,8 @@ namespace MyMedData.Windows
 				return;
 			}
 
-			bool success= user.ChangePasswordAndRebuildDb(oldPassword, PasswordBox1.Password);
-			newPassword = success ? PasswordBox1.Password : null;
+			bool success= _user.ChangePasswordAndRebuildDb(_oldPassword, PasswordBox1.Password);
+			_newPassword = success ? PasswordBox1.Password : null;
 			MessageBox.Show("Пароль изменен.", "Успех операции", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 			DialogResult = success;				
 		}

@@ -10,17 +10,24 @@ namespace MyMedData
 	public class ArchivedDocument
 	{
 		[BsonId]
-		public string _id { get; set; }
+		public string Id { get; set; }
 		public DocumentType DocumentType { get; set; }
 		public string FileName { get; set; }
 
-		public const string DB_COLLECTION_NAME = "ArchivedDocuments";
+		public const string DbCollectionName = "ArchivedDocuments";
+
+		public override string ToString() => FileName;
+
+		public ArchivedDocument Copy()
+		{
+			return new ArchivedDocument() { Id = Id, DocumentType = DocumentType, FileName = FileName };
+		}
 	}
 
 	public enum DocumentType
 	{
-		jpeg,
-		png,
-		pdf
+		JPEG,
+		PNG,
+		PDF
 	}
 }

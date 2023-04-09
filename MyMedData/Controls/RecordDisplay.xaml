@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyMedData.Controls"
+             xmlns:aviad="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="270"
-             DataContextChanged="UserControl_DataContextChanged">
+             DataContextChanged="UserControl_DataContextChanged"
+             d:DesignHeight="450" d:DesignWidth="270">
     <UserControl.Resources>
         <local:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
         <Style x:Key="HeaderLabel" TargetType="TextBlock">
@@ -15,44 +16,65 @@
             <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="Margin" Value="10,10,0,0"/>
         </Style>
-        <Style x:Key="TextBox" TargetType="TextBox">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-            <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
-            <Setter Property="Margin" Value="0,0,0,0"/>
-        </Style>
+        <DataTemplate x:Key="AutoCompleteItemTemplate">
+            <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1">
+                <TextBlock Text="{Binding }"/>
+            </Border>
+        </DataTemplate>
+        <CollectionViewSource x:Key="ExaminationTypes" x:Name="ExaminationTypesView"/>
+        <CollectionViewSource x:Key="Doctors" x:Name="DoctorsView"/>
+        <CollectionViewSource x:Key="Clinics" x:Name="ClinicsView"/>
     </UserControl.Resources>
-    <Border BorderBrush="{StaticResource BlueConotourColor}" CornerRadius="10" BorderThickness="1" Padding="10,0,10,10">
-        <DockPanel>
-            <TextBlock x:Name="DateLabel" 
+    <Border BorderBrush="{StaticResource BlueConotourColor}" CornerRadius="10" BorderThickness="1" Padding="10,0,10,0">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <DockPanel>
+                <TextBlock x:Name="DateLabel" 
                    DockPanel.Dock="Top"
                    Text="Дата" Style="{StaticResource HeaderLabel}"/>
-            <DatePicker x:Name="RecordDatePciker" 
+                <DatePicker x:Name="RecordDatePicker" 
                     DockPanel.Dock="Top"       
                     FontSize="16" 
-                    Style="{StaticResource DarkDatePicker}"
-                    SelectedDate="{Binding Date, Converter={StaticResource DateTimeToDateOnlyConverter}}"/>
-            <TextBlock x:Name="ExamniantionTypleLabel" 
+                    Style="{StaticResource DarkDatePicker}"/>
+                <TextBlock x:Name="ExamniantionTypleLabel" 
                    DockPanel.Dock="Top"
                    Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
-            <TextBox x:Name="ExaminationTypeTextBox" Style="{StaticResource TextBox}"
-                 DockPanel.Dock="Top"/>
-            <TextBlock x:Name="DoctorLabel" 
+                <aviad:AutoCompleteTextBox x:Name="ExaminationTypeTextBox" 
+                   DockPanel.Dock="Top"
+                    Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
+                    ItemsSource="{Binding Source={StaticResource ExaminationTypes}}"
+                   ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
+                   Binding="{Binding ExminationTypeTitle}"/>
+                <TextBlock x:Name="DoctorLabel" 
                    DockPanel.Dock="Top"
                    Text="Врач" Style="{StaticResource HeaderLabel}"/>
-            <TextBox x:Name="ВщсещкTextBox" Style="{StaticResource TextBox}"
-                 DockPanel.Dock="Top"/>
-            <TextBlock x:Name="ClinicLabel" 
+                <aviad:AutoCompleteTextBox x:Name="DoctorTextBox" 
+                    DockPanel.Dock="Top" 
+                    Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
+                    ItemsSource="{Binding Source={StaticResource Doctors}}"
+                    ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
+                    Binding="{Binding Name}"/>
+                <TextBlock x:Name="ClinicLabel" 
                    DockPanel.Dock="Top"
                    Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
-            <TextBox x:Name="ClinicTextBox" Style="{StaticResource TextBox}"
-                 DockPanel.Dock="Top"/>
-            <TextBlock x:Name="DocumentsLabel" 
+                <aviad:AutoCompleteTextBox x:Name="ClinicTextBox"  
+                    DockPanel.Dock="Top"
+                    Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
+                    ItemsSource="{Binding Source={StaticResource Clinics}}"
+                    ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
+                    Binding="{Binding Name}"/>
+                <TextBlock x:Name="DocumentsLabel" 
                    DockPanel.Dock="Top"
                    Text="Документы" Style="{StaticResource HeaderLabel}"/>
-            <ListBox x:Name="DocumentsListBox" Background="Transparent"
-                 ItemsSource="{Binding Documents}" d:ItemsSource="{d:SampleData ItemCount=5}">
-            </ListBox>
-        </DockPanel>
+                <StackPanel x:Name="AcknowledgeChangesPanel" Orientation="Horizontal"
+                        DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+                    <Button x:Name="AcceptChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
+                        Content="{StaticResource ConfirmIcon}" Padding="4"/>
+                    <Button x:Name="DiscardChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
+                        Content="{StaticResource DenyIcon}" Padding="6"/>
+                </StackPanel>
+                <ListBox x:Name="DocumentsListBox" Background="Transparent">
+                </ListBox>
+            </DockPanel>
+        </ScrollViewer>
     </Border>
 </UserControl>

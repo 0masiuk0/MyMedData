@@ -142,10 +142,6 @@
                          Opacity="1" Minimum="-1" 
                          Foreground="{StaticResource BlueConotourColor}" Background="{DynamicResource LightDarkBackColor}"/>
         </DockPanel>
-        <Grid>
-            <uc:TableDisplay x:Name="RecordsTableDisplay" 
-                             />
-            
-        </Grid>
+        <uc:TableDisplay x:Name="RecordsTableDisplay"/>
     </DockPanel>
 </Window>

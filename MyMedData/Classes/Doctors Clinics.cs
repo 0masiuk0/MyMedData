@@ -25,7 +25,7 @@ namespace MyMedData
 
 		public override string ToString() => Name;
 
-		public const string DB_COLLECTION_NAME = "Doctors";
+		public const string DbCollectionName = "Doctors";
 	}
 
 	public class Clinic
@@ -44,7 +44,7 @@ namespace MyMedData
 
 		public override string ToString() => Name;		
 
-		public const string DB_COLLECTION_NAME = "Clinics";
+		public const string DbCollectionName = "Clinics";
 	}
 
 	public class ExaminationType
@@ -63,8 +63,8 @@ namespace MyMedData
 
 		public override string ToString() => ExminationTypeTitle;
 
-		public const string DOCTOR_TYPES_DB_COLLECTION_NAME = "Specialties";
-		public const string ANALYSIS_TYPES_DB_COLLECTION_NAME = "LabTests";
+		public const string DoctorTypesDbCollectionName = "Specialties";
+		public const string AnalysisTypesDbCollectionName = "LabTests";
 	}
 #pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
 }

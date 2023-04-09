@@ -46,12 +46,12 @@ namespace MyMedData
 		public bool RunsOwnDoctorsCollection { get; set; }
 
 
-		string _name;
-		Color _accountColor;
+		private string _name;
+		private Color _accountColor;
 
-		const int KEY_SIZE = 32;
-		const int ITERATIONS_COUNT = 16;
-		const int SALT_SIZE = 16;		
+		private const int KeySize = 32;
+		private const int IterationsCount = 16;
+		private const int SaltSize = 16;		
 
 		public User()
 		{
@@ -76,14 +76,14 @@ namespace MyMedData
 		{
 			using (var algorithm = new Rfc2898DeriveBytes(
 			  password,
-			  SALT_SIZE,
-			  ITERATIONS_COUNT,
+			  SaltSize,
+			  IterationsCount,
 			  HashAlgorithmName.SHA256))
 			{
-				var key = Convert.ToBase64String(algorithm.GetBytes(KEY_SIZE));
+				var key = Convert.ToBase64String(algorithm.GetBytes(KeySize));
 				var salt = Convert.ToBase64String(algorithm.Salt);
 
-				PasswordHash = $"{ITERATIONS_COUNT}.{salt}.{key}";
+				PasswordHash = $"{IterationsCount}.{salt}.{key}";
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace MyMedData
 			iterations,
 			  HashAlgorithmName.SHA256))
 			{
-				var keyToCheck = algorithm.GetBytes(KEY_SIZE);
+				var keyToCheck = algorithm.GetBytes(KeySize);
 
 				var verified = keyToCheck.SequenceEqual(key);
 
@@ -125,7 +125,7 @@ namespace MyMedData
 				try
 				{
 					SetPassword(newPassword);
-					RecordsDataBase.ChangeDBEncryptionPassword(DatabaseFile, oldPassword, newPassword);
+					RecordsDataBase.ChangeDbEncryptionPassword(DatabaseFile, oldPassword, newPassword);
 					return true;
 				}
 				catch (Exception ex)
@@ -185,7 +185,7 @@ namespace MyMedData
 			var userDbFilename = ConfigurationManager.AppSettings["UserDbName"];
 			using (var db = new LiteDatabase(userDbFilename))
 			{
-				var users = db.GetCollection<User>(DB_COLLECTION_NAME);
+				var users = db.GetCollection<User>(DbCollectionName);
 				return users.Update(updatedUser);				
 			}
 		}
@@ -202,7 +202,7 @@ namespace MyMedData
 			return copy;
 		}
 
-		public static string DB_COLLECTION_NAME => "Users";
+		public static string DbCollectionName => "Users";
 
 		//---------------------------------------------NON-SERIALIZED INSTANCE MEMBERS-------------------------------------
 		[BsonIgnore]

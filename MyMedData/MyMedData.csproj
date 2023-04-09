@@ -22,4 +22,8 @@
     <PackageReference Include="PixiEditor.ColorPicker" Version="3.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\WPF combobox\ArticleSource\ACTB\Aviad.WPF.Controls.csproj" />
+  </ItemGroup>
+
 </Project>

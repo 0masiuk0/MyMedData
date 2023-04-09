@@ -88,13 +88,13 @@ namespace MyMedData
 			{
 				using (var db = new LiteDatabase(GetConnectionString(filename, password)))
 				{
-					return db.GetCollectionNames().All(name => AllowedCollectionNames.Contains(name));
+					return db.GetCollectionNames().All(name => _allowedCollectionNames.Contains(name));
 				}
 			}
 			catch(LiteException ex) { return false; }
 		}
 
-		public static bool ChangeDBEncryptionPassword(string filename, string oldPassword, string newPassword)
+		public static bool ChangeDbEncryptionPassword(string filename, string oldPassword, string newPassword)
 		{
 			using (var tempDbFile = new TemporaryFile(Environment.CurrentDirectory, "~temp " + Path.GetFileName(filename)))
 			{
@@ -124,7 +124,7 @@ namespace MyMedData
 		{
 			try
 			{
-				using var newDB = new LiteDatabase(GetConnectionString(filename, password));
+				using var newDb = new LiteDatabase(GetConnectionString(filename, password));
 				return true;
 			}
 			catch(System.Exception ex)
@@ -144,11 +144,11 @@ namespace MyMedData
 			return GetConnectionString(user.DatabaseFile, password);
 		}
 
-		static string[] AllowedCollectionNames = new string[]
+		private static string[] _allowedCollectionNames = new string[]
 		{
-			DoctorExaminationRecord.DB_COLLECTION_NAME, LabExaminationRecord.DB_COLLECTION_NAME,
-			Doctor.DB_COLLECTION_NAME, Clinic.DB_COLLECTION_NAME,
-			ExaminationType.ANALYSIS_TYPES_DB_COLLECTION_NAME, ExaminationType.DOCTOR_TYPES_DB_COLLECTION_NAME
+			DoctorExaminationRecord.DbCollectionName, LabExaminationRecord.DbCollectionName,
+			Doctor.DbCollectionName, Clinic.DbCollectionName,
+			ExaminationType.AnalysisTypesDbCollectionName, ExaminationType.DoctorTypesDbCollectionName
 		};
 
 		public static string HashString16(string text)
@@ -170,7 +170,7 @@ namespace MyMedData
 
 		public static List<ExaminationRecord> GenerateSampleExaminationRecordList(int count) => GenerateSampleRecords(count).ToList();
 		
-		static IEnumerable<ExaminationRecord> GenerateSampleRecords(int count)
+		public static IEnumerable<ExaminationRecord> GenerateSampleRecords(int count)
 		{
 			List<ExaminationRecord> records = new List<ExaminationRecord>();
 			records.Add(new DoctorExaminationRecord
@@ -188,6 +188,7 @@ namespace MyMedData
 				Date = new DateOnly(2002, 12, 31),
 				Comment = "TestComment2",
 				Doctor = new Doctor("Иванов И. И.", "comemnt for a Иванов"),
+				Clinic = new Clinic("Тестовая клиника", "Тестовый комменарий для клиники"),
 				Documents = new(),
 				ExaminationType = new ExaminationType("Терапевт", "Commеnt for терапевт")
 			}

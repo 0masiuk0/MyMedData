@@ -20,7 +20,7 @@ namespace MyMedData.Windows
 	/// </summary>
 	public partial class EnterPasswordWindow : Window
 	{
-		User _user;
+		private User _user;
 
 		public EnterPasswordWindow(User user)
 		{
