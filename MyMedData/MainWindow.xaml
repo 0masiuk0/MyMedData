@@ -7,7 +7,7 @@
         xmlns:uc="clr-namespace:MyMedData.Controls"
         mc:Ignorable="d"
         Title="Моя Медкнижка" 
-        Height="450" Width="800" MinWidth="700" MinHeight="300"  BorderThickness="2"
+        Height="600" Width="800" MinWidth="700" MinHeight="300"  BorderThickness="2"
         Style="{StaticResource DarkWindowStyle}" WindowStyle="None" BorderBrush="{StaticResource DarkBackColor}"
         Loaded="MainWindow1_Loaded">
     <WindowChrome.WindowChrome>
@@ -70,30 +70,25 @@
         </DockPanel>
         <StackPanel x:Name="MenuStackPanel" Background="{StaticResource DarkBackColor}"
                     DockPanel.Dock="Top" Orientation="Horizontal">
+            
+        </StackPanel>
+        <DockPanel x:Name="StatusBarDockPanel"
+             VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
+            DockPanel.Dock="Bottom">
             <Button x:Name="NewAppointmentRecordData"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="0"
-                    Content="{StaticResource StethoscopeImage}" ToolTip="Добавить запись о приеме"
+                    Content="{StaticResource StethoscopeImagePlus}" ToolTip="Добавить запись о приеме"
                     Background="{StaticResource LightDarkBackColor}"/>
             <Button x:Name="NewAnalysisButon"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
-                    Content="{StaticResource AnalisysImage}" ToolTip="Добавить запись об анализе"
+                    Content="{StaticResource AnalisysImagePlus}" ToolTip="Добавить запись об анализе"
                     Background="{StaticResource LightDarkBackColor}"/>
             <Button x:Name="SettingsdButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
                     Content="{StaticResource SettingsImage}" ToolTip="Настойки" Click="SettingsdButton_Click"/>
-        </StackPanel>
-        <DockPanel x:Name="StatusBarDockPanel"
-             VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
-            DockPanel.Dock="Bottom">
-            <TextBlock x:Name="StatusTextBlock"
-                       DockPanel.Dock="Left"
-                       Margin="10,4,10,4" VerticalAlignment="Center"
-                       FontSize="14" Foreground="{StaticResource DarkThemeFontColor}">
-                Текущий статус
-            </TextBlock>
             
             <Button x:Name="CalendarViewButton" Height="25" Width="25" 
                     Margin="10,4,10,4"

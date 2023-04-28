@@ -16,8 +16,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="450"/>
-            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="7*" MinWidth="450"/>
+            <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
@@ -120,7 +120,6 @@
             </DataGrid.Columns>            
         </DataGrid>
         <local:RecordDisplay x:Name="RecordDisplay"
-            Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
-            Item="{Binding SelectedItem, ElementName=RecordsDataGrid}"/>
+            Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"/>
     </Grid>
 </UserControl>

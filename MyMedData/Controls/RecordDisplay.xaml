@@ -6,15 +6,16 @@
              xmlns:local="clr-namespace:MyMedData.Controls"
              xmlns:aviad="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
              mc:Ignorable="d" 
+             x:Name="ThisRecordDisplay"
              DataContextChanged="UserControl_DataContextChanged"
              d:DesignHeight="450" d:DesignWidth="270">
     <UserControl.Resources>
         <local:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
         <Style x:Key="HeaderLabel" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Calibri"/>
             <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-            <Setter Property="Margin" Value="10,10,0,0"/>
+            <Setter Property="Margin" Value="4,10,0,0"/>
         </Style>
         <DataTemplate x:Key="AutoCompleteItemTemplate">
             <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1">
@@ -25,16 +26,29 @@
         <CollectionViewSource x:Key="Doctors" x:Name="DoctorsView"/>
         <CollectionViewSource x:Key="Clinics" x:Name="ClinicsView"/>
     </UserControl.Resources>
-    <Border BorderBrush="{StaticResource BlueConotourColor}" CornerRadius="10" BorderThickness="1" Padding="10,0,10,0">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <DockPanel>
+    <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1" Padding="10,0,10,0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="140"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <DockPanel
+                Margin="0,0,5,0">
                 <TextBlock x:Name="DateLabel" 
-                   DockPanel.Dock="Top"
-                   Text="Дата" Style="{StaticResource HeaderLabel}"/>
+                           DockPanel.Dock="Top"
+                           Text="Дата" Style="{StaticResource HeaderLabel}"/>
                 <DatePicker x:Name="RecordDatePicker" 
                     DockPanel.Dock="Top"       
                     FontSize="16" 
-                    Style="{StaticResource DarkDatePicker}"/>
+                    Style="{StaticResource DarkDatePicker}"
+                    SelectedDate="{Binding ElementName=ThisRecordDisplay,
+                        Path=EditedRecord.Date,
+                        FallbackValue={x:Null}, Mode=TwoWay,                       
+                        Converter={StaticResource DateTimeToDateOnlyConverter}}"/>
                 <TextBlock x:Name="ExamniantionTypleLabel" 
                    DockPanel.Dock="Top"
                    Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
@@ -43,7 +57,10 @@
                     Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                     ItemsSource="{Binding Source={StaticResource ExaminationTypes}}"
                    ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                   Binding="{Binding ExminationTypeTitle}"/>
+                   Binding="{Binding ExminationTypeTitle}"
+                   Text="{Binding ElementName=ThisRecordDisplay,
+                        Path=EditedRecord.ExaminationType.ExaminationTypeTitle,
+                        FallbackValue={x:Null}, Mode=TwoWay}"/>
                 <TextBlock x:Name="DoctorLabel" 
                    DockPanel.Dock="Top"
                    Text="Врач" Style="{StaticResource HeaderLabel}"/>
@@ -52,7 +69,10 @@
                     Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                     ItemsSource="{Binding Source={StaticResource Doctors}}"
                     ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                    Binding="{Binding Name}"/>
+                    Binding="{Binding Name}"
+                    Text="{Binding ElementName=ThisRecordDisplay,
+                        Path=EditedRecord.Doctor.Name,
+                        FallbackValue={x:Null}, Mode=TwoWay}"/>
                 <TextBlock x:Name="ClinicLabel" 
                    DockPanel.Dock="Top"
                    Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
@@ -61,20 +81,40 @@
                     Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                     ItemsSource="{Binding Source={StaticResource Clinics}}"
                     ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                    Binding="{Binding Name}"/>
-                <TextBlock x:Name="DocumentsLabel" 
-                   DockPanel.Dock="Top"
-                   Text="Документы" Style="{StaticResource HeaderLabel}"/>
-                <StackPanel x:Name="AcknowledgeChangesPanel" Orientation="Horizontal"
-                        DockPanel.Dock="Bottom" HorizontalAlignment="Center">
-                    <Button x:Name="AcceptChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
-                        Content="{StaticResource ConfirmIcon}" Padding="4"/>
-                    <Button x:Name="DiscardChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
-                        Content="{StaticResource DenyIcon}" Padding="6"/>
-                </StackPanel>
-                <ListBox x:Name="DocumentsListBox" Background="Transparent">
+                    Binding="{Binding Name}"
+                    Text="{Binding ElementName=ThisRecordDisplay,
+                        Path=EditedRecord.Clinic.Name,
+                        FallbackValue={x:Null}, Mode=TwoWay}"/>
+                <TextBlock x:Name="CommentLabel" 
+                           DockPanel.Dock="Top"
+                           Text="Примечание" Style="{StaticResource HeaderLabel}"/>
+                <TextBox x:Name="CommentTextBox"
+                         Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
+                         AcceptsReturn="True" TextWrapping="WrapWithOverflow"
+                         Text="{Binding ElementName=ThisRecordDisplay,
+                            Path=EditedRecord.Comment,
+                            FallbackValue={x:Null}, Mode=TwoWay}"
+                            />
+            </DockPanel>
+            <DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                       Margin="5,0,0,0">
+                <TextBlock x:Name="DocumentsLabel" DockPanel.Dock="Top"
+                           Text="Документы" Style="{StaticResource HeaderLabel}"/>
+                <ListBox x:Name="DocumentsListBox" Background="Transparent"
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Stretch"
+                         ItemsSource="{Binding ElementName=ThisRecordDisplay,
+                            Path=EditedRecord.Documents,
+                            FallbackValue={x:Null}}">
                 </ListBox>
             </DockPanel>
-        </ScrollViewer>
+            <StackPanel x:Name="AcknowledgeChangesPanel" Orientation="Horizontal"
+                        Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                <Button x:Name="AcceptChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
+                        Content="{StaticResource ConfirmIcon}" Padding="4"/>
+                <Button x:Name="DiscardChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
+                        Content="{StaticResource DenyIcon}" Padding="6"/>
+            </StackPanel>
+        </Grid>
     </Border>
 </UserControl>

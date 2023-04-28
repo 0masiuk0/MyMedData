@@ -25,13 +25,6 @@ namespace MyMedData
 		public Session? ActiveSession { get; private set; }
 		public User? ActiveUser => ActiveSession != null ? ActiveSession.ActiveUser : null;
 
-		private string _statusText = "";
-		public string StatusText
-		{
-			get => _statusText;
-			set => StatusTextBlock.Text = _statusText = value;
-		}
-
 		public MainWindow()
 		{
 			InitializeComponent();

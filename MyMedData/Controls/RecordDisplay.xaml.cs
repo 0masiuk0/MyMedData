@@ -45,6 +45,7 @@ namespace MyMedData.Controls
 		private readonly CollectionViewSource _examinationTypesView;
 		private readonly CollectionViewSource _clinicsView;
 
+		//сюда привязан selected item листа записей
 		public object Item
 		{
 			get => GetValue(ItemProperty);
@@ -52,9 +53,16 @@ namespace MyMedData.Controls
 		}
 
 		public static readonly DependencyProperty ItemProperty =
-			DependencyProperty.Register("Item", typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(SelectedItemChanged));
+			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(SelectedItemChanged));
 
-		public ExaminationRecord EditedRecord { get; private set; }
+		public ExaminationRecord? EditedRecord
+		{
+			get => (ExaminationRecord?)GetValue(EditedRecordProperty);
+			set => SetValue(EditedRecordProperty, value);
+		}
+
+		public static readonly DependencyProperty EditedRecordProperty =
+			DependencyProperty.Register(nameof(EditedRecord), typeof(ExaminationRecord), typeof(RecordDisplay), new UIPropertyMetadata());
 
 		private bool _hasUnsavedChanges;
 		public bool HasUnsavedChanges
@@ -79,9 +87,7 @@ namespace MyMedData.Controls
 			RecordDisplay recordDisplay = (RecordDisplay)d;
 			if (e.NewValue is ExaminationRecord record)
 			{
-				recordDisplay.RecordDatePicker.SelectedDate = record.Date.ToDateTime();
-				recordDisplay.ExaminationTypeTextBox.Text = record.ExaminationType?.ToString();
-				recordDisplay.ClinicTextBox.Text = record.Clinic?.ToString();
+				recordDisplay.EditedRecord = record.Copy();
 
 				Session session = recordDisplay.DataContext as Session;
 
@@ -91,7 +97,6 @@ namespace MyMedData.Controls
 				if (record is LabExaminationRecord)
 				{
 					recordDisplay.DoctorLabel.Visibility = Visibility.Collapsed;
-					recordDisplay.DoctorTextBox.Text = null;
 					recordDisplay.DoctorTextBox.Visibility = Visibility.Collapsed;
 
 					recordDisplay._examinationTypesView.Source = session.LabTestTypesCache;
@@ -100,22 +105,15 @@ namespace MyMedData.Controls
 				else if (record is DoctorExaminationRecord docExam)
 				{
 					recordDisplay.DoctorLabel.Visibility = Visibility.Visible;
-					recordDisplay.DoctorTextBox.Text = docExam.Doctor?.ToString();
 					recordDisplay.DoctorTextBox.Visibility = Visibility.Visible;
 
 					recordDisplay._examinationTypesView.Source = session.DoctorTypesCache;
 					session.DoctorTypesCache.CollectionChanged += recordDisplay._onDoctorTypeCacheChanged;
 				}
-
-				recordDisplay.DocumentsListBox.ItemsSource = record.Documents;
 			}
 			else
 			{
-				recordDisplay.RecordDatePicker.SelectedDate = null;
-				recordDisplay.ClinicTextBox.Text = null;
-				recordDisplay.ExaminationTypeTextBox.Text = null;
-				recordDisplay.DoctorTextBox.Text = null;
-				recordDisplay.DocumentsListBox.ItemsSource = null;
+				recordDisplay.EditedRecord=null;
 			}
 		}
 
@@ -144,6 +142,7 @@ namespace MyMedData.Controls
 		}
 	}
 
+	[ValueConversion(typeof(DateTime), typeof(DateOnly))]
 	public class DateTimeToDateOnlyConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

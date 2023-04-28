@@ -81,13 +81,13 @@ namespace MyMedData
 					.FindAll().Select(doctor => doctor.Name));
 
 			LabTestTypesCache = new(db.GetCollection<ExaminationType>(ExaminationType.AnalysisTypesDbCollectionName)
-				.FindAll().Select(type => type.ExminationTypeTitle).ToList());
+				.FindAll().Select(type => type.ExaminationTypeTitle));
 
 			DoctorTypesCache = new(db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName)
-				.FindAll().Select(type => type.ExminationTypeTitle).ToList());
+				.FindAll().Select(type => type.ExaminationTypeTitle));
 
 			ClinicNameCache = new(db.GetCollection<Clinic>(Clinic.DbCollectionName)
-				.FindAll().Select(clinic => clinic.Name).ToList());
+				.FindAll().Select(clinic => clinic.Name));
 		}		
 
 		public void Dispose()
