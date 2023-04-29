@@ -148,7 +148,7 @@ namespace MyMedData
 		{
 			DoctorExaminationRecord.DbCollectionName, LabExaminationRecord.DbCollectionName,
 			Doctor.DbCollectionName, Clinic.DbCollectionName,
-			ExaminationType.AnalysisTypesDbCollectionName, ExaminationType.DoctorTypesDbCollectionName
+			ExaminationType.LabAnalysisTypesDbCollectionName, ExaminationType.DoctorTypesDbCollectionName
 		};
 
 		public static string HashString16(string text)

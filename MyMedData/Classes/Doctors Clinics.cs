@@ -154,7 +154,7 @@ namespace MyMedData
 		public override string ToString() => ExaminationTypeTitle;
 
 		public const string DoctorTypesDbCollectionName = "Specialties";
-		public const string AnalysisTypesDbCollectionName = "LabTests";
+		public const string LabAnalysisTypesDbCollectionName = "LabTests";
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

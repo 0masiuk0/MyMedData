@@ -99,6 +99,8 @@ namespace MyMedData
 
 		//------------------------------------METHODS------------------------------------------
 
+		
+		
 		public abstract ExaminationRecord DeepCopy();
 
 		public virtual bool IsEqualTo(ExaminationRecord other)
@@ -182,7 +184,7 @@ namespace MyMedData
 
 	public class LabExaminationRecord : ExaminationRecord
 	{
-		[BsonRef(ExaminationType.AnalysisTypesDbCollectionName)]
+		[BsonRef(ExaminationType.LabAnalysisTypesDbCollectionName)]
 		public override ExaminationType? ExaminationType
 		{
 			get => _examinationType;

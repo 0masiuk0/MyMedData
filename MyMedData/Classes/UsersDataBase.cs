@@ -176,7 +176,7 @@ namespace MyMedData
 		private static string[] _allowedCollectionNames = new string[]
 		{
 			User.DbCollectionName, Doctor.DbCollectionName, Clinic.DbCollectionName,
-			ExaminationType.AnalysisTypesDbCollectionName, ExaminationType.DoctorTypesDbCollectionName
+			ExaminationType.LabAnalysisTypesDbCollectionName, ExaminationType.DoctorTypesDbCollectionName
 		};
 	}
 }

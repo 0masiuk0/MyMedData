@@ -46,6 +46,11 @@ namespace MyMedData.Controls
 		private readonly CollectionViewSource _doctorsView;
 		private readonly CollectionViewSource _examinationTypesView;
 		private readonly CollectionViewSource _clinicsView;
+		
+		private readonly NotifyCollectionChangedEventHandler _onDoctorCacheChanged;
+		private readonly NotifyCollectionChangedEventHandler _onClinicCacheChanged;
+		private readonly NotifyCollectionChangedEventHandler _onLabExamTypeCacheChanged;
+		private readonly NotifyCollectionChangedEventHandler _onDoctorTypeCacheChanged;
 
 		//сюда привязан selected item листа записей
 		public object Item
@@ -152,11 +157,6 @@ namespace MyMedData.Controls
 			else
 				HasUnsavedChanges = false;
 		}
-
-		private readonly NotifyCollectionChangedEventHandler _onDoctorCacheChanged;
-		private readonly NotifyCollectionChangedEventHandler _onClinicCacheChanged;
-		private readonly NotifyCollectionChangedEventHandler _onLabExamTypeCacheChanged;
-		private readonly NotifyCollectionChangedEventHandler _onDoctorTypeCacheChanged;
 
 		private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{

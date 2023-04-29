@@ -12,36 +12,52 @@ namespace MyMedData
 	public class Session : IDisposable
 	{
 		public readonly User ActiveUser;
-		public readonly LiteDatabase DocumentsDatabaseContext;
+		public readonly LiteDatabase RecordsDatabaseContext;
+		public readonly LiteDatabase EntitiesDatbaseContext;
 		//public string Password { private get; set; }
 				
+		public EntitiesCacheUpdateHelper EntitiesCacheUpdateHelper { get; private set; }
 		public ObservableCollection<ExaminationRecord> ExaminationRecords { get; private set; }
 		public ObservableCollection<string> LabTestTypesCache { get;private set; }	 
 		public ObservableCollection<string> DoctorNameCache  { get; private set;} 	 
 		public ObservableCollection<string> DoctorTypesCache { get; private set;}	 
 		public ObservableCollection<string> ClinicNameCache  { get; private set;}	 
-
-
+		
 		public Session(User user, string password)
 		{
 			ActiveUser = user;
 			//Password = password;
-			
-			ExaminationRecords = new();
+
+			EntitiesCacheUpdateHelper = new EntitiesCacheUpdateHelper(this);
+			ExaminationRecords = new ObservableCollection<ExaminationRecord>();
 			DoctorNameCache = new ObservableCollection<string>();
 			LabTestTypesCache = new ObservableCollection<string>();
 			DoctorTypesCache = new ObservableCollection<string>();
 			ClinicNameCache = new ObservableCollection<string>();
 
-			DocumentsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
+			RecordsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
+
+			if (ActiveUser.RunsOwnDoctorsCollection)
+			{
+				EntitiesDatbaseContext = RecordsDatabaseContext;
+			}
+			else
+			{
+				string? dbFile = UsersDataBase.GetUsersDbFileNameFromConfig();
+				if (dbFile == null)
+					throw new Exception("Не найдено конфигурации файла общей базы данных.");
+
+				EntitiesDatbaseContext = new LiteDatabase(dbFile);
+			}
+
 			ReadDataBase();
 		}
 
 		private void ReadDataBase()
 		{
-			var docExaminationRecords = DocumentsDatabaseContext
+			var docExaminationRecords = RecordsDatabaseContext
 				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
-			var labExaminationRecords = DocumentsDatabaseContext
+			var labExaminationRecords = RecordsDatabaseContext
 				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
 
 			foreach(var docExam in docExaminationRecords.FindAll())
@@ -57,22 +73,8 @@ namespace MyMedData
 			foreach(var rec in RecordsDataBase.GenerateSampleRecords(10))
 			{ ExaminationRecords.Add(rec);}
 //----------------------------------DEBUG------------------------------------------------------------------------
-
-			if (ActiveUser.RunsOwnDoctorsCollection)
-			{
-				CacheAutoComplete(DocumentsDatabaseContext);
-			}
-			else
-			{
-				string? dbFile = UsersDataBase.GetUsersDbFileNameFromConfig();
-				if (dbFile == null)
-					throw new Exception("Не найдено конфигурации файла общей базы данных.");
-
-				using (var db = new LiteDatabase(dbFile))
-				{
-					CacheAutoComplete(db);
-				}
-			}
+		
+			CacheAutoComplete(EntitiesDatbaseContext);
 		}
 
 		private void CacheAutoComplete(LiteDatabase db)
@@ -80,7 +82,7 @@ namespace MyMedData
 			DoctorNameCache = new (db.GetCollection<Doctor>(Doctor.DbCollectionName)
 					.FindAll().Select(doctor => doctor.Name));
 
-			LabTestTypesCache = new(db.GetCollection<ExaminationType>(ExaminationType.AnalysisTypesDbCollectionName)
+			LabTestTypesCache = new(db.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName)
 				.FindAll().Select(type => type.ExaminationTypeTitle));
 
 			DoctorTypesCache = new(db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName)
@@ -103,7 +105,7 @@ namespace MyMedData
 
 			if (recordToUpdateIndex >= 0)
 			{
-				if (RecordsDataBase.UpdateRecord(DocumentsDatabaseContext, record))
+				if (RecordsDataBase.UpdateRecord(RecordsDatabaseContext, record))
 				{
 					ExaminationRecords.RemoveAt(recordToUpdateIndex);
 					ExaminationRecords.Insert(recordToUpdateIndex, record);
@@ -116,7 +118,9 @@ namespace MyMedData
 
 		public void Dispose()
 		{
-			DocumentsDatabaseContext.Dispose();			
+			if (!object.ReferenceEquals(RecordsDatabaseContext, EntitiesDatbaseContext))
+				EntitiesDatbaseContext.Dispose();
+			RecordsDatabaseContext.Dispose();
 		}
 	}
 }

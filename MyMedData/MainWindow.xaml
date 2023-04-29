@@ -126,16 +126,13 @@
                     ToolTip="Выход"/>
             
             <Button x:Name="AuthorizationButton" Background="Transparent" BorderBrush="Transparent"
-                    Margin="10,4,4,4"
+                    Width="30" Height="30" Margin="10,4,4,4"
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonMousOverStyle}"
                     Content="{StaticResource AuthButtonDrawing}" Click="AuthorizationButton_Click"
                     ToolTip="Авторизация и управление пользователями"/>
-            
-            <ProgressBar x:Name="ManiProgressBar"                  
-                         Margin="10,4,10,4"
-                         Opacity="1" Minimum="-1" 
-                         Foreground="{StaticResource BlueConotourColor}" Background="{DynamicResource LightDarkBackColor}"/>
+
+            <Canvas x:Name="SpaceFillerElement"/>
         </DockPanel>
         <uc:TableDisplay x:Name="RecordsTableDisplay"/>
     </DockPanel>

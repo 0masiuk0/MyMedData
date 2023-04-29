@@ -7,6 +7,18 @@ using System.Threading.Tasks;
 
 namespace MyMedData
 {
+	public class ArchiveDocumentHelper
+	{
+		public ArchiveDocumentHelper(Session session)
+		{
+			this.session = session;
+		}
+
+		Session session;
+
+
+	}
+
 	public class ArchivedDocument
 	{
 		[BsonId]
