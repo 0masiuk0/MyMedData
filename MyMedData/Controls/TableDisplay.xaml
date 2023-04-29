@@ -120,6 +120,7 @@
             </DataGrid.Columns>            
         </DataGrid>
         <local:RecordDisplay x:Name="RecordDisplay"
-            Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"/>
+            Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+            Item="{Binding SelectedItem, ElementName=RecordsDataGrid}"/>
     </Grid>
 </UserControl>

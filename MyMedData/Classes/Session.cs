@@ -88,7 +88,31 @@ namespace MyMedData
 
 			ClinicNameCache = new(db.GetCollection<Clinic>(Clinic.DbCollectionName)
 				.FindAll().Select(clinic => clinic.Name));
-		}		
+		}
+
+		public bool UpdateRecord(ExaminationRecord record)
+		{
+			int recordToUpdateIndex = -1;
+			for (int i = 0; i < ExaminationRecords.Count; i++)
+			{
+				if (record.Id == ExaminationRecords[i].Id)
+				{
+					recordToUpdateIndex = i; break;
+				}
+			}
+
+			if (recordToUpdateIndex >= 0)
+			{
+				if (RecordsDataBase.UpdateRecord(DocumentsDatabaseContext, record))
+				{
+					ExaminationRecords.RemoveAt(recordToUpdateIndex);
+					ExaminationRecords.Insert(recordToUpdateIndex, record);
+					return true;
+				}
+			}
+
+			return false;
+		}
 
 		public void Dispose()
 		{

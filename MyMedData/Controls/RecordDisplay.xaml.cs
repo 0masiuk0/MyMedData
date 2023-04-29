@@ -39,6 +39,8 @@ namespace MyMedData.Controls
 			_onDoctorCacheChanged = (o, e) => _doctorsView.View.Refresh();
 			_onLabExamTypeCacheChanged = (o, e) => _examinationTypesView.View.Refresh();
 			_onDoctorTypeCacheChanged = (o, e) => _examinationTypesView.View.Refresh();
+
+			HasUnsavedChanges = false;
 		}
 
 		private readonly CollectionViewSource _doctorsView;
@@ -53,8 +55,9 @@ namespace MyMedData.Controls
 		}
 
 		public static readonly DependencyProperty ItemProperty =
-			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(SelectedItemChanged));
+			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(ItemChanged));
 
+		//shall only be changed within ItemChanged handler.
 		public ExaminationRecord? EditedRecord
 		{
 			get => (ExaminationRecord?)GetValue(EditedRecordProperty);
@@ -82,12 +85,24 @@ namespace MyMedData.Controls
 			}
 		}
 
-		private static void SelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		private static void ItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			RecordDisplay recordDisplay = (RecordDisplay)d;
+
+			if (e.OldValue is ExaminationRecord oldRecord && recordDisplay.HasUnsavedChanges && recordDisplay.DataContext is Session sess)
+			{
+				if (MessageBox.Show("Сохранить предыдущие изменения?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question)
+				    == MessageBoxResult.Yes)
+				{
+					recordDisplay.ApplyChangesOfEditedRecord();
+				}
+			}
+
+			recordDisplay.HasUnsavedChanges = false;
+
 			if (e.NewValue is ExaminationRecord record)
 			{
-				recordDisplay.EditedRecord = record.Copy();
+				recordDisplay.EditedRecord = record.DeepCopy();
 
 				Session session = recordDisplay.DataContext as Session;
 
@@ -110,11 +125,32 @@ namespace MyMedData.Controls
 					recordDisplay._examinationTypesView.Source = session.DoctorTypesCache;
 					session.DoctorTypesCache.CollectionChanged += recordDisplay._onDoctorTypeCacheChanged;
 				}
+
+				recordDisplay.EditedRecord.PropertyChanged += recordDisplay.EditedRecord_PropertyChanged;
 			}
 			else
 			{
 				recordDisplay.EditedRecord=null;
 			}
+		}
+
+		private void ApplyChangesOfEditedRecord()
+		{
+			if (DataContext is Session session && EditedRecord != null)
+			{
+				bool updateSuccess = session.UpdateRecord(EditedRecord);
+				if (!updateSuccess)
+					MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
+						MessageBoxImage.Error);
+			}
+		}
+
+		private void EditedRecord_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (Item is ExaminationRecord record)
+				HasUnsavedChanges = EditedRecord?.IsEqualTo(record) ?? false;
+			else
+				HasUnsavedChanges = false;
 		}
 
 		private readonly NotifyCollectionChangedEventHandler _onDoctorCacheChanged;
@@ -138,6 +174,27 @@ namespace MyMedData.Controls
 			{
 				_clinicsView.Source = new List<Clinic>();
 				_doctorsView.Source = new List<Doctor>();
+			}
+		}
+
+		private void AcceptChangesButton_Click(object sender, RoutedEventArgs e)
+		{
+			ApplyChangesOfEditedRecord();
+			if (Item is ExaminationRecord rec)
+			{
+				EditedRecord = rec.DeepCopy();
+				EditedRecord.PropertyChanged += EditedRecord_PropertyChanged;
+				HasUnsavedChanges = false;
+			}
+		}
+
+		private void DiscardChangesButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (Item is ExaminationRecord rec)
+			{
+				EditedRecord = rec.DeepCopy();
+				EditedRecord.PropertyChanged += EditedRecord_PropertyChanged;
+				HasUnsavedChanges = false;
 			}
 		}
 	}

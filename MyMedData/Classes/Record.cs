@@ -99,7 +99,17 @@ namespace MyMedData
 
 		//------------------------------------METHODS------------------------------------------
 
-		public abstract ExaminationRecord Copy();
+		public abstract ExaminationRecord DeepCopy();
+
+		public virtual bool IsEqualTo(ExaminationRecord other)
+		{
+			return _id == other._id
+			       && _date == other._date
+			       && _documents.SequenceEqual(other._documents)
+			       && _clinic == other._clinic
+				   && _examinationType?.ExaminationTypeTitle == other._examinationType?.ExaminationTypeTitle
+			       && _comment == other._comment;
+		}
 
 		//---------------------------------EVENTS-------------------------------------------
 
@@ -143,13 +153,26 @@ namespace MyMedData
 			}
 		}
 
-		public override ExaminationRecord Copy()
+		public override ExaminationRecord DeepCopy()
 		{
 			var copy = new DoctorExaminationRecord { Id = Id, Date = Date, Clinic = Clinic,
 			Comment = Comment, Doctor = Doctor, Documents = new List<ArchivedDocument>(Documents), 
 			ExaminationType = ExaminationType};
 
 			return copy;
+		}
+
+		public override bool IsEqualTo(ExaminationRecord other)
+		{
+			if (!base.IsEqualTo(other)) return false;
+
+			if (other is not DoctorExaminationRecord otherDocRecord)
+			{
+				return false;
+			}
+			
+			return _doctor?.Name == otherDocRecord._doctor?.Name
+			       && ExaminationType?.ExaminationTypeTitle == otherDocRecord.ExaminationType?.ExaminationTypeTitle;
 		}
 
 		public override string Title => $"{ExaminationType} - {Doctor}";
@@ -171,7 +194,7 @@ namespace MyMedData
 			}
 		}
 
-		public override ExaminationRecord Copy()
+		public override ExaminationRecord DeepCopy()
 		{
 			var copy = new LabExaminationRecord
 			{
@@ -184,6 +207,18 @@ namespace MyMedData
 			};
 
 			return copy;
+		}
+
+		public override bool IsEqualTo(ExaminationRecord other)
+		{
+			if (!base.IsEqualTo(other)) return false;
+
+			if (other is not DoctorExaminationRecord otherLabRecord)
+			{
+				return false;
+			}
+			
+			return ExaminationType?.ExaminationTypeTitle == otherLabRecord.ExaminationType?.ExaminationTypeTitle;
 		}
 
 		public override string Title => ExaminationType.ToString();

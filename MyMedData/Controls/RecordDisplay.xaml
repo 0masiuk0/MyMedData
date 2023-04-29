@@ -111,9 +111,9 @@
             <StackPanel x:Name="AcknowledgeChangesPanel" Orientation="Horizontal"
                         Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
                 <Button x:Name="AcceptChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
-                        Content="{StaticResource ConfirmIcon}" Padding="4"/>
+                        Content="{StaticResource ConfirmIcon}" Padding="4" Click="AcceptChangesButton_Click"/>
                 <Button x:Name="DiscardChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
-                        Content="{StaticResource DenyIcon}" Padding="6"/>
+                        Content="{StaticResource DenyIcon}" Padding="6" Click="DiscardChangesButton_Click"/>
             </StackPanel>
         </Grid>
     </Border>

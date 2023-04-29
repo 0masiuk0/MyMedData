@@ -168,6 +168,32 @@ namespace MyMedData
 			return passwordStringHash16.ToString();
 		}
 
+		public static bool UpdateRecord(LiteDatabase db, ExaminationRecord record)
+		{
+			try
+			{
+				switch (record)
+				{
+					case DoctorExaminationRecord docRecord:
+					{
+						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+						return col.Update(docRecord);
+					}
+					case LabExaminationRecord labRecord:
+					{
+						var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
+						return col.Update(labRecord);
+					}
+					default:
+						return false;
+				}
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
 		public static List<ExaminationRecord> GenerateSampleExaminationRecordList(int count) => GenerateSampleRecords(count).ToList();
 		
 		public static IEnumerable<ExaminationRecord> GenerateSampleRecords(int count)
@@ -208,7 +234,7 @@ namespace MyMedData
 			{
 				foreach(var rec in records)
 				{
-					yield return rec.Copy();
+					yield return rec.DeepCopy();
 					n++;
 					if (n == count)
 						yield break;
