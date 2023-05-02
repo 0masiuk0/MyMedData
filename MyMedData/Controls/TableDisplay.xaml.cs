@@ -45,7 +45,7 @@ namespace MyMedData.Controls
 				toDateFilterDatePicker.SelectedDateChanged += ToDateEventHandler;
 				CommentFilterTextBox.TextChanged += CommentFilterChagedHandler;
 				_dataContextIsSet = true;
-				RecordDisplay.DataContext = session;
+				//RecordDisplay.DataContext = session;
 			}
 			else
 			{
@@ -54,7 +54,7 @@ namespace MyMedData.Controls
 				toDateFilterDatePicker.SelectedDateChanged -= ToDateEventHandler;
 				CommentFilterTextBox.TextChanged -= CommentFilterChagedHandler;
 				_dataContextIsSet = false;
-				RecordDisplay.DataContext = null;
+				//RecordDisplay.DataContext = null;
 			}
 		}
 

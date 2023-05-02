@@ -59,7 +59,7 @@
             <Button x:Name="MaximizeButton" Visibility="Visible" Style="{StaticResource ChromeButtonStyle}" 
                             DockPanel.Dock="Right" Content="{StaticResource MaximizeWindowIcon}"
                             Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
-            
+
             <Button x:Name="MinimizeButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Mimimize"
                             DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
                             Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
@@ -70,7 +70,7 @@
         </DockPanel>
         <StackPanel x:Name="MenuStackPanel" Background="{StaticResource DarkBackColor}"
                     DockPanel.Dock="Top" Orientation="Horizontal">
-            
+
         </StackPanel>
         <DockPanel x:Name="StatusBarDockPanel"
              VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
@@ -89,7 +89,7 @@
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
                     Content="{StaticResource SettingsImage}" ToolTip="Настойки" Click="SettingsdButton_Click"/>
-            
+
             <Button x:Name="CalendarViewButton" Height="25" Width="25" 
                     Margin="10,4,10,4"
                     DockPanel.Dock="Right"
@@ -124,7 +124,7 @@
                     Style="{StaticResource ButtonMousOverStyle}"
                     Content="{StaticResource LogOffImage}" Click="LogOffButton_Click"
                     ToolTip="Выход"/>
-            
+
             <Button x:Name="AuthorizationButton" Background="Transparent" BorderBrush="Transparent"
                     Width="30" Height="30" Margin="10,4,4,4"
                     DockPanel.Dock="Right"

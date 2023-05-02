@@ -1,7 +1,9 @@
 ﻿using LiteDB;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,15 +18,44 @@ namespace MyMedData
 
 		Session session;
 
-
+		
 	}
 
-	public class ArchivedDocument
+	public class ArchivedDocument : INotifyPropertyChanged
 	{
 		[BsonId]
 		public string Id { get; set; }
-		public DocumentType DocumentType { get; set; }
-		public string FileName { get; set; }
+
+		private DocumentType _documentType;
+		public DocumentType DocumentType
+		{
+			get => _documentType;
+			set
+			{
+				if (_documentType != value)
+				{
+					_documentType = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		private string _fileName;
+		public string FileName
+		{
+			get => _fileName;
+			set
+			{
+				if (_fileName != value)
+				{
+					_fileName = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[BsonIgnore] 
+		public byte[] TemporaryStoredFile;
 
 		public const string DbCollectionName = "ArchivedDocuments";
 
@@ -33,6 +64,13 @@ namespace MyMedData
 		public ArchivedDocument Copy()
 		{
 			return new ArchivedDocument() { Id = Id, DocumentType = DocumentType, FileName = FileName };
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 

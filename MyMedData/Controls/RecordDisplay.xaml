@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              x:Name="ThisRecordDisplay"
              DataContextChanged="UserControl_DataContextChanged"
-             d:DesignHeight="450" d:DesignWidth="270">
+             d:DesignHeight="450" d:DesignWidth="350">
     <UserControl.Resources>
         <local:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
         <Style x:Key="HeaderLabel" TargetType="TextBlock">
@@ -89,6 +89,7 @@
                            DockPanel.Dock="Top"
                            Text="Примечание" Style="{StaticResource HeaderLabel}"/>
                 <TextBox x:Name="CommentTextBox"
+                         Margin="0,0,0,5"
                          Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                          AcceptsReturn="True" TextWrapping="WrapWithOverflow"
                          Text="{Binding ElementName=ThisRecordDisplay,
@@ -100,7 +101,24 @@
                        Margin="5,0,0,0">
                 <TextBlock x:Name="DocumentsLabel" DockPanel.Dock="Top"
                            Text="Документы" Style="{StaticResource HeaderLabel}"/>
+               <StackPanel DockPanel.Dock="Bottom"
+                            Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="AddDocumentButton"
+                            Width="30" Height="30" Margin="5"
+                            Style="{StaticResource DarkButton}"
+                            Content="{StaticResource UploadFileIcon}" Padding="0.5,0,0,0" Click="AddDocumentButton_OnClick"/>
+                    <Button x:Name="ScanDocumentButton"
+                            Width="30" Height="30" Margin="5"
+                            Style="{StaticResource DarkButton}"
+                            Content="{StaticResource ScanDocumentIcon}" Click="ScanDocumentButton_OnClick"/>
+                    <Button x:Name="RemoveDocumentButton"
+                            Width="30" Height="30" Margin="5"
+                            Style="{StaticResource DarkButton}"
+                            FontSize="30" FontWeight="ExtraBold" Foreground="#BF3A3A"
+                            Content="{StaticResource TrashBinIcon}" Padding="0" Click="RemoveDocumentButton_OnClick"/>
+                </StackPanel>
                 <ListBox x:Name="DocumentsListBox" Background="Transparent"
+                         Margin="0,0,0,5"
                          VerticalAlignment="Stretch"
                          HorizontalAlignment="Stretch"
                          ItemsSource="{Binding ElementName=ThisRecordDisplay,

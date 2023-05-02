@@ -98,8 +98,6 @@ namespace MyMedData
 		public abstract string Title { get; }
 
 		//------------------------------------METHODS------------------------------------------
-
-		
 		
 		public abstract ExaminationRecord DeepCopy();
 

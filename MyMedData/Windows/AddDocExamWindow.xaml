@@ -15,129 +15,13 @@
         <WindowChrome CaptionHeight="34"/>
     </WindowChrome.WindowChrome>
     <Window.Resources>
-        <uc:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
-        <Style x:Key="HeaderLabel" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontFamily" Value="Calibri"/>
-            <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-            <Setter Property="Margin" Value="4,10,0,0"/>
-        </Style>
-        <DataTemplate x:Key="AutoCompleteItemTemplate">
-            <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1">
-                <TextBlock Text="{Binding }"/>
-            </Border>
-        </DataTemplate>
-        <CollectionViewSource x:Key="ExaminationTypes" x:Name="ExaminationTypesView"/>
-        <CollectionViewSource x:Key="Doctors" x:Name="DoctorsView"/>
-        <CollectionViewSource x:Key="Clinics" x:Name="ClinicsView"/>
+       
     </Window.Resources>
-    <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1" Padding="10,0,10,0">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="140"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <DockPanel
-                Margin="0,0,5,0">
-                <TextBlock x:Name="DateLabel" 
-                           DockPanel.Dock="Top"
-                           Text="Дата" Style="{StaticResource HeaderLabel}"/>
-                <DatePicker x:Name="RecordDatePicker" 
-                    DockPanel.Dock="Top"       
-                    FontSize="16" 
-                    Style="{StaticResource DarkDatePicker}"
-                    SelectedDate="{Binding ElementName=ThisRecordDisplay,
-                        Path=EditedRecord.Date,
-                        FallbackValue={x:Null}, Mode=TwoWay,                       
-                        Converter={StaticResource DateTimeToDateOnlyConverter}}"/>
-                <TextBlock x:Name="ExamniantionTypleLabel" 
-                   DockPanel.Dock="Top"
-                   Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
-                <controls:AutoCompleteTextBox x:Name="ExaminationTypeTextBox" 
-                   DockPanel.Dock="Top"
-                    Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                    ItemsSource="{Binding Source={StaticResource ExaminationTypes}}"
-                   ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                   Binding="{Binding ExminationTypeTitle}"
-                   Text="{Binding ElementName=ThisRecordDisplay,
-                        Path=EditedRecord.ExaminationType.ExaminationTypeTitle,
-                        FallbackValue={x:Null}, Mode=TwoWay}"/>
-                <TextBlock x:Name="DoctorLabel" 
-                   DockPanel.Dock="Top"
-                   Text="Врач" Style="{StaticResource HeaderLabel}"/>
-                <controls:AutoCompleteTextBox x:Name="DoctorTextBox" 
-                    DockPanel.Dock="Top" 
-                    Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                    ItemsSource="{Binding Source={StaticResource Doctors}}"
-                    ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                    Binding="{Binding Name}"
-                    Text="{Binding ElementName=ThisRecordDisplay,
-                        Path=EditedRecord.Doctor.Name,
-                        FallbackValue={x:Null}, Mode=TwoWay}"/>
-                <TextBlock x:Name="ClinicLabel" 
-                   DockPanel.Dock="Top"
-                   Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
-                <controls:AutoCompleteTextBox x:Name="ClinicTextBox"  
-                    DockPanel.Dock="Top"
-                    Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                    ItemsSource="{Binding Source={StaticResource Clinics}}"
-                    ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                    Binding="{Binding Name}"
-                    Text="{Binding ElementName=ThisRecordDisplay,
-                        Path=EditedRecord.Clinic.Name,
-                        FallbackValue={x:Null}, Mode=TwoWay}"/>
-                <TextBlock x:Name="CommentLabel" 
-                           DockPanel.Dock="Top"
-                           Text="Примечание" Style="{StaticResource HeaderLabel}"/>
-                <TextBox x:Name="CommentTextBox"
-                         Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                         AcceptsReturn="True" TextWrapping="WrapWithOverflow"
-                         Text="{Binding ElementName=ThisRecordDisplay,
-                            Path=EditedRecord.Comment,
-                            FallbackValue={x:Null}, Mode=TwoWay}"
-                            />
-            </DockPanel>
-            <DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                       Margin="5,0,0,0">
-                <TextBlock x:Name="DocumentsLabel" DockPanel.Dock="Top"
-                           Text="Документы" Style="{StaticResource HeaderLabel}"/>
-                <StackPanel DockPanel.Dock="Bottom"
-                            Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="AddDocumentButton"
-                            Width="30" Height="30" Margin="5"
-                            Style="{StaticResource DarkButton}"
-                            FontSize="30" FontWeight="ExtraBold" Foreground="{StaticResource LightBlueFont}"
-                            Content="{StaticResource UploadFileIcon}" Padding="0.5,0,0,0" Click="AddDocumentButton_Click"/>
-                    <Button x:Name="ScanDocumentButton"
-                            Width="30" Height="30" Margin="5"
-                            Style="{StaticResource DarkButton}"
-                            FontSize="30" FontWeight="ExtraBold" Foreground="{StaticResource LightBlueFont}"
-                            Content="{StaticResource ScanDocumentIcon}" Click="ScanDocumentButton_Click"/>
-                    <Button x:Name="RemoveDocumentButton"
-                            Width="30" Height="30" Margin="5"
-                            Style="{StaticResource DarkButton}"
-                            FontSize="30" FontWeight="ExtraBold" Foreground="#BF3A3A"
-                            Content="{StaticResource TrashBinIcon}" Padding="0" Click="RemoveDocumentButton_Click"/>
-                </StackPanel>
-                <ListBox x:Name="DocumentsListBox" Background="Transparent"
-                         VerticalAlignment="Stretch"
-                         HorizontalAlignment="Stretch"
-                         ItemsSource="{Binding ElementName=ThisRecordDisplay,
-                            Path=EditedRecord.Documents,
-                            FallbackValue={x:Null}}">
-                </ListBox>
-            </DockPanel>
-            <StackPanel x:Name="AcknowledgeChangesPanel" Orientation="Horizontal"
-                        Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                <Button x:Name="AcceptChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
-                        Content="{StaticResource ConfirmIcon}" Padding="4" Click="AcceptChangesButton_OnClick"/>
-                <Button x:Name="DiscardChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
-                        Content="{StaticResource DenyIcon}" Padding="6" Click="DiscardChangesButton_OnClick"/>
-            </StackPanel>
-        </Grid>
-    </Border>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <uc:RecordDisplay Margin="0,0,10,10"/>
+    </Grid>
 </Window>

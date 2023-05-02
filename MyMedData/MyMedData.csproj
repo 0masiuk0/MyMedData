@@ -14,6 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Dictionaries\AuxDictionary.xaml" />
+    <Page Remove="Dictionaries\Colors.xaml" />
+    <Page Remove="Dictionaries\PictResourseDictionary1.xaml" />
+    <Page Remove="Dictionaries\SrollBarStyleDictionary.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Dictionaries\AuxDictionary.xaml" />
+    <EmbeddedResource Include="Dictionaries\Colors.xaml" />
+    <EmbeddedResource Include="Dictionaries\SrollBarStyleDictionary.xaml" />
     <EmbeddedResource Include="Pics\Icons\AuthorizationIcon.svg" />
   </ItemGroup>
 
@@ -24,6 +34,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\WPF combobox\ArticleSource\ACTB\Aviad.WPF.Controls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SplashScreen Include="Dictionaries\PictResourseDictionary1.xaml" />
   </ItemGroup>
 
 </Project>
