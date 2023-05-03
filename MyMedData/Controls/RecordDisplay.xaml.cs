@@ -105,11 +105,9 @@ namespace MyMedData.Controls
 
 			recordDisplay.HasUnsavedChanges = false;
 
-			if (e.NewValue is ExaminationRecord record)
+			if (e.NewValue is ExaminationRecord record && recordDisplay.DataContext is Session session)
 			{
-				recordDisplay.EditedRecord = record.DeepCopy();
-
-				Session session = recordDisplay.DataContext as Session;
+				recordDisplay.EditedRecord = record.DeepCopy();				
 
 				session.LabTestTypesCache.CollectionChanged -= recordDisplay._onLabExamTypeCacheChanged;
 				session.DoctorTypesCache.CollectionChanged -= recordDisplay._onDoctorTypeCacheChanged;
@@ -197,7 +195,12 @@ namespace MyMedData.Controls
 				HasUnsavedChanges = false;
 			}
 		}
-	}
+
+		private void UploadDocButton_Click(object sender, RoutedEventArgs e)
+		{
+
+        }
+    }
 
 	[ValueConversion(typeof(DateTime), typeof(DateOnly))]
 	public class DateTimeToDateOnlyConverter : IValueConverter

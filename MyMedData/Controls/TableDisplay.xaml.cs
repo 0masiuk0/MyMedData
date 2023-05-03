@@ -29,8 +29,7 @@ namespace MyMedData.Controls
 
 			_recordsCollectionsViewSource = (CollectionViewSource)Resources["RecordsCollectionViewSource"];
 		}
-
-		private bool _dataContextIsSet = false;
+				
 		private TextChangedEventHandler TitleFilterChagedHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
 		private EventHandler<System.Windows.Controls.SelectionChangedEventArgs> FromDateEventHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
 		private EventHandler<System.Windows.Controls.SelectionChangedEventArgs> ToDateEventHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
@@ -38,14 +37,13 @@ namespace MyMedData.Controls
 
 		private void RecordsTableDisplay_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (!_dataContextIsSet && DataContext is Session session)
+			if (DataContext is Session session)
 			{
 				TitleFilterTextBox.TextChanged += TitleFilterChagedHandler;
 				fromDateFilterDatePicker.SelectedDateChanged += FromDateEventHandler;
 				toDateFilterDatePicker.SelectedDateChanged += ToDateEventHandler;
-				CommentFilterTextBox.TextChanged += CommentFilterChagedHandler;
-				_dataContextIsSet = true;
-				//RecordDisplay.DataContext = session;
+				CommentFilterTextBox.TextChanged += CommentFilterChagedHandler;				
+				RecordDisplay.DataContext = session;
 			}
 			else
 			{
@@ -53,8 +51,7 @@ namespace MyMedData.Controls
 				fromDateFilterDatePicker.SelectedDateChanged -= FromDateEventHandler;
 				toDateFilterDatePicker.SelectedDateChanged -= ToDateEventHandler;
 				CommentFilterTextBox.TextChanged -= CommentFilterChagedHandler;
-				_dataContextIsSet = false;
-				//RecordDisplay.DataContext = null;
+				RecordDisplay.DataContext = null;
 			}
 		}
 
