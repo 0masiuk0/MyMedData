@@ -505,7 +505,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="UploadFileIcon">
+    <!--<Image x:Key="UploadFileIcon">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>
@@ -567,5 +567,5 @@
                 </DrawingImage.Drawing>
             </DrawingImage>
         </Image.Source>
-    </Image>
+    </Image>-->
 </ResourceDictionary>

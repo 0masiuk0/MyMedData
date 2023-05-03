@@ -197,21 +197,6 @@ namespace MyMedData.Controls
 				HasUnsavedChanges = false;
 			}
 		}
-
-		private void AddDocumentButton_OnClick(object sender, RoutedEventArgs e)
-		{
-			throw new NotImplementedException();
-		}
-
-		private void ScanDocumentButton_OnClick(object sender, RoutedEventArgs e)
-		{
-			throw new NotImplementedException();
-		}
-
-		private void RemoveDocumentButton_OnClick(object sender, RoutedEventArgs e)
-		{
-			throw new NotImplementedException();
-		}
 	}
 
 	[ValueConversion(typeof(DateTime), typeof(DateOnly))]

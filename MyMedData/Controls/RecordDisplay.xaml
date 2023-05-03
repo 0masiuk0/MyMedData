@@ -100,23 +100,7 @@
             <DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                        Margin="5,0,0,0">
                 <TextBlock x:Name="DocumentsLabel" DockPanel.Dock="Top"
-                           Text="Документы" Style="{StaticResource HeaderLabel}"/>
-               <StackPanel DockPanel.Dock="Bottom"
-                            Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="AddDocumentButton"
-                            Width="30" Height="30" Margin="5"
-                            Style="{StaticResource DarkButton}"
-                            Content="{StaticResource UploadFileIcon}" Padding="0.5,0,0,0" Click="AddDocumentButton_OnClick"/>
-                    <Button x:Name="ScanDocumentButton"
-                            Width="30" Height="30" Margin="5"
-                            Style="{StaticResource DarkButton}"
-                            Content="{StaticResource ScanDocumentIcon}" Click="ScanDocumentButton_OnClick"/>
-                    <Button x:Name="RemoveDocumentButton"
-                            Width="30" Height="30" Margin="5"
-                            Style="{StaticResource DarkButton}"
-                            FontSize="30" FontWeight="ExtraBold" Foreground="#BF3A3A"
-                            Content="{StaticResource TrashBinIcon}" Padding="0" Click="RemoveDocumentButton_OnClick"/>
-                </StackPanel>
+                           Text="Документы" Style="{StaticResource HeaderLabel}"/>               
                 <ListBox x:Name="DocumentsListBox" Background="Transparent"
                          Margin="0,0,0,5"
                          VerticalAlignment="Stretch"
