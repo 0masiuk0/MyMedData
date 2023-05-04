@@ -509,10 +509,10 @@
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>
-                    <DrawingGroup ClipGeometry="M0,0 V30 H23 V0 H0 Z">
+                    <DrawingGroup ClipGeometry="M-5,0 V30 H25 V0 H0 Z">
                         <GeometryDrawing Geometry="F1 M32,32z M0,0z M4.125,13.688L8.156,13.688 8.156,20.282C8.156,20.845,8.625,21.313,9.187,21.313L13.218,21.313C13.781,21.313,14.281,20.844,14.281,20.282L14.281,13.688 18.312,13.688C18.843,13.688,19,13.407,18.625,13L11.937,6.344C11.749,6.125 11.468,6 11.187,6 10.906,6 10.656,6.125 10.468,6.344L3.812,13C3.437,13.406,3.562,13.688,4.125,13.688z M0,18.344L0,25.469C0,25.782,0.156,25.969,0.5,25.969L21.875,25.969C22.219,25.969,22.406,25.781,22.406,25.469L22.406,18.344C22.406,18.031,22.156,17.781,21.875,17.781L19.844,17.781C19.563,17.781,19.313,18.062,19.313,18.344L19.313,22.875 3.063,22.875 3.063,18.344C3.063,18.031,2.844,17.781,2.563,17.781L0.500000000000002,17.781C0.219000000000002,17.781,2.22044604925031E-15,18.062,2.22044604925031E-15,18.344z" >
                             <GeometryDrawing.Pen>
-                                <Pen Brush="{StaticResource LightBlueFont}"/>
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2"/>
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
                     </DrawingGroup>
@@ -528,7 +528,7 @@
                     <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
                         <GeometryDrawing Geometry="F1 M24,24z M0,0z M21,17L19,10 5,10 3,17 M21,17L3,17 M21,17L20.379,19.485A2,2,0,0,1,18.439,21L5.561,21A2,2,0,0,1,3.621,19.485L3,17 M8.309,14L15.691,14A0.5,0.5,0,0,0,16.138,13.276L16.138,13.276A0.5,0.5,0,0,0,15.691,13L8.309,13A0.5,0.5,0,0,0,7.862,13.276L7.862,13.276A0.5,0.5,0,0,0,8.309,14z M3.728,5.55A2,2,0,0,1,5.651,3L18.35,3A2,2,0,0,1,20.273,5.55L19,10 5,10 3.728,5.55z">
                             <GeometryDrawing.Pen>
-                                <Pen Brush="{StaticResource LightBlueFont}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
                     </DrawingGroup>
@@ -544,27 +544,27 @@
                     <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
                         <GeometryDrawing Geometry="F1 M24,24z M0,0z M10,12L10,17">
                             <GeometryDrawing.Pen>
-                                <Pen Brush="{StaticResource LightBlueFont}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
                         <GeometryDrawing Geometry="F1 M24,24z M0,0z M14,12L14,17">
                             <GeometryDrawing.Pen>
-                                <Pen Brush="{StaticResource LightBlueFont}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
                         <GeometryDrawing Geometry="F1 M24,24z M0,0z M4,7L20,7">
                             <GeometryDrawing.Pen>
-                                <Pen Brush="{StaticResource LightBlueFont}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
                         <GeometryDrawing Geometry="F1 M24,24z M0,0z M6,10L6,18C6,19.6569,7.34315,21,9,21L15,21C16.6569,21,18,19.6569,18,18L18,10">
                             <GeometryDrawing.Pen>
-                                <Pen Brush="{StaticResource LightBlueFont}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
                         <GeometryDrawing Geometry="F1 M24,24z M0,0z M9,5C9,3.89543,9.89543,3,11,3L13,3C14.1046,3,15,3.89543,15,5L15,7 9,7 9,5z">
                             <GeometryDrawing.Pen>
-                                <Pen Brush="{StaticResource LightBlueFont}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
                     </DrawingGroup>

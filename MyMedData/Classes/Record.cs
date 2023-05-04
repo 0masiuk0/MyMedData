@@ -44,9 +44,9 @@ namespace MyMedData
 			}
 		}
 
-		private List<ArchivedDocument> _documents = new List<ArchivedDocument>();
-		[BsonRef(ArchivedDocument.DbCollectionName)]
-		public List<ArchivedDocument> Documents
+		private List<DocumentAttachment> _documents = new List<DocumentAttachment>();
+		[BsonRef(DocumentAttachment.DbCollectionName)]
+		public List<DocumentAttachment> Documents
 		{
 			get => _documents;
 			set
@@ -156,7 +156,7 @@ namespace MyMedData
 		public override ExaminationRecord DeepCopy()
 		{
 			var copy = new DoctorExaminationRecord { Id = Id, Date = Date, Clinic = Clinic,
-			Comment = Comment, Doctor = Doctor, Documents = new List<ArchivedDocument>(Documents), 
+			Comment = Comment, Doctor = Doctor, Documents = new List<DocumentAttachment>(Documents), 
 			ExaminationType = ExaminationType};
 
 			return copy;
@@ -202,7 +202,7 @@ namespace MyMedData
 				Date = Date,
 				Clinic = Clinic,
 				Comment = Comment,
-				Documents = new List<ArchivedDocument>(Documents),
+				Documents = new List<DocumentAttachment>(Documents),
 				ExaminationType = ExaminationType
 			};
 

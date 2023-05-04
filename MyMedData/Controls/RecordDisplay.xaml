@@ -7,7 +7,7 @@
              xmlns:aviad="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
              mc:Ignorable="d" 
              x:Name="ThisRecordDisplay"
-             DataContextChanged="UserControl_DataContextChanged"
+             DataContextChanged="RecordDisplay_DataContextChanged"
              d:DesignHeight="450" d:DesignWidth="350">
     <UserControl.Resources>
         <local:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
@@ -40,6 +40,7 @@
             <TextBlock x:Name="DateLabel" 
                         DockPanel.Dock="Top"
                         Text="Дата" Style="{StaticResource HeaderLabel}"/>
+            
             <DatePicker x:Name="RecordDatePicker" 
                 DockPanel.Dock="Top"       
                 FontSize="16" 
@@ -101,9 +102,17 @@
                         Text="Документы" Style="{StaticResource HeaderLabel}"/>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
                 <Button x:Name="UploadDocButton" Style="{StaticResource UnsizedDarkButtonStyle}"
-                        Width="30" Height="30" Margin="5,5,5,0" 
+                        Width="30" Height="30" Margin="5,5,5,0" Padding="2"
                         Content="{StaticResource UploadFileIcon}"
                         Click="UploadDocButton_Click"/>
+                <Button x:Name="ScanDocButton" Style="{StaticResource UnsizedDarkButtonStyle}"
+                        Width="30" Height="30" Margin="5,5,5,0" Padding="2"
+                        Content="{StaticResource ScanDocumentIcon}"
+                        Click="ScanDocButton_Click"/>
+                <Button x:Name="RemoveDocButton" Style="{StaticResource UnsizedDarkButtonStyle}"
+                        Width="30" Height="30" Margin="5,5,5,0" Padding="2"
+                        Content="{StaticResource TrashBinIcon}"
+                        Click="RemoveDocButton_Click"/>
             </StackPanel>
             <ListBox x:Name="DocumentsListBox" Background="Transparent"
                         VerticalAlignment="Stretch"
@@ -115,9 +124,9 @@
         </DockPanel>
         <StackPanel x:Name="AcknowledgeChangesPanel" Orientation="Horizontal"
                     Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            <Button x:Name="AcceptChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
+            <Button x:Name="AcceptChangesButton" Style="{StaticResource UnsizedDarkButtonStyle}" Width="40" Height="40" Margin="10"
                     Content="{StaticResource ConfirmIcon}" Padding="4" Click="AcceptChangesButton_Click"/>
-            <Button x:Name="DiscardChangesButton" Style="{StaticResource DarkButton}" Width="40" Height="40" Margin="10"
+            <Button x:Name="DiscardChangesButton" Style="{StaticResource UnsizedDarkButtonStyle}" Width="40" Height="40" Margin="10"
                     Content="{StaticResource DenyIcon}" Padding="6" Click="DiscardChangesButton_Click"/>
         </StackPanel>
     </Grid>

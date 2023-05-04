@@ -76,8 +76,7 @@
                   CanUserAddRows="False" CanUserResizeRows="False"
                   HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                   SelectionMode="Single" SelectionUnit="FullRow"
-                  Loaded="RecordsDataGrid_Loaded"
-                  SelectionChanged="RecordsDataGrid_SelectionChanged">
+                  Loaded="RecordsDataGrid_Loaded">
             <DataGrid.Resources>
                 <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
                     <Setter Property="Margin" Value="5,10,5,10" />

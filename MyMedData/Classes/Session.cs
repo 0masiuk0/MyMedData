@@ -68,11 +68,6 @@ namespace MyMedData
 			{
 				ExaminationRecords.Add(labExam);
 			}
-
-//-----------------------------------DEBUG------------------------------------------------------------------------
-			foreach(var rec in RecordsDataBase.GenerateSampleRecords(10))
-			{ ExaminationRecords.Add(rec);}
-//----------------------------------DEBUG------------------------------------------------------------------------
 		
 			CacheAutoComplete(EntitiesDatbaseContext);
 		}
@@ -92,7 +87,7 @@ namespace MyMedData
 				.FindAll().Select(clinic => clinic.Name));
 		}
 
-		public bool UpdateRecord(ExaminationRecord record)
+		public bool AddOrUpdateExaminationRecord(ExaminationRecord record)
 		{
 			int recordToUpdateIndex = -1;
 			for (int i = 0; i < ExaminationRecords.Count; i++)
@@ -105,8 +100,9 @@ namespace MyMedData
 
 			if (recordToUpdateIndex >= 0)
 			{
-				if (RecordsDataBase.UpdateRecord(RecordsDatabaseContext, record))
+				if (RecordsDataBase.UpdateOrInsertExaminationRecord(RecordsDatabaseContext, record))
 				{
+					//this is to trigger ObservableCollection.CollectionChanged and all the bound views to update.
 					ExaminationRecords.RemoveAt(recordToUpdateIndex);
 					ExaminationRecords.Insert(recordToUpdateIndex, record);
 					return true;
@@ -121,6 +117,56 @@ namespace MyMedData
 			if (!object.ReferenceEquals(RecordsDatabaseContext, EntitiesDatbaseContext))
 				EntitiesDatbaseContext.Dispose();
 			RecordsDatabaseContext.Dispose();
+		}
+
+		internal void EnsureValuesAreCached(string? examinationTypeTitle, DocOrLabExamination? docOrLab, string? doctorName, string? clinicName)
+		{
+			//ExaminationType
+			if (examinationTypeTitle != null && examinationTypeTitle.Length > 0) 
+			{
+				if (docOrLab == DocOrLabExamination.Doc)
+				{
+					if (!DoctorTypesCache.Contains(examinationTypeTitle))
+					{
+						var docTypesCol = EntitiesDatbaseContext.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
+						docTypesCol.Insert(new ExaminationType(examinationTypeTitle, ""));
+						docTypesCol.EnsureIndex(t => t.ExaminationTypeTitle);
+						DoctorTypesCache.Add(examinationTypeTitle);
+					}
+				}
+				else
+				{
+					//Lab
+					if (!LabTestTypesCache.Contains(examinationTypeTitle))
+					{
+						var labTypesCol = EntitiesDatbaseContext.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);
+						labTypesCol.Insert(new ExaminationType(examinationTypeTitle, ""));
+						labTypesCol.EnsureIndex(t => t.ExaminationTypeTitle);
+						LabTestTypesCache.Add(examinationTypeTitle);
+					}
+				}
+			}
+
+			//Doctor
+			if (docOrLab == DocOrLabExamination.Doc && doctorName != null && doctorName.Length > 0)
+			{
+				if (!DoctorNameCache.Contains(doctorName))
+				{
+					var docNamesCol = EntitiesDatbaseContext.GetCollection<Doctor>(Doctor.DbCollectionName);
+					docNamesCol.Insert(new Doctor(doctorName, ""));
+					docNamesCol.EnsureIndex(d => d.Name);
+					DoctorNameCache.Add(doctorName);
+				}
+			}
+
+			//Clinic			
+			if (clinicName != null && clinicName.Length > 0 && !ClinicNameCache.Contains(clinicName))
+			{
+				var clinicCol = EntitiesDatbaseContext.GetCollection<Clinic>(Clinic.DbCollectionName);
+				clinicCol.Insert(new Clinic(clinicName, ""));
+				clinicCol.EnsureIndex(cl => cl.Name);
+				ClinicNameCache.Add(clinicName);
+			}
 		}
 	}
 }

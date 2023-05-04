@@ -168,21 +168,26 @@ namespace MyMedData
 			return passwordStringHash16.ToString();
 		}
 
-		public static bool UpdateRecord(LiteDatabase db, ExaminationRecord record)
+		public static bool UpdateOrInsertExaminationRecord(LiteDatabase db, ExaminationRecord record)
 		{
 			try
-			{
+			{				
 				switch (record)
 				{
 					case DoctorExaminationRecord docRecord:
 					{
 						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
-						return col.Update(docRecord);
+						var recordInDb = col.FindById(docRecord.Id);
+						if (recordInDb != null) 
+						{
+								
+						}
+						return col.Upsert(docRecord);
 					}
 					case LabExaminationRecord labRecord:
 					{
 						var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
-						return col.Update(labRecord);
+						return col.Upsert(labRecord);
 					}
 					default:
 						return false;

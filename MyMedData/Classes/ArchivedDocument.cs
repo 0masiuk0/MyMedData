@@ -9,19 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMedData
 {
-	public class ArchiveDocumentHelper
-	{
-		public ArchiveDocumentHelper(Session session)
-		{
-			this.session = session;
-		}
-
-		Session session;
-
-		
-	}
-
-	public class ArchivedDocument : INotifyPropertyChanged
+	public class DocumentAttachment : INotifyPropertyChanged
 	{
 		[BsonId]
 		public string Id { get; set; }
@@ -58,12 +46,13 @@ namespace MyMedData
 		public byte[] TemporaryStoredFile;
 
 		public const string DbCollectionName = "ArchivedDocuments";
+		//public const string FileStorageCollectionName = "StoredFiles";
 
 		public override string ToString() => FileName;
 
-		public ArchivedDocument Copy()
+		public DocumentAttachment Copy()
 		{
-			return new ArchivedDocument() { Id = Id, DocumentType = DocumentType, FileName = FileName };
+			return new DocumentAttachment() { Id = Id, DocumentType = DocumentType, FileName = FileName };
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

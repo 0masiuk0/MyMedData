@@ -5,6 +5,7 @@
     <SolidColorBrush x:Key="LightDarkBackColor" Color="#FF383838" x:Shared="False"/>
     <SolidColorBrush x:Key="DarkThemeFontColor" Color="LightGray" x:Shared="False"/>
     <SolidColorBrush x:Key="BlueConotourColor" Color="#FF4788C7" x:Shared="False"/>
+    
     <Style x:Key="DarkWindowStyle" TargetType="Window">
         <Setter Property="Background" Value="{StaticResource DarkBackColor}"/>
         <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>

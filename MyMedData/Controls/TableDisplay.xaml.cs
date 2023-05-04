@@ -28,6 +28,11 @@ namespace MyMedData.Controls
 			InitializeComponent();
 
 			_recordsCollectionsViewSource = (CollectionViewSource)Resources["RecordsCollectionViewSource"];
+
+			TitleFilterTextBox.TextChanged += TitleFilterChagedHandler;
+			fromDateFilterDatePicker.SelectedDateChanged += FromDateEventHandler;
+			toDateFilterDatePicker.SelectedDateChanged += ToDateEventHandler;
+			CommentFilterTextBox.TextChanged += CommentFilterChagedHandler;
 		}
 				
 		private TextChangedEventHandler TitleFilterChagedHandler => (o, e) => _recordsCollectionsViewSource.View.Refresh();
@@ -38,19 +43,11 @@ namespace MyMedData.Controls
 		private void RecordsTableDisplay_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			if (DataContext is Session session)
-			{
-				TitleFilterTextBox.TextChanged += TitleFilterChagedHandler;
-				fromDateFilterDatePicker.SelectedDateChanged += FromDateEventHandler;
-				toDateFilterDatePicker.SelectedDateChanged += ToDateEventHandler;
-				CommentFilterTextBox.TextChanged += CommentFilterChagedHandler;				
+			{						
 				RecordDisplay.DataContext = session;
 			}
-			else
-			{
-				TitleFilterTextBox.TextChanged -= TitleFilterChagedHandler;
-				fromDateFilterDatePicker.SelectedDateChanged -= FromDateEventHandler;
-				toDateFilterDatePicker.SelectedDateChanged -= ToDateEventHandler;
-				CommentFilterTextBox.TextChanged -= CommentFilterChagedHandler;
+			else 
+			{				
 				RecordDisplay.DataContext = null;
 			}
 		}
@@ -65,12 +62,7 @@ namespace MyMedData.Controls
 				column.CanUserSort = true;
 			}
 		
-		}
-
-		private void RecordsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-
-		}
+		}	
 
 		private void RecordsCollectionViewSource_Filter(object sender, FilterEventArgs e)
 		{	
