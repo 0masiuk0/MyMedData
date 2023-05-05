@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MyMedData.Controls"
              xmlns:aviad="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
              mc:Ignorable="d" 
-             x:Name="ThisRecordDisplay"
+             x:Name="ThisRecordDisplay"  
              DataContextChanged="RecordDisplay_DataContextChanged"
              d:DesignHeight="450" d:DesignWidth="350">
     <UserControl.Resources>

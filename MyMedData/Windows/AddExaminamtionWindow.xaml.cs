@@ -20,19 +20,32 @@ namespace MyMedData.Windows
 	/// <summary>
 	/// Логика взаимодействия для AddDocExamWindow.xaml
 	/// </summary>
-	public partial class AddDocExamWindow : Window
+	public partial class AddExaminationWindow : Window
 	{
-		public AddDocExamWindow(Session session)
+		public AddExaminationWindow(Session session, DocOrLabExamination docOrLab)
 		{
 			InitializeComponent();
 			this.session = session;
+			DocOrLab = docOrLab;
 		}
 
 		readonly Session session;
 
+		public DocOrLabExamination DocOrLab { get; private set; }
+
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
-		{
+		{			
 			this.Close();
         }
-    }
+
+		private void AddUserWindowInstance_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (DocOrLab == DocOrLabExamination.Doc)
+				theRecordDisplay.Item = new DoctorExaminationRecord();
+			else
+				theRecordDisplay.Item = new LabExaminationRecord();
+
+			theRecordDisplay.ChangesSavedToDB += (o, e) => Close();
+		}
+	}
 }

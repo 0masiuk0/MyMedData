@@ -116,6 +116,26 @@ namespace MyMedData.Controls
 			}
 		}
 
+		public void ApplyChangesOfEditedRecord()
+		{			
+			if (DataContext is Session session && EditedRecord != null)
+			{
+				bool updateSuccess = session.AddOrUpdateExaminationRecord(EditedRecord);
+				if (updateSuccess)
+					RaiseChangesSavedToDBEvent();
+				else
+					MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
+						MessageBoxImage.Error);
+			}
+
+			//if (Item is ExaminationRecord rec)
+			//{
+			//	EditedRecord = rec.DeepCopy();
+			//	EditedRecord.PropertyChanged += EditedRecord_PropertyChanged;
+			//	HasUnsavedChanges = false;
+			//}
+		}
+
 		private static void ItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			RecordDisplay recordDisplay = (RecordDisplay)d;
@@ -196,18 +216,7 @@ namespace MyMedData.Controls
 						DocumentsAttechmentEditedCollection.Remove(document);
 				}
 			}
-		}
-
-		private void ApplyChangesOfEditedRecord()
-		{
-			if (DataContext is Session session && EditedRecord != null)
-			{
-				bool updateSuccess = session.AddOrUpdateExaminationRecord(EditedRecord);
-				if (!updateSuccess)
-					MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
-						MessageBoxImage.Error);
-			}
-		}
+		}		
 
 		private void EditedRecord_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
@@ -220,13 +229,7 @@ namespace MyMedData.Controls
 		private void AcceptChangesButton_Click(object sender, RoutedEventArgs e)
 		{
 			ApplyChangesOfEditedRecord();
-			if (Item is ExaminationRecord rec)
-			{
-				EditedRecord = rec.DeepCopy();
-				EditedRecord.PropertyChanged += EditedRecord_PropertyChanged;
-				HasUnsavedChanges = false;
-			}
-		}
+		}		
 
 		private void DiscardChangesButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -281,6 +284,16 @@ namespace MyMedData.Controls
 				RemoveDocumentAttachmentById(document.Id);
 			}
 		}
+
+		//EVENTS
+		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);
+
+		public event ChangesSavedToDBEventHandler ChangesSavedToDB;
+
+		protected virtual void RaiseChangesSavedToDBEvent()
+		{
+			ChangesSavedToDB?.Invoke(this, new ChangesSavedToDBEventArgs(EditedRecord));
+		}
 	}
 
 	[ValueConversion(typeof(DateTime), typeof(DateOnly))]
@@ -304,6 +317,18 @@ namespace MyMedData.Controls
 			}
 
 			return DependencyProperty.UnsetValue;
+		}
+	}
+
+	public class ChangesSavedToDBEventArgs
+	{
+		public ExaminationRecord? NewRecord;
+
+		public ChangesSavedToDBEventArgs() { }
+
+		public ChangesSavedToDBEventArgs(ExaminationRecord? newRecord)
+		{
+			NewRecord = newRecord;
 		}
 	}
 
