@@ -25,11 +25,11 @@ namespace MyMedData.Windows
 		public AddExaminationWindow(Session session, DocOrLabExamination docOrLab)
 		{
 			InitializeComponent();
-			this.session = session;
+			Session = session;
 			DocOrLab = docOrLab;
 		}
 
-		readonly Session session;
+		public readonly Session Session;
 
 		public DocOrLabExamination DocOrLab { get; private set; }
 
@@ -40,6 +40,8 @@ namespace MyMedData.Windows
 
 		private void AddUserWindowInstance_Loaded(object sender, RoutedEventArgs e)
 		{
+			theRecordDisplay.DataContext = Session;
+
 			if (DocOrLab == DocOrLabExamination.Doc)
 				theRecordDisplay.Item = new DoctorExaminationRecord();
 			else

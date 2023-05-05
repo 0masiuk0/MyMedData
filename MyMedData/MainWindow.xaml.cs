@@ -36,11 +36,12 @@ namespace MyMedData
 				});
 
 			StateChanged += MainWindowStateChangeRaised;
-		}
+		}		
 
 		private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
 		{
-
+			NewDocExaminationButton.Visibility = Visibility.Collapsed;
+			NewLabAnalysisButon.Visibility = Visibility.Collapsed;
 		}		
 
 		private void OpenUsersDialog()
@@ -55,11 +56,9 @@ namespace MyMedData
 			ActiveSession = session;
 			UsernameTextBlock.Text = ActiveUser.Name;
 			DataContext = session;
-		}
 
-		private void LogOffButton_Click(object sender, RoutedEventArgs e)
-		{	
-			LogOff();			
+			NewDocExaminationButton.Visibility = Visibility.Visible;
+			NewLabAnalysisButon.Visibility = Visibility.Visible;
 		}
 
 		public void LogOff()
@@ -69,8 +68,10 @@ namespace MyMedData
 			{
 				ActiveSession.Dispose();
 				ActiveSession = null;
-				UsernameTextBlock.Text = "";
+				UsernameTextBlock.Text = "АВТОРИЗУЙТЕСЬ";
 			}
+			NewDocExaminationButton.Visibility = Visibility.Collapsed;
+			NewLabAnalysisButon.Visibility = Visibility.Collapsed;
 		}
 
 		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
@@ -78,7 +79,19 @@ namespace MyMedData
 			OpenUsersDialog();
 		}
 
+		private void LogOffButton_Click(object sender, RoutedEventArgs e)
+		{
+			LogOff();
+		}
 
+		private void NewAppointmentRecordData_Click(object sender, RoutedEventArgs e)
+		{
+			if (ActiveSession is Session session)
+			{
+				AddExaminationWindow AddWindow = new AddExaminationWindow(session, DocOrLabExamination.Doc);
+				AddWindow.ShowDialog();
+			}
+		}
 
 		private void SettingsdButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -87,54 +100,43 @@ namespace MyMedData
 			settingsWindow.ShowDialog();
 		}
 
-		#region BoringChromeOverrideStuff
-		// Can execute
-		private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
-
-		// Minimize
-		private void CommandBinding_Executed_Minimize(object sender, ExecutedRoutedEventArgs e)
-		{
-			SystemCommands.MinimizeWindow(this);
-		}
-
-		// Maximize
-		private void CommandBinding_Executed_Maximize(object sender, ExecutedRoutedEventArgs e)
-		{
-			SystemCommands.MaximizeWindow(this);
-		}
-
-		// Restore
-		private void CommandBinding_Executed_Restore(object sender, ExecutedRoutedEventArgs e)
-		{
-			SystemCommands.RestoreWindow(this);
-		}
-
-		// Close
-		private void CommandBinding_Executed_Close(object sender, ExecutedRoutedEventArgs e)
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}
 
-		// State change
-		private void MainWindowStateChangeRaised(object sender, EventArgs e)
+		private void MainWindowStateChangeRaised(object? sender, EventArgs e)
 		{
-			if (WindowState == WindowState.Maximized)
+			switch(WindowState)
 			{
-				BorderThickness = new Thickness(8);
-				RestoreButton.Visibility = Visibility.Visible;
-				MaximizeButton.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				BorderThickness = new Thickness(0);
-				RestoreButton.Visibility = Visibility.Collapsed;
-				MaximizeButton.Visibility = Visibility.Visible;
+				case WindowState.Normal:
+					RestoreButton.Visibility = Visibility.Collapsed;
+					MaximizeButton.Visibility = Visibility.Visible;
+					MainDockPanel.Margin = new Thickness(2);
+					break;
+
+				case WindowState.Maximized:
+					MaximizeButton.Visibility = Visibility.Collapsed;
+					RestoreButton.Visibility = Visibility.Visible;
+					MainDockPanel.Margin = new Thickness(8.0);
+					break;
 			}
 		}
-		#endregion
+
+		private void RestoreButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.WindowState = WindowState.Normal;			
+		}
+
+		private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.WindowState = WindowState.Maximized;			
+		}
+
+		private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.WindowState = WindowState.Minimized;
+		}
 	}
 
 }

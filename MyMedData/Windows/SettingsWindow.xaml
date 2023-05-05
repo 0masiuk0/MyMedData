@@ -39,7 +39,8 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem x:Name="DbaseTabItem" Background="{StaticResource DarkBackColor}">
+            
+            <TabItem x:Name="DbaseTabItem">
                 <TabItem.Header>
                     <TextBlock x:Name="dbTabHeaderTextBlcok" Text="Настройки базы данных" d:Foreground="{StaticResource DarkBackColor}">
                         <TextBlock.Style>
@@ -77,13 +78,35 @@
                     </DockPanel>
                 </StackPanel>
             </TabItem>
-            <d:TabItem>
-                <d:TabItem.Header>
+            
+            <TabItem>
+                <TabItem.Header>
                     <TextBlock>
-                        sdsdsd
+                        Пароль БД
                     </TextBlock>
-                </d:TabItem.Header>
-            </d:TabItem>
+                </TabItem.Header>
+                <Grid VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="210" MinWidth="210"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="18" Foreground="{StaticResource DarkThemeFontColor}"
+                               TextWrapping="WrapWithOverflow" TextAlignment="Center"
+                               Text="Получить пароль шифрования БД по паролю учетной записи приложения."/>
+                    <TextBlock Grid.Row="1" Foreground="{StaticResource DarkThemeFontColor}" TextWrapping="WrapWithOverflow" Margin="5" VerticalAlignment="Center"
+                               Text="Пароль учетной записи"/>
+                    <TextBlock Grid.Row="2" Foreground="{StaticResource DarkThemeFontColor}" TextWrapping="WrapWithOverflow" Margin="5"  VerticalAlignment="Center"
+                               Text="Пароль шифрования базы данных"/>
+                    <TextBox x:Name="AccPasswordTextBox" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5" TextChanged="AccountPasswordTextBox_TextChanged"/>
+                    <TextBox x:Name="DBPasswordTextBox" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsReadOnly="True"/>
+                </Grid>
+            </TabItem>
+            
         </TabControl>
     </DockPanel>
 </Window>

@@ -50,6 +50,8 @@ namespace MyMedData.Windows
 					UpdateSetting("UserDbName", "");
 				}
 			}
+
+			DBPasswordTextBox.Text = RecordsDataBase.HashString16("");
 		}		
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
@@ -113,16 +115,19 @@ namespace MyMedData.Windows
 			{
 				string newPath = openFileDialog.FileName;
 
-				if (UsersDataBase.CreateNewUsersDb(newPath))
-					System.Windows.MessageBox.Show("Создание/перезапись базы данных произвдена.", "",
-						MessageBoxButton.OK, MessageBoxImage.Information);
-				else
+				if (!UsersDataBase.CreateNewUsersDb(newPath))
 					System.Windows.MessageBox.Show("Создание/перезапись базы дапнных отменена.", "Отмена операции.",
 						MessageBoxButton.OK, MessageBoxImage.Information);
 
 				UpdateSetting("UserDbName", newPath);
 				UsersDbFileNameTextBox.Text = newPath;
 			}
+		}
+
+		private void AccountPasswordTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			string accPassword = AccPasswordTextBox.Text ?? "";			
+			DBPasswordTextBox.Text = RecordsDataBase.HashString16(accPassword);			
 		}
 	}
 }

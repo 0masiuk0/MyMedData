@@ -12,13 +12,7 @@
         Loaded="MainWindow1_Loaded">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34" />
-    </WindowChrome.WindowChrome>
-    <Window.CommandBindings>
-        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
-        <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Maximize" />
-        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Minimize" />
-        <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Restore" />
-    </Window.CommandBindings>
+    </WindowChrome.WindowChrome>   
     <Window.Resources>
         <Style x:Key="ButtonMousOverStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
@@ -45,24 +39,24 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <DockPanel x:Name="MainDockPanel">
+    <DockPanel x:Name="MainDockPanel" Margin="2">
         <DockPanel x:Name="customChromePanel" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
 
             <Button x:Name="CloseButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
                             DockPanel.Dock="Right" Content="{StaticResource CloseWindowIcon}"
-                            Command="{x:Static SystemCommands.CloseWindowCommand}"/>
+                           Click="CloseButton_Click"/>
 
             <Button x:Name="RestoreButton" Visibility="Collapsed" Style="{StaticResource ChromeButtonStyle}" 
                             DockPanel.Dock="Right" Content="{StaticResource RestoreWindowIcon}"
-                            Command="{x:Static SystemCommands.RestoreWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
+                            Click="RestoreButton_Click" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
 
             <Button x:Name="MaximizeButton" Visibility="Visible" Style="{StaticResource ChromeButtonStyle}" 
                             DockPanel.Dock="Right" Content="{StaticResource MaximizeWindowIcon}"
-                            Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
+                            Click="MaximizeButton_Click" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
 
             <Button x:Name="MinimizeButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Mimimize"
                             DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
-                            Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
+                            Click="MinimizeButton_Click"/>
 
             <TextBlock Text="{Binding ElementName=MainWindow1, Path=Title}"
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
@@ -75,12 +69,12 @@
         <DockPanel x:Name="StatusBarDockPanel"
              VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
             DockPanel.Dock="Bottom">
-            <Button x:Name="NewAppointmentRecordData"
+            <Button x:Name="NewDocExaminationButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="0"
                     Content="{StaticResource StethoscopeImagePlus}" ToolTip="Добавить запись о приеме"
-                    Background="{StaticResource LightDarkBackColor}"/>
-            <Button x:Name="NewAnalysisButon"
+                    Background="{StaticResource LightDarkBackColor}" Click="NewAppointmentRecordData_Click"/>
+            <Button x:Name="NewLabAnalysisButon"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
                     Content="{StaticResource AnalisysImagePlus}" ToolTip="Добавить запись об анализе"
@@ -109,12 +103,11 @@
                     ToolTip="Табличный вид"/>
 
             <TextBlock x:Name="UsernameTextBlock"
-                        FontSize="14"                       
+                        FontSize="14"
+                        Text="АВТОРИЗУЙТЕСЬ"
                         Background="{StaticResource LightDarkBackColor}"
                         DockPanel.Dock="Right" VerticalAlignment="Center" MinWidth="120"
                         Margin="4,4,10,4" Padding="4" Foreground="{StaticResource DarkThemeFontColor}"/>
-
-
 
             <Button x:Name="LogOffButton" Height="25" Width="25" 
                     Margin="10,4,10,4" 

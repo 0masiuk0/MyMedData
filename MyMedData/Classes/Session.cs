@@ -68,6 +68,11 @@ namespace MyMedData
 			{
 				ExaminationRecords.Add(labExam);
 			}
+
+			//DEBUG
+			foreach (var rec in RecordsDataBase.GenerateSampleRecords(10))
+				ExaminationRecords.Add(rec);
+			//DEBUG
 		
 			CacheAutoComplete(EntitiesDatbaseContext);
 		}

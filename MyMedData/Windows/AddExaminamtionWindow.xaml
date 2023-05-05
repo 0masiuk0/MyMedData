@@ -10,7 +10,7 @@
         xmlns:uc="clr-namespace:MyMedData.Controls"
         xmlns:controls="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
         WindowStyle="None"
-        Style="{StaticResource DarkWindowStyle}"
+        Style="{StaticResource DarkWindowStyle}"       
         Loaded="AddUserWindowInstance_Loaded">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34"/>
@@ -33,7 +33,7 @@
                 Style="{StaticResource ChromeButtonStyle}" Content="{StaticResource CloseWindowIcon}" Click="CloseButton_Click"/>
 
         <uc:RecordDisplay x:Name="theRecordDisplay"
-            Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-            Margin="4,0,4,4" />
+                Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="4,0,4,4"                
+                />
     </Grid>    
 </Window>
