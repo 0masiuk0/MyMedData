@@ -22,6 +22,17 @@ namespace MyMedData.Windows
 	/// </summary>
 	public partial class AddDocExamWindow : Window
 	{
-		
-	}
+		public AddDocExamWindow(Session session)
+		{
+			InitializeComponent();
+			this.session = session;
+		}
+
+		readonly Session session;
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+        }
+    }
 }

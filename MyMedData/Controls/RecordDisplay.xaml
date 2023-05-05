@@ -115,8 +115,8 @@
                         Click="RemoveDocButton_Click"/>
             </StackPanel>
             <ListBox x:Name="DocumentsListBox" Background="Transparent"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                        Margin="0,0,4,0"
                         ItemsSource="{Binding ElementName=ThisRecordDisplay,
                         Path=EditedRecord.Documents,
                         FallbackValue={x:Null}}">

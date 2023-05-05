@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData.Windows"
         mc:Ignorable="d"
-        Title="AddDocExamWindow" Height="450" Width="637"
+        Title="AddDocExamWindow" Height="500" Width="637"
         x:Name="AddUserWindowInstance"
         xmlns:uc="clr-namespace:MyMedData.Controls"
         xmlns:controls="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
@@ -18,10 +18,21 @@
        
     </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="34"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-    </Grid>
+        <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" FontSize="18" HorizontalAlignment="Left" FontWeight="DemiBold"
+                    Text="Добавить запись" 
+                    Foreground="{StaticResource DarkThemeFontColor}"/>
+
+        <Button x:Name="CloseButton" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                Width="22" Height="22" Margin="0,3,5,3" WindowChrome.IsHitTestVisibleInChrome="True"
+                Style="{StaticResource ChromeButtonStyle}" Content="{StaticResource CloseWindowIcon}" Click="CloseButton_Click"/>
+
+        <uc:RecordDisplay x:Name="theRecorDisplay"
+            Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+            Margin="4,0,4,4" />
+    </Grid>    
 </Window>

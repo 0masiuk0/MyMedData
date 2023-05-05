@@ -11,26 +11,26 @@ namespace MyMedData
 {
 	internal class FileStorage
 	{
-		public FileStorage(Session session) { this.session = session; }
+		public FileStorage(Session session) { db = session.RecordsDatabaseContext; }
 
-		Session session;
+		public FileStorage(LiteDatabase db) { this.db = db; }
+
+		LiteDatabase db;
 
 		public bool UploadFilesToStorage(DocumentAttachment document)
 		{
-			LiteDatabase db = session.RecordsDatabaseContext;
 			var storage = db.FileStorage;
-			return storage.Upload(document.Id, document.FileName, new MemoryStream(document.TemporaryStoredFile)) != null;
+			return storage.Upload(document.Id, document.FileName, new MemoryStream(document.Data)) != null;
 		}
 
 		public bool UploadFilesToStorage(IEnumerable<DocumentAttachment> documents)
 		{
-			LiteDatabase db = session.RecordsDatabaseContext;
 			var storage = db.FileStorage;
 			bool success = true;
 
 			foreach (var document in documents)
 			{
-				success &= storage.Upload(document.Id, document.FileName, new MemoryStream(document.TemporaryStoredFile)) != null;
+				success &= storage.Upload(document.Id, document.FileName, new MemoryStream(document.Data)) != null;
 			}
 
 			return success;
@@ -38,14 +38,12 @@ namespace MyMedData
 
 		public bool DeleteFilesFromStorage(DocumentAttachment document)
 		{
-			LiteDatabase db = session.RecordsDatabaseContext;
 			var storage = db.FileStorage;			
 			return storage.Delete(document.Id);
 		}
 
 		public bool DeleteFilesFromStorage(IEnumerable<DocumentAttachment> documents) 
 		{
-			LiteDatabase db = session.RecordsDatabaseContext;
 			var storage = db.FileStorage;
 			bool success = true;
 			

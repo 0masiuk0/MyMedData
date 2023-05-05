@@ -203,15 +203,7 @@ namespace MyMedData.Controls
 			if (DataContext is Session session && EditedRecord != null)
 			{
 				bool updateSuccess = session.AddOrUpdateExaminationRecord(EditedRecord);
-				if (updateSuccess)
-				{
-					//Cache Update
-					string? doctorName = (EditedRecord is DoctorExaminationRecord docRec) ? docRec.Doctor?.Name : null;
-					session.EnsureValuesAreCached(EditedRecord.ExaminationType?.ExaminationTypeTitle, DocOrLab,
-						doctorName,
-						EditedRecord.Clinic?.Name);
-				}
-				else
+				if (!updateSuccess)
 					MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
 						MessageBoxImage.Error);
 			}
@@ -270,7 +262,7 @@ namespace MyMedData.Controls
 					DocumentAttachment document = new DocumentAttachment();
 					document.FileName = fileName;
 					document.DocumentType = documentType;
-					document.TemporaryStoredFile = File.ReadAllBytes(fileName);
+					document.Data = File.ReadAllBytes(fileName);
 
 					AddDocumentAttachment(document);
 				}

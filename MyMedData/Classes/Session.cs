@@ -105,6 +105,14 @@ namespace MyMedData
 					//this is to trigger ObservableCollection.CollectionChanged and all the bound views to update.
 					ExaminationRecords.RemoveAt(recordToUpdateIndex);
 					ExaminationRecords.Insert(recordToUpdateIndex, record);
+
+					//Cache Update
+					string? doctorName = (record is DoctorExaminationRecord docRec) ? docRec.Doctor?.Name : null;
+					DocOrLabExamination docOrLab = record is DoctorExaminationRecord ? DocOrLabExamination.Doc : DocOrLabExamination.Lab;
+					EnsureValuesAreCached(record.ExaminationType?.ExaminationTypeTitle, docOrLab,
+						doctorName,
+						record.Clinic?.Name);
+
 					return true;
 				}
 			}

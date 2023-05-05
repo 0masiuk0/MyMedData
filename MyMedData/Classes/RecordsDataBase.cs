@@ -170,6 +170,8 @@ namespace MyMedData
 
 		public static bool UpdateOrInsertExaminationRecord(LiteDatabase db, ExaminationRecord record)
 		{
+			FileStorage fs = new(db);
+
 			try
 			{				
 				switch (record)
@@ -180,13 +182,26 @@ namespace MyMedData
 						var recordInDb = col.FindById(docRecord.Id);
 						if (recordInDb != null) 
 						{
-								
+								ProcessDocumentUploadsChanges(fs, record, recordInDb);
+						}
+						else
+						{
+								fs.UploadFilesToStorage(record.Documents);
 						}
 						return col.Upsert(docRecord);
 					}
 					case LabExaminationRecord labRecord:
 					{
 						var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
+						var recordInDb = col.FindById(labRecord.Id);
+						if (recordInDb != null)
+						{
+							ProcessDocumentUploadsChanges(fs, record, recordInDb);
+						}
+						else
+						{
+							fs.UploadFilesToStorage(record.Documents);
+						}
 						return col.Upsert(labRecord);
 					}
 					default:
@@ -197,6 +212,15 @@ namespace MyMedData
 			{
 				return false;
 			}
+		}
+
+		private static void ProcessDocumentUploadsChanges(FileStorage fs, ExaminationRecord updatedRecord, ExaminationRecord recordInDb)
+		{
+			var documentsToDelete = recordInDb.Documents.Except(updatedRecord.Documents);
+			var documentsToAdd = updatedRecord.Documents.Except(recordInDb.Documents);
+			
+			fs.DeleteFilesFromStorage(documentsToDelete);
+			fs.UploadFilesToStorage(documentsToAdd);
 		}
 
 		public static List<ExaminationRecord> GenerateSampleExaminationRecordList(int count) => GenerateSampleRecords(count).ToList();

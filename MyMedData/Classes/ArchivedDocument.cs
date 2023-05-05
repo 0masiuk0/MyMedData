@@ -43,10 +43,9 @@ namespace MyMedData
 		}
 
 		[BsonIgnore] 
-		public byte[] TemporaryStoredFile;
+		public byte[]? Data;
 
-		public const string DbCollectionName = "ArchivedDocuments";
-		//public const string FileStorageCollectionName = "StoredFiles";
+		public const string DbCollectionName = "ArchivedDocuments";	
 
 		public override string ToString() => FileName;
 
