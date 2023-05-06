@@ -38,7 +38,7 @@ namespace MyMedData
 			{
 				if (_date != value)
 				{
-					_date = value;
+					_date = value;					
 					OnPropertyChanged(nameof(Date));
 				}
 			}
@@ -69,6 +69,9 @@ namespace MyMedData
 				if (_clinic != value)
 				{
 					_clinic = value;
+					if (_clinic != null)
+						_clinic.PropertyChanged += (o, e) => OnPropertyChanged(nameof(Clinic));
+
 					OnPropertyChanged(nameof(Clinic));
 				}
 			}
@@ -136,10 +139,18 @@ namespace MyMedData
 			set
 			{
 				_doctor = value;
-				OnPropertyChanged(nameof(Doctor));
-				OnPropertyChanged(nameof(Title));
+				if (_doctor != null)
+					_doctor.PropertyChanged += (o, e) => Doctor_PropertyChanged();
+
+				Doctor_PropertyChanged();
+
+				void Doctor_PropertyChanged()
+				{
+					OnPropertyChanged(nameof(Doctor));
+					OnPropertyChanged(nameof(Title));
+				}
 			}
-		}
+		}		
 
 		[BsonRef(ExaminationType.DoctorTypesDbCollectionName)]
 		public override ExaminationType? ExaminationType
@@ -148,8 +159,16 @@ namespace MyMedData
 			set
 			{
 				_examinationType = value;
-				OnPropertyChanged(nameof(ExaminationType));
-				OnPropertyChanged(nameof(Title));
+				if (_examinationType != null)
+					_examinationType.PropertyChanged += (o, e) => ExaminationTypePropertyChange();
+
+				ExaminationTypePropertyChange();
+
+				void ExaminationTypePropertyChange()
+				{
+					OnPropertyChanged(nameof(ExaminationType));
+					OnPropertyChanged(nameof(Title));
+				}
 			}
 		}
 
@@ -175,6 +194,7 @@ namespace MyMedData
 			       && ExaminationType?.ExaminationTypeTitle == otherDocRecord.ExaminationType?.ExaminationTypeTitle;
 		}
 
+		[BsonIgnore]
 		public override string Title => $"{ExaminationType} - {Doctor}";
 
 		public static string DbCollectionName => "DoctorExaminations";
@@ -189,8 +209,16 @@ namespace MyMedData
 			set
 			{
 				_examinationType = value;
-				OnPropertyChanged(nameof(ExaminationType));
-				OnPropertyChanged(nameof(ExaminationType));
+				if (_examinationType != null)
+					_examinationType.PropertyChanged += (o, e) => ExaminationTypePropertyChange();
+
+				ExaminationTypePropertyChange();
+
+				void ExaminationTypePropertyChange()
+				{
+					OnPropertyChanged(nameof(ExaminationType));
+					OnPropertyChanged(nameof(Title));
+				}
 			}
 		}
 
@@ -221,7 +249,8 @@ namespace MyMedData
 			return ExaminationType?.ExaminationTypeTitle == otherLabRecord.ExaminationType?.ExaminationTypeTitle;
 		}
 
-		public override string Title => ExaminationType.ToString();
+		[BsonIgnore]
+		public override string Title => ExaminationType?.ToString() ?? "";
 
 		public static string DbCollectionName => "LabExaminations";
 	}

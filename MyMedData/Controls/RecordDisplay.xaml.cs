@@ -72,27 +72,7 @@ namespace MyMedData.Controls
 				_clinicsView.Source = new List<Clinic>();
 				_doctorsView.Source = new List<Doctor>();
 			}
-		}
-
-		//сюда привязан selected item листа записей
-		public object Item
-		{
-			get => GetValue(ItemProperty);
-			set => SetValue(ItemProperty, value);
-		}
-
-		public static readonly DependencyProperty ItemProperty =
-			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(ItemChanged));
-
-		//shall only be changed within ItemChanged handler.
-		public ExaminationRecord? EditedRecord
-		{
-			get => (ExaminationRecord?)GetValue(EditedRecordProperty);
-			set => SetValue(EditedRecordProperty, value);
-		}
-
-		public static readonly DependencyProperty EditedRecordProperty =
-			DependencyProperty.Register(nameof(EditedRecord), typeof(ExaminationRecord), typeof(RecordDisplay), new UIPropertyMetadata());
+		}				
 
 		public ObservableCollection<DocumentAttachment> DocumentsAttechmentEditedCollection;
 
@@ -107,33 +87,26 @@ namespace MyMedData.Controls
 				_hasUnsavedChanges = value;
 				if (value)
 				{
-					AcknowledgeChangesPanel.Visibility = Visibility.Visible;
+					ApplyChangesPanel.Visibility = Visibility.Visible;
 				}
 				else
 				{
-					AcknowledgeChangesPanel.Visibility = Visibility.Collapsed;
+					ApplyChangesPanel.Visibility = Visibility.Collapsed;
 				}
 			}
 		}
 
 		public void ApplyChangesOfEditedRecord()
 		{			
-			if (DataContext is Session session && EditedRecord != null)
+			if (DataContext is Session session && ConstructRecordFormUI() is ExaminationRecord record)
 			{
-				bool updateSuccess = session.AddOrUpdateExaminationRecord(EditedRecord);
+				bool updateSuccess = session.AddOrUpdateExaminationRecord(record);
 				if (updateSuccess)
 					RaiseChangesSavedToDBEvent();
 				else
 					MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
 						MessageBoxImage.Error);
 			}
-
-			//if (Item is ExaminationRecord rec)
-			//{
-			//	EditedRecord = rec.DeepCopy();
-			//	EditedRecord.PropertyChanged += EditedRecord_PropertyChanged;
-			//	HasUnsavedChanges = false;
-			//}
 		}
 
 		private static void ItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -152,78 +125,145 @@ namespace MyMedData.Controls
 			recordDisplay.HasUnsavedChanges = false;
 
 			//Rebind to new record
-			if (e.NewValue is ExaminationRecord record && recordDisplay.DataContext is Session session)
+			if (e.NewValue is ExaminationRecord item && recordDisplay.DataContext is Session session)
 			{
-				recordDisplay.EditedRecord = record.DeepCopy();
-				recordDisplay.DocumentsAttechmentEditedCollection = new ObservableCollection<DocumentAttachment>(recordDisplay.EditedRecord.Documents);				
-
-				//we do not know if _examinationTypesView was bounbd to doc types or lab types. Just unsubscribe both
-				session.LabTestTypesCache.CollectionChanged -= recordDisplay._onLabExamTypeCacheChanged;
-				session.DoctorTypesCache.CollectionChanged -= recordDisplay._onDoctorTypeCacheChanged;
-
-				if (record is LabExaminationRecord)
-				{
-					recordDisplay.DocOrLab = DocOrLabExamination.Lab;
-
-					recordDisplay.DoctorLabel.Visibility = Visibility.Collapsed;
-					recordDisplay.DoctorTextBox.Visibility = Visibility.Collapsed;
-
-					recordDisplay._examinationTypesView.Source = session.LabTestTypesCache;
-					session.LabTestTypesCache.CollectionChanged += recordDisplay._onLabExamTypeCacheChanged;
-				}
-				else if (record is DoctorExaminationRecord docExam)
-				{
-					recordDisplay.DocOrLab = DocOrLabExamination.Doc;
-
-					recordDisplay.DoctorLabel.Visibility = Visibility.Visible;
-					recordDisplay.DoctorTextBox.Visibility = Visibility.Visible;
-
-					recordDisplay._examinationTypesView.Source = session.DoctorTypesCache;
-					session.DoctorTypesCache.CollectionChanged += recordDisplay._onDoctorTypeCacheChanged;
-				}
-
-				recordDisplay.EditedRecord.PropertyChanged += recordDisplay.EditedRecord_PropertyChanged;
+				recordDisplay.LoadItemToRecordDisplayUI(item, session);
 			}
 			else
 			{
-				recordDisplay.EditedRecord = null;
 				recordDisplay.DocOrLab = null;
 			}
 		}
 
-		private void AddDocumentAttachment(DocumentAttachment document)
+		private void LoadItemToRecordDisplayUI(ExaminationRecord item, Session session)
 		{
-			if (EditedRecord is ExaminationRecord)
+			DocumentsAttechmentEditedCollection = new ObservableCollection<DocumentAttachment>(item.Documents);
+						
+			//we do not know if _examinationTypesView was bound to doc types or lab types. Just unsubscribe both.
+			session.LabTestTypesCache.CollectionChanged -= _onLabExamTypeCacheChanged;
+			session.DoctorTypesCache.CollectionChanged -= _onDoctorTypeCacheChanged;
+
+			if (item is LabExaminationRecord)
 			{
-				DocumentsAttechmentEditedCollection.Add(document);
-				EditedRecord.Documents.Add(document);
+				DocOrLab = DocOrLabExamination.Lab;
+				DoctorName = "";
+
+				DoctorLabel.Visibility = Visibility.Collapsed;
+				DoctorTextBox.Visibility = Visibility.Collapsed;
+
+				_examinationTypesView.Source = session.LabTestTypesCache;
+				session.LabTestTypesCache.CollectionChanged += _onLabExamTypeCacheChanged;
+			}
+			else if (item is DoctorExaminationRecord docExam)
+			{
+				DocOrLab = DocOrLabExamination.Doc;
+				DoctorName = docExam.Doctor?.Name ?? "";
+
+				DoctorLabel.Visibility = Visibility.Visible;
+				DoctorTextBox.Visibility = Visibility.Visible;
+
+				_examinationTypesView.Source = session.DoctorTypesCache;
+				session.DoctorTypesCache.CollectionChanged += _onDoctorTypeCacheChanged;
 			}
 		}
 
-		private void RemoveDocumentAttachmentById(string documentID) 
-		{
-			if (EditedRecord is ExaminationRecord)
-			{
-				foreach(var document in DocumentsAttechmentEditedCollection)
-				{
-					if (document.Id == documentID)
-						DocumentsAttechmentEditedCollection.Remove(document);
-				}
-
-				foreach(var document in EditedRecord.Documents)
-				{
-					if (document.Id == documentID)
-						DocumentsAttechmentEditedCollection.Remove(document);
-				}
-			}
-		}		
-
-		private void EditedRecord_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		private ExaminationRecord? ConstructRecordFormUI()
 		{
 			if (Item is ExaminationRecord record)
-				HasUnsavedChanges = EditedRecord?.IsEqualTo(record) ?? false;
+			{
+				ExaminationRecord editedRecord = record.DeepCopy();
+				
+				//Date
+				editedRecord.Date = ExaminationDate ?? DateOnly.FromDateTime(DateTime.Today);
+
+				//ExaminationType
+				if(ExaminationTypeTitle != null && ExaminationTypeTitle != "")
+				{
+					if (editedRecord.ExaminationType != null)
+						editedRecord.ExaminationType.ExaminationTypeTitle = ExaminationTypeTitle;
+					else
+						editedRecord.ExaminationType = new ExaminationType(ExaminationTypeTitle);
+				}
+				else
+				{
+					editedRecord.ExaminationType = null;
+				}
+
+				//Doctor
+				if (editedRecord is DoctorExaminationRecord docRecord)
+				{
+					if (DoctorName != null && DoctorName != "")
+					{
+
+						if (docRecord.Doctor != null)
+							docRecord.Doctor.Name = DoctorName;
+						else
+							docRecord.Doctor = new Doctor(DoctorName);
+					}
+					else
+					{
+						docRecord.Doctor = null;
+					}
+				}
+
+				//Clinic
+				if (ClinicName != null && ClinicName != "")
+				{
+					if (editedRecord.Clinic != null)
+						editedRecord.Clinic.Name = ClinicName;
+					else
+						editedRecord.Clinic = new Clinic(Name);
+				}
+				else
+				{
+					editedRecord.Clinic = null;
+				}
+
+				//Comment
+				if(Comment != null)
+				{
+					editedRecord.Comment = Comment;
+				}
+
+				return editedRecord;
+			}
 			else
-				HasUnsavedChanges = false;
+				return null;
+		}
+
+		private void RemoveDocumentAttachmentById(string documentID)
+		{
+
+			foreach (var document in DocumentsAttechmentEditedCollection)
+			{
+				if (document.Id == documentID)
+					DocumentsAttechmentEditedCollection.Remove(document);
+			}
+		}
+
+		private static void UserInputChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			RecordDisplay recordDisplay = (RecordDisplay)sender;
+			if (recordDisplay.Item is not ExaminationRecord initialItem)
+				return;
+						
+			bool changesFound = 
+				initialItem.Date == recordDisplay.ExaminationDate
+				&& initialItem.Clinic?.Name == recordDisplay.ClinicName
+				&& initialItem.ExaminationType?.ExaminationTypeTitle == recordDisplay.ExaminationTypeTitle
+				&& initialItem.Comment == recordDisplay.Comment;
+
+			if (initialItem is DoctorExaminationRecord docRec)
+			{
+				changesFound &= docRec.Doctor?.Name == recordDisplay.DoctorName;
+			}
+
+			changesFound &= Enumerable.SequenceEqual(initialItem.Documents.OrderBy(d => d.Id), recordDisplay.DocumentsAttechmentEditedCollection.OrderBy(d => d.Id));
+			
+			if (changesFound)
+				recordDisplay.ApplyChangesPanel.Visibility = Visibility.Visible;
+			else
+				recordDisplay.ApplyChangesPanel.Visibility= Visibility.Collapsed;
 		}			
 
 		private void AcceptChangesButton_Click(object sender, RoutedEventArgs e)
@@ -233,11 +273,9 @@ namespace MyMedData.Controls
 
 		private void DiscardChangesButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (Item is ExaminationRecord rec)
+			if (Item is ExaminationRecord rec && DataContext is Session session)
 			{
-				EditedRecord = rec.DeepCopy();
-				EditedRecord.PropertyChanged += EditedRecord_PropertyChanged;
-				HasUnsavedChanges = false;
+				LoadItemToRecordDisplayUI(rec, session);
 			}
 		}
 
@@ -267,7 +305,7 @@ namespace MyMedData.Controls
 					document.DocumentType = documentType;
 					document.Data = File.ReadAllBytes(fileName);
 
-					AddDocumentAttachment(document);
+					DocumentsAttechmentEditedCollection.Add(document);
 				}
 			}
         }
@@ -285,15 +323,79 @@ namespace MyMedData.Controls
 			}
 		}
 
-		//EVENTS
+		//------------------------------------------DEPENDENCY PROPERTIES----------------------------------------------------------
+
+		//сюда привязан selected item листа записей
+		public object Item
+		{
+			get => GetValue(ItemProperty);
+			set => SetValue(ItemProperty, value);
+		}
+
+		public static readonly DependencyProperty ItemProperty =
+			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(ItemChanged));
+
+
+		public DateOnly? ExaminationDate
+		{
+			set => SetValue(ExaminationDateProperty, value);
+			get => (DateOnly?)GetValue(ExaminationDateProperty);
+		}
+
+
+		public static readonly DependencyProperty ExaminationDateProperty =
+			DependencyProperty.Register(nameof(ExaminationDate), typeof(DateOnly?), typeof(RecordDisplay),
+				new UIPropertyMetadata(DateOnly.FromDateTime(DateTime.Today), UserInputChanged));
+
+		public string ExaminationTypeTitle
+		{
+			set => SetValue(ExaminationTypeTitleProperty, value);
+			get => (string)GetValue(ExaminationTypeTitleProperty);
+		}
+
+		public static readonly DependencyProperty ExaminationTypeTitleProperty =
+			DependencyProperty.Register(nameof(ExaminationTypeTitle), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
+
+
+		public string DoctorName
+		{
+			set => SetValue(DoctorNameProperty, value);
+			get => (string)GetValue(DoctorNameProperty);
+		}
+
+		public static readonly DependencyProperty DoctorNameProperty =
+			DependencyProperty.Register(nameof(DoctorName), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
+
+
+		public string ClinicName
+		{
+			set => SetValue(ClinicNameProperty, value);
+			get => (string)GetValue(ClinicNameProperty);
+		}
+
+		public static readonly DependencyProperty ClinicNameProperty =
+			DependencyProperty.Register(nameof(ClinicName), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
+
+
+		public string Comment
+		{
+			set => SetValue(CommentProperty, value);
+			get => (string)GetValue(CommentProperty);
+		}
+
+		public static readonly DependencyProperty CommentProperty =
+			DependencyProperty.Register(nameof(Comment), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
+					
+
+		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
 		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);
 
 		public event ChangesSavedToDBEventHandler ChangesSavedToDB;
 
 		protected virtual void RaiseChangesSavedToDBEvent()
 		{
-			ChangesSavedToDB?.Invoke(this, new ChangesSavedToDBEventArgs(EditedRecord));
-		}
+			ChangesSavedToDB?.Invoke(this, new ChangesSavedToDBEventArgs(ConstructRecordFormUI()));
+		}		
 	}
 
 	[ValueConversion(typeof(DateTime), typeof(DateOnly))]

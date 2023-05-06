@@ -46,7 +46,7 @@
                 FontSize="16" 
                 Style="{StaticResource DarkDatePicker}"
                 SelectedDate="{Binding ElementName=ThisRecordDisplay,
-                    Path=EditedRecord.Date,
+                    Path=ExaminationDate,
                     FallbackValue={x:Null}, Mode=TwoWay,                       
                     Converter={StaticResource DateTimeToDateOnlyConverter}}"/>
             <TextBlock x:Name="ExamniantionTypleLabel" 
@@ -57,9 +57,9 @@
                 Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                 ItemsSource="{Binding Source={StaticResource ExaminationTypes}}"
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Binding="{Binding ExminationTypeTitle}"
+                Binding="{Binding XPath=ExminationTypeTitle}"
                 Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=EditedRecord.ExaminationType.ExaminationTypeTitle,
+                    Path=ExaminationTypeTitle,
                     FallbackValue={x:Null}, Mode=TwoWay}"/>
             <TextBlock x:Name="DoctorLabel" 
                 DockPanel.Dock="Top"
@@ -69,9 +69,9 @@
                 Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                 ItemsSource="{Binding Source={StaticResource Doctors}}"
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Binding="{Binding Name}"
+                Binding="{Binding XPath=Name}"
                 Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=EditedRecord.Doctor.Name,
+                    Path=DoctorName,
                     FallbackValue={x:Null}, Mode=TwoWay}"/>
             <TextBlock x:Name="ClinicLabel" 
                 DockPanel.Dock="Top"
@@ -81,9 +81,9 @@
                 Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                 ItemsSource="{Binding Source={StaticResource Clinics}}"
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Binding="{Binding Name}"
+                Binding="{Binding XPath=Name}"
                 Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=EditedRecord.Clinic.Name,
+                    Path=ClinicName,
                     FallbackValue={x:Null}, Mode=TwoWay}"/>
             <TextBlock x:Name="CommentLabel" 
                         DockPanel.Dock="Top"
@@ -92,7 +92,7 @@
                         Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
                         AcceptsReturn="True" TextWrapping="WrapWithOverflow"
                         Text="{Binding ElementName=ThisRecordDisplay,
-                        Path=EditedRecord.Comment,
+                        Path=Comment,
                         FallbackValue={x:Null}, Mode=TwoWay}"
                         />
         </DockPanel>
@@ -118,11 +118,11 @@
                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                         Margin="0,0,4,0"
                         ItemsSource="{Binding ElementName=ThisRecordDisplay,
-                        Path=EditedRecord.Documents,
+                        Path=DocumentsAttechmentEditedCollection,
                         FallbackValue={x:Null}}">
             </ListBox>
         </DockPanel>
-        <StackPanel x:Name="AcknowledgeChangesPanel" Orientation="Horizontal"
+        <StackPanel x:Name="ApplyChangesPanel" Orientation="Horizontal"
                     Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
             <Button x:Name="AcceptChangesButton" Style="{StaticResource UnsizedDarkButtonStyle}" Width="40" Height="40" Margin="10"
                     Content="{StaticResource ConfirmIcon}" Padding="4" Click="AcceptChangesButton_Click"/>
