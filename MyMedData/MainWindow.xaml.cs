@@ -42,6 +42,7 @@ namespace MyMedData
 		{
 			NewDocExaminationButton.Visibility = Visibility.Collapsed;
 			NewLabAnalysisButon.Visibility = Visibility.Collapsed;
+			RecordsTableDisplay.RecordsDataGrid.SelectionChanged += RecordsDataGrid_SelectionChanged;
 		}		
 
 		private void OpenUsersDialog()
@@ -123,6 +124,22 @@ namespace MyMedData
 			}
 		}
 
+		private void RecordsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ActiveSession != null && RecordsTableDisplay.RecordsDataGrid.SelectedItem is ExaminationRecord)
+				DeleteRecordButton.Visibility = Visibility.Visible;
+			else
+				DeleteRecordButton.Visibility = Visibility.Collapsed;
+		}
+
+		private void DeleteRecordButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (ActiveSession != null && RecordsTableDisplay.RecordsDataGrid.SelectedItem is ExaminationRecord record)
+			{
+				ActiveSession.DeleteRecord(record);
+			}			
+		}
+
 		private void RestoreButton_Click(object sender, RoutedEventArgs e)
 		{
 			this.WindowState = WindowState.Normal;			
@@ -136,7 +153,7 @@ namespace MyMedData
 		private void MinimizeButton_Click(object sender, RoutedEventArgs e)
 		{
 			this.WindowState = WindowState.Minimized;
-		}
+		}		
 	}
 
 }

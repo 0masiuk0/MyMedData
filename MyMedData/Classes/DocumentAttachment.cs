@@ -49,7 +49,7 @@ namespace MyMedData
 
 		public override string ToString() => FileName;
 
-		public DocumentAttachment Copy()
+		public DocumentAttachment DeepCopy()
 		{
 			return new DocumentAttachment() { Id = Id, DocumentType = DocumentType, FileName = FileName };
 		}

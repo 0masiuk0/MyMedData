@@ -57,19 +57,29 @@ namespace MyMedData.Windows
 				}
 				else
 				{
-					if (File.Exists(UsersDbFileName) && UsersDataBase.FastCheckUserDvValidity(UsersDbFileName))
+					if (MainWindow.ActiveSession?.OccupiesUsersDb ?? false)
 					{
-						//читаем
-						ReadUsers((string)UsersDbFileName);
+						//Есть сессия и она занимает UsersDb
+						ReadUsers(MainWindow.ActiveSession.EntitiesDatbaseContext);
 					}
 					else
-					{						
-						var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
-							"Ошибка!",
-							MessageBoxButton.OK, MessageBoxImage.Error);
-						ContentRendered += (o, e) => Close();
-						return;
-					}
+						//Нет активной сессии или она не заниает UsersDb
+						if (File.Exists(UsersDbFileName) && UsersDataBase.FastCheckUserDvValidity(UsersDbFileName))
+						{
+							//читаем
+							using (LiteDatabase usersDb = new LiteDatabase(UsersDbFileName))
+							{
+								ReadUsers(usersDb);
+							}
+						}
+						else
+						{						
+							var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
+								"Ошибка!",
+								MessageBoxButton.OK, MessageBoxImage.Error);
+							ContentRendered += (o, e) => Close();
+							return;
+						}
 				}
 			}
 			catch (ConfigurationErrorsException)
@@ -77,20 +87,21 @@ namespace MyMedData.Windows
 				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 				ContentRendered += (o, e) => Close();
 				return;
-			}			
+			}	
+			finally
+			{
+				UsersListBox.Focus();
+			}
 		}
 
-		private void ReadUsers(string userDbFileName)
-		{
-			using (var usersDb = new LiteDatabase(userDbFileName))
+		private void ReadUsers(LiteDatabase usersDb)
+		{		
+			var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
+			foreach (User user in usersCollection.FindAll())
 			{
-				var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
-				foreach (User user in usersCollection.FindAll())
-				{
-					Users.Add(user);
-				}
+				Users.Add(user);
 			}
-
+			
 			if (UsersListBox.Items.Count > 0)
 			{
 				UsersListBox.SelectedIndex = 0;
@@ -238,6 +249,15 @@ namespace MyMedData.Windows
 		private void UsersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			LoginButton.IsEnabled = DeleteUserButton.IsEnabled = EditUserButton.IsEnabled = UsersListBox.SelectedItem is User;
-		}		
+		}
+
+		private void UsersListBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter 
+				&& UsersListBox.SelectedItem is User user) 
+			{
+				AuthorizeUser(user);
+			}
+        }
     }
 }

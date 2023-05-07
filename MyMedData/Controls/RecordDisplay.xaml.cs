@@ -44,6 +44,12 @@ namespace MyMedData.Controls
 			_onDoctorTypeCacheChanged = (o, e) => _examinationTypesView.View.Refresh();
 
 			HasUnsavedChanges = false;
+
+			RecordDatePicker.SelectedDateChanged += (o, e) => UserInputChanged();
+			ExaminationTypeTextBox.TextChanged += (o, e) => UserInputChanged();
+			DoctorTextBox.TextChanged += (o, e) => UserInputChanged();
+			ClinicTextBox.TextChanged += (o, e) => UserInputChanged();
+			CommentTextBox.TextChanged += (o, e) => UserInputChanged();
 		}
 
 		private readonly CollectionViewSource _doctorsView;
@@ -61,20 +67,20 @@ namespace MyMedData.Controls
 			{
 				// Насколько я понимаю принципы сбора мусора, отписываться не обязательно, поскольку хэндлеры никогда собирать и не надо
 				// т.к. RecordDisplay один и живет все время.
-				_doctorsView.Source = session.DoctorNameCache;
-				session.DoctorNameCache.CollectionChanged += _onDoctorCacheChanged;
+				_doctorsView.Source = session.DoctorCache;
+				session.DoctorCache.CollectionChanged += _onDoctorCacheChanged;
 
-				_clinicsView.Source = session.ClinicNameCache;
-				session.ClinicNameCache.CollectionChanged += _onClinicCacheChanged;
+				_clinicsView.Source = session.ClinicCache;
+				session.ClinicCache.CollectionChanged += _onClinicCacheChanged;
 			}
 			else
 			{
 				_clinicsView.Source = new List<Clinic>();
 				_doctorsView.Source = new List<Doctor>();
 			}
-		}				
+		}
 
-		public ObservableCollection<DocumentAttachment> DocumentsAttechmentEditedCollection;
+		public ObservableCollection<DocumentAttachment> DocumentsAttechmentEditedCollection { get; private set; }
 
 		public DocOrLabExamination? DocOrLab;
 
@@ -114,7 +120,7 @@ namespace MyMedData.Controls
 			RecordDisplay recordDisplay = (RecordDisplay)d;
 
 			//Unsaved changes of old record
-			if (e.OldValue is ExaminationRecord oldRecord && recordDisplay.HasUnsavedChanges && recordDisplay.DataContext is Session sess)
+			if (e.OldValue is ExaminationRecord oldRecord && recordDisplay.HasUnsavedChanges && recordDisplay.DataContext is Session sess && sess.ExaminationRecords.Contains(oldRecord))
 			{
 				if (MessageBox.Show("Сохранить предыдущие изменения?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question)
 				    == MessageBoxResult.Yes)
@@ -128,25 +134,33 @@ namespace MyMedData.Controls
 			if (e.NewValue is ExaminationRecord item && recordDisplay.DataContext is Session session)
 			{
 				recordDisplay.LoadItemToRecordDisplayUI(item, session);
+				recordDisplay.ExamniantionTypeLabel.Text = item is LabExaminationRecord ? "Вид обследования" : "Врачебная специальность";
 			}
 			else
 			{
 				recordDisplay.DocOrLab = null;
+				recordDisplay.ExamniantionTypeLabel.Text = "Вид обследования";
 			}
 		}
 
 		private void LoadItemToRecordDisplayUI(ExaminationRecord item, Session session)
 		{
 			DocumentsAttechmentEditedCollection = new ObservableCollection<DocumentAttachment>(item.Documents);
-						
+			DocumentsAttechmentEditedCollection.CollectionChanged += (o, e) => UserInputChanged(); 
+
 			//we do not know if _examinationTypesView was bound to doc types or lab types. Just unsubscribe both.
 			session.LabTestTypesCache.CollectionChanged -= _onLabExamTypeCacheChanged;
 			session.DoctorTypesCache.CollectionChanged -= _onDoctorTypeCacheChanged;
 
+			ExaminationDate = item.Date;
+			ExaminationType = item.ExaminationType?.DeepCopy() ?? null;
+			Clinic = item.Clinic?.DeepCopy() ?? null;
+			Comment = item.Comment;
+
 			if (item is LabExaminationRecord)
 			{
 				DocOrLab = DocOrLabExamination.Lab;
-				DoctorName = "";
+				Doctor = null;
 
 				DoctorLabel.Visibility = Visibility.Collapsed;
 				DoctorTextBox.Visibility = Visibility.Collapsed;
@@ -157,7 +171,7 @@ namespace MyMedData.Controls
 			else if (item is DoctorExaminationRecord docExam)
 			{
 				DocOrLab = DocOrLabExamination.Doc;
-				DoctorName = docExam.Doctor?.Name ?? "";
+				Doctor = docExam.Doctor?.DeepCopy() ?? null;
 
 				DoctorLabel.Visibility = Visibility.Visible;
 				DoctorTextBox.Visibility = Visibility.Visible;
@@ -177,53 +191,27 @@ namespace MyMedData.Controls
 				editedRecord.Date = ExaminationDate ?? DateOnly.FromDateTime(DateTime.Today);
 
 				//ExaminationType
-				if(ExaminationTypeTitle != null && ExaminationTypeTitle != "")
-				{
-					if (editedRecord.ExaminationType != null)
-						editedRecord.ExaminationType.ExaminationTypeTitle = ExaminationTypeTitle;
-					else
-						editedRecord.ExaminationType = new ExaminationType(ExaminationTypeTitle);
-				}
+				if(ExaminationType != null && ExaminationType.ExaminationTypeTitle != "")
+					editedRecord.ExaminationType = ExaminationType;				
 				else
-				{
-					editedRecord.ExaminationType = null;
-				}
+					editedRecord.ExaminationType = null;				
 
 				//Doctor
 				if (editedRecord is DoctorExaminationRecord docRecord)
 				{
-					if (DoctorName != null && DoctorName != "")
-					{
-
-						if (docRecord.Doctor != null)
-							docRecord.Doctor.Name = DoctorName;
-						else
-							docRecord.Doctor = new Doctor(DoctorName);
-					}
+					if (Doctor != null && Doctor.Name != "")
+						docRecord.Doctor = Doctor;						
 					else
-					{
-						docRecord.Doctor = null;
-					}
+						docRecord.Doctor = null;					
 				}
 
 				//Clinic
-				if (ClinicName != null && ClinicName != "")
-				{
-					if (editedRecord.Clinic != null)
-						editedRecord.Clinic.Name = ClinicName;
-					else
-						editedRecord.Clinic = new Clinic(Name);
-				}
+				if (Clinic != null && Clinic.Name != "")
+					editedRecord.Clinic = Clinic;
 				else
-				{
 					editedRecord.Clinic = null;
-				}
 
-				//Comment
-				if(Comment != null)
-				{
-					editedRecord.Comment = Comment;
-				}
+				editedRecord.Comment = Comment;				
 
 				return editedRecord;
 			}
@@ -241,87 +229,14 @@ namespace MyMedData.Controls
 			}
 		}
 
-		private static void UserInputChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		private void UserInputChanged()
 		{
-			RecordDisplay recordDisplay = (RecordDisplay)sender;
-			if (recordDisplay.Item is not ExaminationRecord initialItem)
+			if (Item is not ExaminationRecord initialItem)
 				return;
-						
-			bool changesFound = 
-				initialItem.Date == recordDisplay.ExaminationDate
-				&& initialItem.Clinic?.Name == recordDisplay.ClinicName
-				&& initialItem.ExaminationType?.ExaminationTypeTitle == recordDisplay.ExaminationTypeTitle
-				&& initialItem.Comment == recordDisplay.Comment;
 
-			if (initialItem is DoctorExaminationRecord docRec)
-			{
-				changesFound &= docRec.Doctor?.Name == recordDisplay.DoctorName;
-			}
-
-			changesFound &= Enumerable.SequenceEqual(initialItem.Documents.OrderBy(d => d.Id), recordDisplay.DocumentsAttechmentEditedCollection.OrderBy(d => d.Id));
-			
-			if (changesFound)
-				recordDisplay.ApplyChangesPanel.Visibility = Visibility.Visible;
-			else
-				recordDisplay.ApplyChangesPanel.Visibility= Visibility.Collapsed;
-		}			
-
-		private void AcceptChangesButton_Click(object sender, RoutedEventArgs e)
-		{
-			ApplyChangesOfEditedRecord();
-		}		
-
-		private void DiscardChangesButton_Click(object sender, RoutedEventArgs e)
-		{
-			if (Item is ExaminationRecord rec && DataContext is Session session)
-			{
-				LoadItemToRecordDisplayUI(rec, session);
-			}
-		}
-
-		private void UploadDocButton_Click(object sender, RoutedEventArgs e)
-		{
-			OpenFileDialog opf = new OpenFileDialog();
-			opf.Filter = "Availible types|*.pdf;*.jpg;*.png";
-			opf.Multiselect = true;
-			
-			if (opf.ShowDialog() == true)
-			{
-				foreach(var fileName in opf.FileNames) 
-				{
-					string extention = fileName.Substring(fileName.Length - 4, 3);
-					DocumentType documentType;
-
-					switch(extention)
-					{
-						case "jpg": documentType = DocumentType.JPEG; break;
-						case "png": documentType = DocumentType.PNG; break;
-						case "pdf": documentType = DocumentType.PDF; break;
-						default: MessageBox.Show(fileName, "Недопустимый файл", MessageBoxButton.OK, MessageBoxImage.Error); return;
-					}
-
-					DocumentAttachment document = new DocumentAttachment();
-					document.FileName = fileName;
-					document.DocumentType = documentType;
-					document.Data = File.ReadAllBytes(fileName);
-
-					DocumentsAttechmentEditedCollection.Add(document);
-				}
-			}
-        }
-
-		private void ScanDocButton_Click(object sender, RoutedEventArgs e)
-		{
-			MessageBox.Show("Функционал не готов.", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-		}
-
-		private void RemoveDocButton_Click(object sender, RoutedEventArgs e)
-		{
-			if (DocumentsListBox.SelectedItem is DocumentAttachment document)
-			{
-				RemoveDocumentAttachmentById(document.Id);
-			}
-		}
+			HasUnsavedChanges = !initialItem.IsDataEqual(ConstructRecordFormUI());
+		}	
+		
 
 		//------------------------------------------DEPENDENCY PROPERTIES----------------------------------------------------------
 
@@ -345,36 +260,36 @@ namespace MyMedData.Controls
 
 		public static readonly DependencyProperty ExaminationDateProperty =
 			DependencyProperty.Register(nameof(ExaminationDate), typeof(DateOnly?), typeof(RecordDisplay),
-				new UIPropertyMetadata(DateOnly.FromDateTime(DateTime.Today), UserInputChanged));
+				new UIPropertyMetadata(DateOnly.FromDateTime(DateTime.Today)));
 
-		public string ExaminationTypeTitle
+		public ExaminationType? ExaminationType
 		{
 			set => SetValue(ExaminationTypeTitleProperty, value);
-			get => (string)GetValue(ExaminationTypeTitleProperty);
+			get => (ExaminationType?)GetValue(ExaminationTypeTitleProperty);
 		}
 
 		public static readonly DependencyProperty ExaminationTypeTitleProperty =
-			DependencyProperty.Register(nameof(ExaminationTypeTitle), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
+			DependencyProperty.Register(nameof(ExaminationType), typeof(ExaminationType), typeof(RecordDisplay), new UIPropertyMetadata());
 
 
-		public string DoctorName
+		public Doctor? Doctor
 		{
 			set => SetValue(DoctorNameProperty, value);
-			get => (string)GetValue(DoctorNameProperty);
+			get => (Doctor?)GetValue(DoctorNameProperty);
 		}
 
 		public static readonly DependencyProperty DoctorNameProperty =
-			DependencyProperty.Register(nameof(DoctorName), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
+			DependencyProperty.Register(nameof(Doctor), typeof(Doctor), typeof(RecordDisplay), new UIPropertyMetadata());
 
 
-		public string ClinicName
+		public Clinic? Clinic
 		{
 			set => SetValue(ClinicNameProperty, value);
-			get => (string)GetValue(ClinicNameProperty);
+			get => (Clinic?)GetValue(ClinicNameProperty);
 		}
 
 		public static readonly DependencyProperty ClinicNameProperty =
-			DependencyProperty.Register(nameof(ClinicName), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
+			DependencyProperty.Register(nameof(Clinic), typeof(Clinic), typeof(RecordDisplay), new UIPropertyMetadata());
 
 
 		public string Comment
@@ -384,8 +299,120 @@ namespace MyMedData.Controls
 		}
 
 		public static readonly DependencyProperty CommentProperty =
-			DependencyProperty.Register(nameof(Comment), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata("", UserInputChanged));
-					
+			DependencyProperty.Register(nameof(Comment), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata(""));
+
+		//----------------------------------------------------UI EVENTS--------------------------------------------------------------------
+		private void UploadDocButton_Click(object sender, RoutedEventArgs e)
+		{
+			OpenFileDialog opf = new OpenFileDialog();
+			opf.Filter = "Availible types|*.pdf;*.jpg;*.png";
+			opf.Multiselect = true;
+
+			if (opf.ShowDialog() == true)
+			{
+				foreach (var fileName in opf.FileNames)
+				{
+					string extention = fileName.Substring(fileName.Length - 4, 3);
+					DocumentType documentType;
+
+					switch (extention)
+					{
+						case "jpg": documentType = DocumentType.JPEG; break;
+						case "png": documentType = DocumentType.PNG; break;
+						case "pdf": documentType = DocumentType.PDF; break;
+						default: MessageBox.Show(fileName, "Недопустимый файл", MessageBoxButton.OK, MessageBoxImage.Error); return;
+					}
+
+					DocumentAttachment document = new DocumentAttachment();
+					document.FileName = fileName;
+					document.DocumentType = documentType;
+					document.Data = File.ReadAllBytes(fileName);
+
+					DocumentsAttechmentEditedCollection.Add(document);
+				}
+			}
+		}
+
+		private void AcceptChangesButton_Click(object sender, RoutedEventArgs e)
+		{
+			ApplyChangesOfEditedRecord();	
+		}
+
+		private void DiscardChangesButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (Item is ExaminationRecord rec && DataContext is Session session)
+			{
+				LoadItemToRecordDisplayUI(rec, session);
+			}
+		}
+
+		private void ScanDocButton_Click(object sender, RoutedEventArgs e)
+		{
+			MessageBox.Show("Функционал не готов.", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+		}
+
+		private void RemoveDocButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (DocumentsListBox.SelectedItem is DocumentAttachment document)
+			{
+				RemoveDocumentAttachmentById(document.Id);
+			}
+		}
+
+		private void ClinicTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			AutoCompleteTextBox clinicTB = sender as AutoCompleteTextBox;			
+
+			if (!string.IsNullOrEmpty(clinicTB.Text))
+				if (Clinic == null)
+					Clinic = new Clinic(clinicTB.Text);
+				else
+					Clinic.Name = clinicTB.Text;
+			else
+				ExaminationType = null;
+		}
+
+		private void CommentTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			TextBox commentTB = (TextBox)sender;
+			if (commentTB != null)
+			{
+				if (!string.IsNullOrEmpty(commentTB.Text))
+					Comment = commentTB.Text;
+				else
+					Comment = "";
+			}
+		}
+
+		private void ExaminationTypeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			AutoCompleteTextBox examTypeTB = sender as AutoCompleteTextBox;
+			if (!string.IsNullOrEmpty(examTypeTB.Text))
+				if (ExaminationType == null)
+					ExaminationType = new ExaminationType(examTypeTB.Text);
+				else
+					ExaminationType.ExaminationTypeTitle = examTypeTB.Text;
+			else
+				ExaminationType = null;
+		}
+
+		private void RecordDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+		{
+			DatePicker dp = (DatePicker)sender;
+			ExaminationDate = DateOnly.FromDateTime(dp.SelectedDate ?? DateTime.Today);
+		}
+
+		private void DoctorTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			AutoCompleteTextBox docTB = sender as AutoCompleteTextBox;
+			if (!string.IsNullOrEmpty(docTB.Text))
+				if (Doctor == null)
+					Doctor = new Doctor(docTB.Text);
+				else
+					Doctor.Name = docTB.Text;
+			else
+				Doctor = null;
+		}
 
 		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
 		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);
@@ -395,7 +422,8 @@ namespace MyMedData.Controls
 		protected virtual void RaiseChangesSavedToDBEvent()
 		{
 			ChangesSavedToDB?.Invoke(this, new ChangesSavedToDBEventArgs(ConstructRecordFormUI()));
-		}		
+		}
+		
 	}
 
 	[ValueConversion(typeof(DateTime), typeof(DateOnly))]
@@ -419,6 +447,22 @@ namespace MyMedData.Controls
 			}
 
 			return DependencyProperty.UnsetValue;
+		}
+
+		//----------------------------------------------------AUXILIARIES----------------------------------------------------------
+		public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+		{
+			//get parent item
+			DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+			//we've reached the end of the tree
+			if (parentObject == null) return null;
+
+			//check if the parent matches the type we're looking for
+			if (parentObject is T parent)
+				return parent;
+			else
+				return FindParent<T>(parentObject);
 		}
 	}
 

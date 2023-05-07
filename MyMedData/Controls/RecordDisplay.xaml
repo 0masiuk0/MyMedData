@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MyMedData.Controls"
+             xmlns:uc="clr-namespace:MyMedData.Controls"
              xmlns:aviad="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
              mc:Ignorable="d" 
              x:Name="ThisRecordDisplay"  
              DataContextChanged="RecordDisplay_DataContextChanged"
              d:DesignHeight="450" d:DesignWidth="350">
     <UserControl.Resources>
-        <local:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
+        <uc:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
         <Style x:Key="HeaderLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Calibri"/>
@@ -47,9 +47,10 @@
                 Style="{StaticResource DarkDatePicker}"
                 SelectedDate="{Binding ElementName=ThisRecordDisplay,
                     Path=ExaminationDate,
-                    FallbackValue={x:Null}, Mode=TwoWay,                       
-                    Converter={StaticResource DateTimeToDateOnlyConverter}}"/>
-            <TextBlock x:Name="ExamniantionTypleLabel" 
+                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged,                       
+                    Converter={StaticResource DateTimeToDateOnlyConverter}}"
+                    SelectedDateChanged="RecordDatePicker_SelectedDateChanged"/>
+            <TextBlock x:Name="ExamniantionTypeLabel" 
                 DockPanel.Dock="Top"
                 Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
             <aviad:AutoCompleteTextBox x:Name="ExaminationTypeTextBox" 
@@ -59,11 +60,12 @@
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
                 Binding="{Binding XPath=ExminationTypeTitle}"
                 Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=ExaminationTypeTitle,
-                    FallbackValue={x:Null}, Mode=TwoWay}"/>
+                    Path=ExaminationType.ExaminationTypeTitle,
+                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="ExaminationTypeTextBox_TextChanged"/>
             <TextBlock x:Name="DoctorLabel" 
                 DockPanel.Dock="Top"
-                Text="Врач" Style="{StaticResource HeaderLabel}"/>
+                Text="Имя врача" Style="{StaticResource HeaderLabel}"/>
             <aviad:AutoCompleteTextBox x:Name="DoctorTextBox" 
                 DockPanel.Dock="Top" 
                 Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
@@ -71,8 +73,9 @@
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
                 Binding="{Binding XPath=Name}"
                 Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=DoctorName,
-                    FallbackValue={x:Null}, Mode=TwoWay}"/>
+                    Path=Doctor.Name, FallbackValue={x:Null},
+                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="DoctorTextBox_TextChanged"/>
             <TextBlock x:Name="ClinicLabel" 
                 DockPanel.Dock="Top"
                 Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
@@ -83,8 +86,9 @@
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
                 Binding="{Binding XPath=Name}"
                 Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=ClinicName,
-                    FallbackValue={x:Null}, Mode=TwoWay}"/>
+                    Path=Clinic.Name,
+                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="ClinicTextBox_TextChanged"/>
             <TextBlock x:Name="CommentLabel" 
                         DockPanel.Dock="Top"
                         Text="Примечание" Style="{StaticResource HeaderLabel}"/>
@@ -93,8 +97,8 @@
                         AcceptsReturn="True" TextWrapping="WrapWithOverflow"
                         Text="{Binding ElementName=ThisRecordDisplay,
                         Path=Comment,
-                        FallbackValue={x:Null}, Mode=TwoWay}"
-                        />
+                        Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextChanged="CommentTextBox_TextChanged"/>
         </DockPanel>
         <DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                     Margin="5,0,0,0">
@@ -120,6 +124,11 @@
                         ItemsSource="{Binding ElementName=ThisRecordDisplay,
                         Path=DocumentsAttechmentEditedCollection,
                         FallbackValue={x:Null}}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <uc:DocumentPlaque/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </DockPanel>
         <StackPanel x:Name="ApplyChangesPanel" Orientation="Horizontal"

@@ -103,15 +103,28 @@ namespace MyMedData
 		//------------------------------------METHODS------------------------------------------
 		
 		public abstract ExaminationRecord DeepCopy();
-
-		public virtual bool IsEqualTo(ExaminationRecord other)
+		
+		public virtual bool IsDataEqual(ExaminationRecord? record, bool checkIdEqulity = false)
 		{
-			return _id == other._id
-			       && _date == other._date
-			       && _documents.SequenceEqual(other._documents)
-			       && _clinic == other._clinic
-				   && _examinationType?.ExaminationTypeTitle == other._examinationType?.ExaminationTypeTitle
-			       && _comment == other._comment;
+			if (record == null) 
+				return false;
+
+			if (!Enumerable.SequenceEqual(Documents, record.Documents))
+				return false;
+
+			if(checkIdEqulity && Id != record.Id) 
+				return false;
+
+			if (Clinic?.Name != record.Clinic?.Name || Clinic?.Comment != record?.Clinic.Comment)
+				return false;
+
+			if (_examinationType?.ExaminationTypeTitle != record.ExaminationType?.ExaminationTypeTitle || _examinationType?.Comment != record.ExaminationType?.Comment)
+				return false;
+
+			if (Comment != record.Comment) 
+				return false;
+
+			return true;
 		}
 
 		//---------------------------------EVENTS-------------------------------------------
@@ -172,26 +185,30 @@ namespace MyMedData
 			}
 		}
 
-		public override ExaminationRecord DeepCopy()
+		public override bool IsDataEqual(ExaminationRecord? record, bool checkIdEqulity = false)
 		{
-			var copy = new DoctorExaminationRecord { Id = Id, Date = Date, Clinic = Clinic,
-			Comment = Comment, Doctor = Doctor, Documents = new List<DocumentAttachment>(Documents), 
-			ExaminationType = ExaminationType};
-
-			return copy;
+			if (record is DoctorExaminationRecord docRec)
+			{
+				return base.IsDataEqual(record, checkIdEqulity) && Doctor?.Name == docRec.Doctor?.Name && Doctor?.Comment == docRec.Doctor?.Comment;
+			}
+			else
+				return false;
 		}
 
-		public override bool IsEqualTo(ExaminationRecord other)
+		public override ExaminationRecord DeepCopy()
 		{
-			if (!base.IsEqualTo(other)) return false;
+			var copy = new DoctorExaminationRecord 
+			{ 
+				Id = Id, 
+				Date = Date,
+				Documents = new List<DocumentAttachment>(Documents),
+				ExaminationType = ExaminationType == null ? null : new ExaminationType(ExaminationType.ExaminationTypeTitle, ExaminationType.Comment),
+				Clinic = Clinic == null ? null : new Clinic(Clinic.Name, Clinic.Comment),
+				Doctor = Doctor == null ? null : new Doctor(Doctor.Name, Doctor.Comment),
+				Comment = Comment, 
+			};
 
-			if (other is not DoctorExaminationRecord otherDocRecord)
-			{
-				return false;
-			}
-			
-			return _doctor?.Name == otherDocRecord._doctor?.Name
-			       && ExaminationType?.ExaminationTypeTitle == otherDocRecord.ExaminationType?.ExaminationTypeTitle;
+			return copy;
 		}
 
 		[BsonIgnore]
@@ -228,25 +245,18 @@ namespace MyMedData
 			{
 				Id = Id,
 				Date = Date,
-				Clinic = Clinic,
-				Comment = Comment,
 				Documents = new List<DocumentAttachment>(Documents),
-				ExaminationType = ExaminationType
+				ExaminationType = ExaminationType == null ? null : new ExaminationType(ExaminationType.ExaminationTypeTitle, ExaminationType.Comment),
+				Clinic = Clinic == null ? null : new Clinic(Clinic.Name, Clinic.Comment),
+				Comment = Comment,
 			};
 
 			return copy;
 		}
 
-		public override bool IsEqualTo(ExaminationRecord other)
+		public override bool IsDataEqual(ExaminationRecord? record, bool checkIdEqulity = false)
 		{
-			if (!base.IsEqualTo(other)) return false;
-
-			if (other is not DoctorExaminationRecord otherLabRecord)
-			{
-				return false;
-			}
-			
-			return ExaminationType?.ExaminationTypeTitle == otherLabRecord.ExaminationType?.ExaminationTypeTitle;
+			return record is LabExaminationRecord && base.IsDataEqual(record, checkIdEqulity);
 		}
 
 		[BsonIgnore]

@@ -214,6 +214,36 @@ namespace MyMedData
 			}
 		}
 
+		internal static bool DeleteRecord(LiteDatabase db, ExaminationRecord record)
+		{
+			FileStorage fs = new(db);
+
+			try
+			{
+				switch (record)
+				{
+					case DoctorExaminationRecord docRecord:
+						{
+							var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+							fs.DeleteFilesFromStorage(docRecord.Documents);
+							return col.Delete(record.Id);
+						}
+					case LabExaminationRecord labRecord:
+						{
+							var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);							
+							fs.DeleteFilesFromStorage(labRecord.Documents);
+							return col.Delete(labRecord.Id);
+						}
+					default:
+						return false;
+				}
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
 		private static void ProcessDocumentUploadsChanges(FileStorage fs, ExaminationRecord updatedRecord, ExaminationRecord recordInDb)
 		{
 			var documentsToDelete = recordInDb.Documents.Except(updatedRecord.Documents);
@@ -269,6 +299,6 @@ namespace MyMedData
 						yield break;
 				}
 			}
-		}
+		}		
 	}
 }

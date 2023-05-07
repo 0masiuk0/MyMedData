@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace MyMedData
@@ -14,28 +15,28 @@ namespace MyMedData
 		public readonly User ActiveUser;
 		public readonly LiteDatabase RecordsDatabaseContext;
 		public readonly LiteDatabase EntitiesDatbaseContext;
-		//public string Password { private get; set; }
+
+		public readonly bool OccupiesUsersDb;
 
 		public EntitiesCacheUpdateHelper EntitiesCacheUpdateHelper { get; private set; }
 		public ObservableCollection<ExaminationRecord> ExaminationRecords { get; private set; }
-		public ObservableCollection<ExaminationType> LabTestTypesCache { get; private set; }
-		public ObservableCollection<Doctor> DoctorNameCache { get; private set; }
-		public ObservableCollection<ExaminationType> DoctorTypesCache { get; private set; }
-		public ObservableCollection<Clinic> ClinicNameCache { get; private set; }
+		public ObservableCollection<ExaminationType> LabTestTypesCache { get; private set; } = new();
+		public ObservableCollection<Doctor> DoctorCache { get; private set; } = new();
+		public ObservableCollection<ExaminationType> DoctorTypesCache { get; private set; } = new();
+		public ObservableCollection<Clinic> ClinicCache { get; private set; } = new();
 
 		public Session(User user, string password)
 		{
 			ActiveUser = user;
-			//Password = password;
-
-			EntitiesCacheUpdateHelper = new EntitiesCacheUpdateHelper(this);
+			
 			ExaminationRecords = new ObservableCollection<ExaminationRecord>();
 
+			//Getting DB context
 			RecordsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
-
 			if (ActiveUser.RunsOwnDoctorsCollection)
 			{
 				EntitiesDatbaseContext = RecordsDatabaseContext;
+				OccupiesUsersDb = false;
 			}
 			else
 			{
@@ -44,13 +45,17 @@ namespace MyMedData
 					throw new Exception("Не найдено конфигурации файла общей базы данных.");
 
 				EntitiesDatbaseContext = new LiteDatabase(dbFile);
+				OccupiesUsersDb = true;
 			}
+			
+			//Building medical entities cashe
+			EntitiesCacheUpdateHelper = new EntitiesCacheUpdateHelper(this);
+			LabTestTypesCache = EntitiesCacheUpdateHelper.LabTestTypesCache;
+			DoctorCache = EntitiesCacheUpdateHelper.DoctorCache;
+			DoctorTypesCache = EntitiesCacheUpdateHelper.DoctorTypesCache;
+			ClinicCache = EntitiesCacheUpdateHelper.ClinicCache;
 
-			ReadDataBase();
-		}
-
-		private void ReadDataBase()
-		{
+			//Reading records
 			var docExaminationRecords = RecordsDatabaseContext
 				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
 			var labExaminationRecords = RecordsDatabaseContext
@@ -64,13 +69,6 @@ namespace MyMedData
 			{
 				ExaminationRecords.Add(labExam);
 			}
-
-			//DEBUG
-			//foreach (var rec in RecordsDataBase.GenerateSampleRecords(10))
-			//	ExaminationRecords.Add(rec);
-			//DEBUG
-
-			EntitiesCacheUpdateHelper.LoadAutoCompleteCache();
 		}
 
 		public bool AddOrUpdateExaminationRecord(ExaminationRecord record)
@@ -80,29 +78,45 @@ namespace MyMedData
 			{
 				if (record.Id == ExaminationRecords[i].Id)
 				{
-					recordToUpdateIndex = i; break;
+					recordToUpdateIndex = i;
+					break;
 				}
 			}
 
-			if (recordToUpdateIndex >= 0)
+			if (RecordsDataBase.UpdateOrInsertExaminationRecord(RecordsDatabaseContext, record))
 			{
-				if (RecordsDataBase.UpdateOrInsertExaminationRecord(RecordsDatabaseContext, record))
+				//this is to trigger ObservableCollection.CollectionChanged and all the bound views to update.
+				//TODO: ensure ExaminationRecord cached record has id
+				if (recordToUpdateIndex >= 0)
 				{
-					//this is to trigger ObservableCollection.CollectionChanged and all the bound views to update.
 					ExaminationRecords.RemoveAt(recordToUpdateIndex);
 					ExaminationRecords.Insert(recordToUpdateIndex, record);
-
-					//Cache Update
-					string? doctorName = (record is DoctorExaminationRecord docRec) ? docRec.Doctor?.Name : null;
-					DocOrLabExamination docOrLab = record is DoctorExaminationRecord ? DocOrLabExamination.Doc : DocOrLabExamination.Lab;
-					EntitiesCacheUpdateHelper.EnsureValuesAreCached(record.ExaminationType?.ExaminationTypeTitle, docOrLab,
-						doctorName,
-						record.Clinic?.Name);
-
-					return true;
 				}
-			}
+				else 
+					ExaminationRecords.Add(record);
 
+				//Cache Update
+				string? doctorName = (record is DoctorExaminationRecord docRec) ? docRec.Doctor?.Name : null;
+				DocOrLabExamination docOrLab = record is DoctorExaminationRecord ? DocOrLabExamination.Doc : DocOrLabExamination.Lab;
+				EntitiesCacheUpdateHelper.EnsureValuesAreCached(record.ExaminationType?.ExaminationTypeTitle, docOrLab,
+					doctorName,
+					record.Clinic?.Name);
+
+				return true;
+			}			
+
+			return false;
+		}
+
+		public bool DeleteRecord(ExaminationRecord record)
+		{
+			if (RecordsDataBase.DeleteRecord(RecordsDatabaseContext, record))
+			{
+				ExaminationRecords.Remove(record);
+				return true;
+			}
+			
+			MessageBox.Show("Не удалось удалит запись.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 			return false;
 		}
 

@@ -14,21 +14,7 @@ namespace MyMedData
 		{
 			this.session = session;
 			CacheDatabaseContext = session.EntitiesDatbaseContext;
-			LabTestTypesCache = session.LabTestTypesCache;
-			DoctorCache = session.DoctorNameCache;
-			DoctorTypesCache = session.DoctorTypesCache;
-			ClinicCache = session.ClinicNameCache;
-		}
 
-		private Session session;
-		private ObservableCollection<ExaminationType> LabTestTypesCache;
-		private ObservableCollection<Doctor> DoctorCache;
-		private ObservableCollection<ExaminationType> DoctorTypesCache;
-		private ObservableCollection<Clinic> ClinicCache;
-		private LiteDatabase CacheDatabaseContext;
-
-		public void LoadAutoCompleteCache()
-		{
 			DoctorCache = new(CacheDatabaseContext.GetCollection<Doctor>(Doctor.DbCollectionName)
 					.FindAll());
 
@@ -39,8 +25,16 @@ namespace MyMedData
 				.FindAll());
 
 			ClinicCache = new(CacheDatabaseContext.GetCollection<Clinic>(Clinic.DbCollectionName)
-				.FindAll());
+				.FindAll());						
 		}
+
+		private Session session;
+		public ObservableCollection<ExaminationType> LabTestTypesCache;
+		public ObservableCollection<Doctor> DoctorCache;
+		public ObservableCollection<ExaminationType> DoctorTypesCache;
+		public ObservableCollection<Clinic> ClinicCache;
+		private LiteDatabase CacheDatabaseContext;
+		
 
 		internal void EnsureValuesAreCached(string? examinationTypeTitle, DocOrLabExamination docOrLab, string? doctorName, string? clinicName)
 		{

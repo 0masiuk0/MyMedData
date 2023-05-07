@@ -36,7 +36,7 @@
         <ListBox x:Name="UsersListBox" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:UsersWindow}, Path=Users}"
                  Background="{StaticResource LightDarkBackColor}" Grid.Column="0" Grid.Row="1" Margin="5,5,5,5" 
                  HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 SelectionChanged="UsersListBox_SelectionChanged">
+                 SelectionChanged="UsersListBox_SelectionChanged" KeyDown="UsersListBox_KeyDown">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <uc:UserPlaque MouseDoubleClick="UserPlaque_MouseDoubleClick"/>

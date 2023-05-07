@@ -43,9 +43,9 @@ namespace MyMedData.Windows
 			theRecordDisplay.DataContext = Session;
 
 			if (DocOrLab == DocOrLabExamination.Doc)
-				theRecordDisplay.Item = new DoctorExaminationRecord();
+				theRecordDisplay.Item = new DoctorExaminationRecord() { Date = DateOnly.FromDateTime(DateTime.Today) };
 			else
-				theRecordDisplay.Item = new LabExaminationRecord();
+				theRecordDisplay.Item = new LabExaminationRecord() { Date = DateOnly.FromDateTime(DateTime.Today) };
 
 			theRecordDisplay.ChangesSavedToDB += (o, e) => Close();
 		}

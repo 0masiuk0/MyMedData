@@ -537,7 +537,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="TrashBinIcon">
+    <Image x:Key="TrashBinIcon" x:Shared="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>

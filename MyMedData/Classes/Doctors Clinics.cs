@@ -53,6 +53,11 @@ namespace MyMedData
 
 		public const string DbCollectionName = "Doctors";
 
+		public Doctor DeepCopy()
+		{
+			return new Doctor(Name, Comment);
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected void OnPropertyChanged(string propertyName)
@@ -98,6 +103,11 @@ namespace MyMedData
 		{
 			Name = name;
 			Comment = comment;
+		}
+
+		public Clinic DeepCopy()
+		{
+			return new Clinic(Name, Comment);
 		}
 
 		public override string ToString() => Name;
@@ -149,6 +159,11 @@ namespace MyMedData
 		{
 			ExaminationTypeTitle = examinationTypeTitle;
 			Comment = comment;
+		}
+
+		public ExaminationType DeepCopy()
+		{
+			return new ExaminationType(ExaminationTypeTitle, Comment);
 		}
 
 		public override string ToString() => ExaminationTypeTitle;
