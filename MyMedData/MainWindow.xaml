@@ -79,11 +79,13 @@
                     Margin="5" Padding="2"
                     Content="{StaticResource AnalisysImagePlus}" ToolTip="Добавить запись об анализе"
                     Background="{StaticResource LightDarkBackColor}"/>
+            
             <Button x:Name="DeleteRecordButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="5"
                     Content="{StaticResource TrashBinIcon}" ToolTip="Удалить запись"
-                    Background="{StaticResource LightDarkBackColor}" Click="DeleteRecordButton_Click"/>
+                    Background="{StaticResource LightDarkBackColor}" Click="DeleteRecordButton_Click"
+                    Visibility="Collapsed" d:Visibility="Visible"/>
             
             <Button x:Name="SettingsdButton"
                     Height="40" Width="40" BorderBrush="Transparent"

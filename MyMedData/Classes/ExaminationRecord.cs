@@ -115,7 +115,7 @@ namespace MyMedData
 			if(checkIdEqulity && Id != record.Id) 
 				return false;
 
-			if (Clinic?.Name != record.Clinic?.Name || Clinic?.Comment != record?.Clinic.Comment)
+			if (Clinic?.Name != record.Clinic?.Name || Clinic?.Comment != record.Clinic?.Comment)
 				return false;
 
 			if (_examinationType?.ExaminationTypeTitle != record.ExaminationType?.ExaminationTypeTitle || _examinationType?.Comment != record.ExaminationType?.Comment)

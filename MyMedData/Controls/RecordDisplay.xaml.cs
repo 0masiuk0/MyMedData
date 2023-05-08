@@ -50,7 +50,9 @@ namespace MyMedData.Controls
 			DoctorTextBox.TextChanged += (o, e) => UserInputChanged();
 			ClinicTextBox.TextChanged += (o, e) => UserInputChanged();
 			CommentTextBox.TextChanged += (o, e) => UserInputChanged();
-		}
+			
+			SetUpAutocompleteFilters();
+		}		
 
 		private readonly CollectionViewSource _doctorsView;
 		private readonly CollectionViewSource _examinationTypesView;
@@ -187,31 +189,13 @@ namespace MyMedData.Controls
 			{
 				ExaminationRecord editedRecord = record.DeepCopy();
 				
-				//Date
-				editedRecord.Date = ExaminationDate ?? DateOnly.FromDateTime(DateTime.Today);
+				editedRecord.Date = ExaminationDate;
+				editedRecord.Clinic = Clinic;
+				editedRecord.Comment = Comment;
+				editedRecord.ExaminationType = ExaminationType;				
 
-				//ExaminationType
-				if(ExaminationType != null && ExaminationType.ExaminationTypeTitle != "")
-					editedRecord.ExaminationType = ExaminationType;				
-				else
-					editedRecord.ExaminationType = null;				
-
-				//Doctor
 				if (editedRecord is DoctorExaminationRecord docRecord)
-				{
-					if (Doctor != null && Doctor.Name != "")
-						docRecord.Doctor = Doctor;						
-					else
-						docRecord.Doctor = null;					
-				}
-
-				//Clinic
-				if (Clinic != null && Clinic.Name != "")
-					editedRecord.Clinic = Clinic;
-				else
-					editedRecord.Clinic = null;
-
-				editedRecord.Comment = Comment;				
+					docRecord.Doctor = Doctor;						
 
 				return editedRecord;
 			}
@@ -235,11 +219,37 @@ namespace MyMedData.Controls
 				return;
 
 			HasUnsavedChanges = !initialItem.IsDataEqual(ConstructRecordFormUI());
-		}	
-		
+		}
 
+		private void SetUpAutocompleteFilters()
+		{
+			ExaminationTypeTextBox.Filter = (obj, str) =>
+			{
+				if (obj is ExaminationType type)
+					return type.ExaminationTypeTitle.ToLower().Contains(str.ToLower());
+				else
+					return false;
+			};
+
+			DoctorTextBox.Filter = (obj, str) =>
+			{
+				if (obj is Doctor doc)
+					return doc.Name.ToLower().Contains(str.ToLower());
+				else
+					return false;
+			};
+
+			ClinicTextBox.Filter = (obj, str) =>
+			{
+				if (obj is Clinic doc)
+					return doc.Name.ToLower().Contains(str.ToLower());
+				else
+					return false;
+			};
+		}
+
+		#region DepdencyPropertires
 		//------------------------------------------DEPENDENCY PROPERTIES----------------------------------------------------------
-
 		//сюда привязан selected item листа записей
 		public object Item
 		{
@@ -251,15 +261,15 @@ namespace MyMedData.Controls
 			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(ItemChanged));
 
 
-		public DateOnly? ExaminationDate
+		public DateOnly ExaminationDate
 		{
 			set => SetValue(ExaminationDateProperty, value);
-			get => (DateOnly?)GetValue(ExaminationDateProperty);
+			get => (DateOnly)GetValue(ExaminationDateProperty);
 		}
 
 
 		public static readonly DependencyProperty ExaminationDateProperty =
-			DependencyProperty.Register(nameof(ExaminationDate), typeof(DateOnly?), typeof(RecordDisplay),
+			DependencyProperty.Register(nameof(ExaminationDate), typeof(DateOnly), typeof(RecordDisplay),
 				new UIPropertyMetadata(DateOnly.FromDateTime(DateTime.Today)));
 
 		public ExaminationType? ExaminationType
@@ -300,6 +310,7 @@ namespace MyMedData.Controls
 
 		public static readonly DependencyProperty CommentProperty =
 			DependencyProperty.Register(nameof(Comment), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata(""));
+		#endregion
 
 		//----------------------------------------------------UI EVENTS--------------------------------------------------------------------
 		private void UploadDocButton_Click(object sender, RoutedEventArgs e)
@@ -361,57 +372,63 @@ namespace MyMedData.Controls
 
 		private void ClinicTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			AutoCompleteTextBox clinicTB = sender as AutoCompleteTextBox;			
+			AutoCompleteTextBox clinicTB = sender as AutoCompleteTextBox;
+			string clinicName = clinicTB?.Text ?? "";
 
-			if (!string.IsNullOrEmpty(clinicTB.Text))
-				if (Clinic == null)
-					Clinic = new Clinic(clinicTB.Text);
-				else
-					Clinic.Name = clinicTB.Text;
+			if (string.IsNullOrEmpty(clinicName))
+				Clinic = null;
+			else if (DataContext is Session session && session.ClinicCache.FirstOrDefault(cl => cl.Name == clinicName) is Clinic clinicFromCache)
+				Clinic = clinicFromCache;
+			else if (Clinic != null)
+				Clinic.Name = clinicName;
 			else
+				Clinic = new Clinic(clinicName);
+				
+		}
+		
+		private void ExaminationTypeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (DocOrLab is not DocOrLabExamination docOrLab)
+				return;
+
+			AutoCompleteTextBox examTypeTB = (AutoCompleteTextBox)sender;
+			string examTypeTitle = examTypeTB?.Text ?? "";						
+
+			if (string.IsNullOrEmpty(examTypeTitle))
 				ExaminationType = null;
+			else if (DataContext is Session session && FindExaminationTypeInBothCases(session, examTypeTitle, docOrLab) is ExaminationType examinationType)
+				ExaminationType = examinationType;
+			else if (ExaminationType != null)
+				ExaminationType.ExaminationTypeTitle = examTypeTitle;
+			else
+				ExaminationType = new ExaminationType(examTypeTitle);
+		}
+
+		private void DoctorTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			AutoCompleteTextBox docTB = (AutoCompleteTextBox)sender;
+			string docName = docTB?.Text ?? "";
+
+			if (string.IsNullOrEmpty(docName))
+				Doctor = null;
+			else if (DataContext is Session session && session.DoctorCache.FirstOrDefault(doc => doc.Name == docName) is Doctor doctor)
+				Doctor = doctor;
+			else if (Doctor != null)
+				Doctor.Name = docName;
+			else
+				Doctor = new Doctor(docName);
 		}
 
 		private void CommentTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			TextBox commentTB = (TextBox)sender;
-			if (commentTB != null)
-			{
-				if (!string.IsNullOrEmpty(commentTB.Text))
-					Comment = commentTB.Text;
-				else
-					Comment = "";
-			}
-		}
-
-		private void ExaminationTypeTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			AutoCompleteTextBox examTypeTB = sender as AutoCompleteTextBox;
-			if (!string.IsNullOrEmpty(examTypeTB.Text))
-				if (ExaminationType == null)
-					ExaminationType = new ExaminationType(examTypeTB.Text);
-				else
-					ExaminationType.ExaminationTypeTitle = examTypeTB.Text;
-			else
-				ExaminationType = null;
+			Comment = commentTB?.Text ?? "";
 		}
 
 		private void RecordDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
 			DatePicker dp = (DatePicker)sender;
 			ExaminationDate = DateOnly.FromDateTime(dp.SelectedDate ?? DateTime.Today);
-		}
-
-		private void DoctorTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			AutoCompleteTextBox docTB = sender as AutoCompleteTextBox;
-			if (!string.IsNullOrEmpty(docTB.Text))
-				if (Doctor == null)
-					Doctor = new Doctor(docTB.Text);
-				else
-					Doctor.Name = docTB.Text;
-			else
-				Doctor = null;
 		}
 
 		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
@@ -423,7 +440,15 @@ namespace MyMedData.Controls
 		{
 			ChangesSavedToDB?.Invoke(this, new ChangesSavedToDBEventArgs(ConstructRecordFormUI()));
 		}
-		
+
+		//----------------------------------------------------AUXILIARIES----------------------------------------------------------
+		public ExaminationType? FindExaminationTypeInBothCases(Session session, string examinationTypeTitle, DocOrLabExamination docOrLab)
+		{
+			if (docOrLab == DocOrLabExamination.Doc)
+				return session.DoctorTypesCache.FirstOrDefault(docType => docType.ExaminationTypeTitle == examinationTypeTitle);
+			else
+				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
+		}
 	}
 
 	[ValueConversion(typeof(DateTime), typeof(DateOnly))]
@@ -447,23 +472,7 @@ namespace MyMedData.Controls
 			}
 
 			return DependencyProperty.UnsetValue;
-		}
-
-		//----------------------------------------------------AUXILIARIES----------------------------------------------------------
-		public static T FindParent<T>(DependencyObject child) where T : DependencyObject
-		{
-			//get parent item
-			DependencyObject parentObject = VisualTreeHelper.GetParent(child);
-
-			//we've reached the end of the tree
-			if (parentObject == null) return null;
-
-			//check if the parent matches the type we're looking for
-			if (parentObject is T parent)
-				return parent;
-			else
-				return FindParent<T>(parentObject);
-		}
+		}		
 	}
 
 	public class ChangesSavedToDBEventArgs

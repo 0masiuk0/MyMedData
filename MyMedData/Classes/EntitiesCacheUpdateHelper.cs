@@ -34,122 +34,47 @@ namespace MyMedData
 		public ObservableCollection<ExaminationType> DoctorTypesCache;
 		public ObservableCollection<Clinic> ClinicCache;
 		private LiteDatabase CacheDatabaseContext;
+
+		private LiteDatabase EntitiesDb => session.EntitiesDatbaseContext;
 		
 
-		internal void EnsureValuesAreCached(string? examinationTypeTitle, DocOrLabExamination docOrLab, string? doctorName, string? clinicName)
+		internal void EnsureValuesAreCached(DocOrLabExamination docOrLab,
+			ExaminationType? examinationType,
+			Clinic? clinic,
+			Doctor? doctor)
 		{
-			//ExaminationType
-			if (examinationTypeTitle != null && examinationTypeTitle.Length > 0)
-			{
-				UpdateExaminationTypesCache(examinationTypeTitle, null, docOrLab);
-			}
+			if (examinationType != null)
+				UpdateExaminationTypesCache(docOrLab, examinationType);
 
-			//Doctor
-			if (docOrLab == DocOrLabExamination.Doc && doctorName != null && doctorName.Length > 0)
-			{
-				UpdateDoctorNameCache(doctorName, null);
-			}
+			if (clinic != null)
+				UpdateClinicCache(clinic);
 
-			//Clinic			
-			if (clinicName != null && clinicName.Length > 0)
-			{
-				UpdateClinicNameCache(clinicName, null);
-			}
+			if (doctor != null)
+				if (docOrLab == DocOrLabExamination.Doc )
+					UpdateDoctorCache(doctor);
 		}	
 
-		public void UpdateExaminationTypesCache(string newExamTypeTitle, string? oldExamTypeTitle, DocOrLabExamination docOrLab, string? comment = null)
+		public void UpdateExaminationTypesCache(DocOrLabExamination docOrLab, ExaminationType examinationType)
 		{
-			if (newExamTypeTitle.Length == 0)
-				throw new ArgumentException("Пустое название недопустимо");
-			
-			string collectionName = "";
-			ObservableCollection<ExaminationType>? cache = null;
-			ExaminationType examinationType;
-
-			switch (docOrLab)
-			{
-				case DocOrLabExamination.Lab: 
-					collectionName = ExaminationType.LabAnalysisTypesDbCollectionName;
-					cache = LabTestTypesCache;
-					break;
-				case DocOrLabExamination.Doc: 
-					collectionName = ExaminationType.DoctorTypesDbCollectionName;
-					cache = DoctorTypesCache;
-					break;
-			}
-
-			oldExamTypeTitle = oldExamTypeTitle ?? newExamTypeTitle;
-
-			if (LabTestTypesCache.FirstOrDefault(t => t?.ExaminationTypeTitle == oldExamTypeTitle, null) is ExaminationType cachedExaminationType)
-			{
-				var col = CacheDatabaseContext.GetCollection<ExaminationType>(collectionName);				
-				cache.Remove(cachedExaminationType);
-				examinationType = cachedExaminationType;
-
-				cachedExaminationType.ExaminationTypeTitle = newExamTypeTitle;
-				cachedExaminationType.Comment = comment ?? "";
-				col.Update(cachedExaminationType);
-			}
+			ILiteCollection<ExaminationType> collection;
+			if (docOrLab == DocOrLabExamination.Doc)
+				collection = EntitiesDb.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
 			else
-			{
-				var col = CacheDatabaseContext.GetCollection<ExaminationType>(collectionName);
-				examinationType = new ExaminationType(newExamTypeTitle, comment ?? "");
-				col.Insert(examinationType);
-				col.EnsureIndex(t => t.ExaminationTypeTitle);
-			}
+				collection = EntitiesDb.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);
 			
-			cache.Add(examinationType);
+			collection.Upsert(examinationType);
 		}
 
-		public void UpdateDoctorNameCache(string newDoctorName, string? oldDoctorName, string? comment = null)
+		public void UpdateDoctorCache(Doctor doctor)
 		{
-			var col = CacheDatabaseContext.GetCollection<Doctor>(Doctor.DbCollectionName);
-			Doctor doc;
-
-			oldDoctorName = oldDoctorName ?? newDoctorName;
-
-			if (DoctorCache.FirstOrDefault(dc => dc.Name == oldDoctorName, null) is Doctor cachedDoc)
-			{
-				DoctorCache.Remove(cachedDoc);
-				cachedDoc.Name = newDoctorName;
-				cachedDoc.Comment = comment ?? "";
-				col.Update(cachedDoc);
-				doc = cachedDoc;
-			}
-			else
-			{
-				doc = new Doctor(newDoctorName, comment ?? "");
-				col.Insert(doc);
-				col.EnsureIndex(d => d.Name);
-			}
-				
-			DoctorCache.Add(doc);
-			
+			var collection = EntitiesDb.GetCollection<Doctor>(Doctor.DbCollectionName);
+			collection.Upsert(doctor);
 		}
 
-		public void UpdateClinicNameCache(string newClinicName, string? oldClinicName, string? comment = null)
+		public void UpdateClinicCache(Clinic clinic)
 		{
-			var col = CacheDatabaseContext.GetCollection<Clinic>(Clinic.DbCollectionName);
-			Clinic clinic;
-
-			oldClinicName = oldClinicName ?? newClinicName;
-
-			if (ClinicCache.FirstOrDefault(cl => cl.Name == oldClinicName, null) is Clinic cachedClinic)
-			{
-				ClinicCache.Remove(cachedClinic);
-				cachedClinic.Name = newClinicName;
-				cachedClinic.Comment = comment ?? "";
-				col.Update(cachedClinic);
-				clinic = cachedClinic;
-			}
-			else
-			{
-				clinic = new Clinic(newClinicName, comment ?? "");
-				col.Insert(clinic);
-				col.EnsureIndex(cl => cl.Name);
-			}
-			
-			ClinicCache.Add(clinic);
+			var collection = EntitiesDb.GetCollection<Clinic>(Clinic.DbCollectionName);
+			collection.Upsert(clinic);
 		}
 
 	}

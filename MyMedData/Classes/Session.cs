@@ -93,14 +93,7 @@ namespace MyMedData
 					ExaminationRecords.Insert(recordToUpdateIndex, record);
 				}
 				else 
-					ExaminationRecords.Add(record);
-
-				//Cache Update
-				string? doctorName = (record is DoctorExaminationRecord docRec) ? docRec.Doctor?.Name : null;
-				DocOrLabExamination docOrLab = record is DoctorExaminationRecord ? DocOrLabExamination.Doc : DocOrLabExamination.Lab;
-				EntitiesCacheUpdateHelper.EnsureValuesAreCached(record.ExaminationType?.ExaminationTypeTitle, docOrLab,
-					doctorName,
-					record.Clinic?.Name);
+					ExaminationRecords.Add(record);							
 
 				return true;
 			}			
