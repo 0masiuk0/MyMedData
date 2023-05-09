@@ -1,24 +1,15 @@
-﻿using Aviad.WPF.Controls;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.IO;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using AutoCompleteTextBox;
 
 namespace MyMedData.Controls
 {
@@ -45,13 +36,12 @@ namespace MyMedData.Controls
 
 			HasUnsavedChanges = false;
 
-			RecordDatePicker.SelectedDateChanged += (o, e) => UserInputChanged();
-			ExaminationTypeTextBox.TextChanged += (o, e) => UserInputChanged();
-			DoctorTextBox.TextChanged += (o, e) => UserInputChanged();
-			ClinicTextBox.TextChanged += (o, e) => UserInputChanged();
+			RecordDatePicker.SelectedDateChanged += (o, e) => UserInputChanged();			
 			CommentTextBox.TextChanged += (o, e) => UserInputChanged();
-			
-			SetUpAutocompleteFilters();
+
+			//ExaminationTypeTextBox.TextChanged += (o, e) => UserInputChanged();
+			//DoctorTextBox.TextChanged += (o, e) => UserInputChanged();
+			//ClinicTextBox.TextChanged += (o, e) => UserInputChanged();
 		}		
 
 		private readonly CollectionViewSource _doctorsView;
@@ -221,33 +211,6 @@ namespace MyMedData.Controls
 			HasUnsavedChanges = !initialItem.IsDataEqual(ConstructRecordFormUI());
 		}
 
-		private void SetUpAutocompleteFilters()
-		{
-			ExaminationTypeTextBox.Filter = (obj, str) =>
-			{
-				if (obj is ExaminationType type)
-					return type.ExaminationTypeTitle.ToLower().Contains(str.ToLower());
-				else
-					return false;
-			};
-
-			DoctorTextBox.Filter = (obj, str) =>
-			{
-				if (obj is Doctor doc)
-					return doc.Name.ToLower().Contains(str.ToLower());
-				else
-					return false;
-			};
-
-			ClinicTextBox.Filter = (obj, str) =>
-			{
-				if (obj is Clinic doc)
-					return doc.Name.ToLower().Contains(str.ToLower());
-				else
-					return false;
-			};
-		}
-
 		#region DepdencyPropertires
 		//------------------------------------------DEPENDENCY PROPERTIES----------------------------------------------------------
 		//сюда привязан selected item листа записей
@@ -372,51 +335,51 @@ namespace MyMedData.Controls
 
 		private void ClinicTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			AutoCompleteTextBox clinicTB = sender as AutoCompleteTextBox;
-			string clinicName = clinicTB?.Text ?? "";
+			//AutoCompleteTextBox clinicTB = sender as AutoCompleteTextBox;
+			//string clinicName = clinicTB?.Text ?? "";
 
-			if (string.IsNullOrEmpty(clinicName))
-				Clinic = null;
-			else if (DataContext is Session session && session.ClinicCache.FirstOrDefault(cl => cl.Name == clinicName) is Clinic clinicFromCache)
-				Clinic = clinicFromCache;
-			else if (Clinic != null)
-				Clinic.Name = clinicName;
-			else
-				Clinic = new Clinic(clinicName);
+			//if (string.IsNullOrEmpty(clinicName))
+			//	Clinic = null;
+			//else if (DataContext is Session session && session.ClinicCache.FirstOrDefault(cl => cl.Name == clinicName) is Clinic clinicFromCache)
+			//	Clinic = clinicFromCache;
+			//else if (Clinic != null)
+			//	Clinic.Name = clinicName;
+			//else
+			//	Clinic = new Clinic(clinicName);
 				
 		}
 		
 		private void ExaminationTypeTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (DocOrLab is not DocOrLabExamination docOrLab)
-				return;
+			//if (DocOrLab is not DocOrLabExamination docOrLab)
+			//	return;
 
-			AutoCompleteTextBox examTypeTB = (AutoCompleteTextBox)sender;
-			string examTypeTitle = examTypeTB?.Text ?? "";						
+			//AutoCompleteTextBox examTypeTB = (AutoCompleteTextBox)sender;
+			//string examTypeTitle = examTypeTB?.Text ?? "";						
 
-			if (string.IsNullOrEmpty(examTypeTitle))
-				ExaminationType = null;
-			else if (DataContext is Session session && FindExaminationTypeInBothCases(session, examTypeTitle, docOrLab) is ExaminationType examinationType)
-				ExaminationType = examinationType;
-			else if (ExaminationType != null)
-				ExaminationType.ExaminationTypeTitle = examTypeTitle;
-			else
-				ExaminationType = new ExaminationType(examTypeTitle);
+			//if (string.IsNullOrEmpty(examTypeTitle))
+			//	ExaminationType = null;
+			//else if (DataContext is Session session && FindExaminationTypeInBothCases(session, examTypeTitle, docOrLab) is ExaminationType examinationType)
+			//	ExaminationType = examinationType;
+			//else if (ExaminationType != null)
+			//	ExaminationType.ExaminationTypeTitle = examTypeTitle;
+			//else
+			//	ExaminationType = new ExaminationType(examTypeTitle);
 		}
 
 		private void DoctorTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			AutoCompleteTextBox docTB = (AutoCompleteTextBox)sender;
-			string docName = docTB?.Text ?? "";
+			//AutoCompleteTextBox docTB = (AutoCompleteTextBox)sender;
+			//string docName = docTB?.Text ?? "";
 
-			if (string.IsNullOrEmpty(docName))
-				Doctor = null;
-			else if (DataContext is Session session && session.DoctorCache.FirstOrDefault(doc => doc.Name == docName) is Doctor doctor)
-				Doctor = doctor;
-			else if (Doctor != null)
-				Doctor.Name = docName;
-			else
-				Doctor = new Doctor(docName);
+			//if (string.IsNullOrEmpty(docName))
+			//	Doctor = null;
+			//else if (DataContext is Session session && session.DoctorCache.FirstOrDefault(doc => doc.Name == docName) is Doctor doctor)
+			//	Doctor = doctor;
+			//else if (Doctor != null)
+			//	Doctor.Name = docName;
+			//else
+			//	Doctor = new Doctor(docName);
 		}
 
 		private void CommentTextBox_TextChanged(object sender, TextChangedEventArgs e)
