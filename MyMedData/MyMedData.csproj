@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FakesAssemblies\**" />
+    <EmbeddedResource Remove="FakesAssemblies\**" />
+    <None Remove="FakesAssemblies\**" />
+    <Page Remove="FakesAssemblies\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Pics\Icons\AuthorizationIcon.svg" />
     <None Remove="Pics\Icons\CalendarViewIcon.png" />
     <None Remove="Pics\Icons\TableViewIcon.png" />
@@ -23,7 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\WPF combobox\ArticleSource\ACTB\Aviad.WPF.Controls.csproj" />
+    <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WPF-AutoComplete-TextBox\AutoCompleteTextBox\AutoCompleteTextBox\AutoCompleteTextBox.csproj" />
   </ItemGroup>
 
 </Project>

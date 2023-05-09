@@ -8,7 +8,6 @@
         Title="AddDocExamWindow" Height="500" Width="637"
         x:Name="AddUserWindowInstance"
         xmlns:uc="clr-namespace:MyMedData.Controls"
-        xmlns:controls="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
         WindowStyle="None"
         Style="{StaticResource DarkWindowStyle}"       
         Loaded="AddUserWindowInstance_Loaded">

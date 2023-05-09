@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:uc="clr-namespace:MyMedData.Controls"
-             xmlns:aviad="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
+             xmlns:uc="clr-namespace:MyMedData.Controls"             
+             xmlns:acb="http://wpfcontrols.com/"
              mc:Ignorable="d" 
              x:Name="ThisRecordDisplay"  
              DataContextChanged="RecordDisplay_DataContextChanged"
@@ -22,9 +22,9 @@
                 <TextBlock Text="{Binding }"/>
             </Border>
         </DataTemplate>
-        <CollectionViewSource x:Key="ExaminationTypes" x:Name="ExaminationTypesView"/>
-        <CollectionViewSource x:Key="Doctors" x:Name="DoctorsView"/>
-        <CollectionViewSource x:Key="Clinics" x:Name="ClinicsView"/>
+        <uc:AutocompleteExaminationTypesSuggestionProvider x:Key="ExTypesSuggProvider"/>
+        <uc:AutocompleteDoctorSuggestionProvider x:Key="DocSuggProvider"/>
+        <uc:AutocompleteClinicSuggestionProvider x:Key="ClinicSuggProvider"/>
     </UserControl.Resources>  
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,42 +53,39 @@
             <TextBlock x:Name="ExamniantionTypeLabel" 
                 DockPanel.Dock="Top"
                 Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
-            <aviad:AutoCompleteTextBox x:Name="ExaminationTypeTextBox" 
+            <acb:AutoCompleteTextBox Name="ExaminationTypeTextBox" 
                 DockPanel.Dock="Top"
-                Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                ItemsSource="{Binding Source={StaticResource ExaminationTypes}}"
-                ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Binding="{Binding XPath=ExminationTypeTitle}"
-                Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=ExaminationType.ExaminationTypeTitle,
-                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                    TextChanged="ExaminationTypeTextBox_TextChanged"/>
+                Provider="{StaticResource ExTypesSuggProvider}"
+                SelectedItem="{Binding ElementName=ThisRecordDisplay, Path=ExaminationType, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus}"                     
+                Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}">
+                <acb:AutoCompleteTextBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="1" BorderBrush="{StaticResource BlueConotourColor}">
+                            <TextBox Text="{Binding Name}" Margin="2"/>
+                        </Border>                                
+                    </DataTemplate>
+                </acb:AutoCompleteTextBox.ItemTemplate>
+            </acb:AutoCompleteTextBox>
             <TextBlock x:Name="DoctorLabel" 
                 DockPanel.Dock="Top"
                 Text="Имя врача" Style="{StaticResource HeaderLabel}"/>
-            <aviad:AutoCompleteTextBox x:Name="DoctorTextBox" 
+            <acb:AutoCompleteTextBox x:Name="DoctorTextBox" 
                 DockPanel.Dock="Top" 
                 Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                ItemsSource="{Binding Source={StaticResource Doctors}}"
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Binding="{Binding XPath=Name}"
                 Text="{Binding ElementName=ThisRecordDisplay,
                     Path=Doctor.Name, FallbackValue={x:Null},
-                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                    TextChanged="DoctorTextBox_TextChanged"/>
+                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock x:Name="ClinicLabel" 
                 DockPanel.Dock="Top"
                 Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
-            <aviad:AutoCompleteTextBox x:Name="ClinicTextBox"  
+            <acb:AutoCompleteTextBox x:Name="ClinicTextBox"  
                 DockPanel.Dock="Top"
                 Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                ItemsSource="{Binding Source={StaticResource Clinics}}"
                 ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Binding="{Binding XPath=Name}"
                 Text="{Binding ElementName=ThisRecordDisplay,
                     Path=Clinic.Name,
-                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                    TextChanged="ClinicTextBox_TextChanged"/>
+                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock x:Name="CommentLabel" 
                         DockPanel.Dock="Top"
                         Text="Примечание" Style="{StaticResource HeaderLabel}"/>
