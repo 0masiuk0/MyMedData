@@ -33,8 +33,4 @@
     <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\WPF-AutoComplete-TextBox\AutoCompleteTextBox\AutoCompleteTextBox\AutoCompleteTextBox.csproj" />
-  </ItemGroup>
-
 </Project>

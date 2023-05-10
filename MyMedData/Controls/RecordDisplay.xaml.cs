@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.IO;
-using AutoCompleteTextBox;
+using System.Windows.Controls.Primitives;
 
 namespace MyMedData.Controls
 {
@@ -22,9 +22,9 @@ namespace MyMedData.Controls
 		{
 			InitializeComponent();
 			
-			_examinationTypesProvider = (AutocompleteExaminationTypesSuggestionProvider)TryFindResource("ExTypesSuggProvider");
-			_doctorsProvider = (AutocompleteDoctorSuggestionProvider)TryFindResource("DocSuggProvider");
-			_clinicsProvider = (AutocompleteClinicSuggestionProvider)TryFindResource("ClinicSuggProvider");
+			_examinationTypesProvider = (CollectionViewSource)TryFindResource("ExTypes");
+			_doctorsProvider = (CollectionViewSource)TryFindResource("Doctors");
+			_clinicsProvider = (CollectionViewSource)TryFindResource("Clinics");
 
 			HasUnsavedChanges = false;
 
@@ -36,9 +36,9 @@ namespace MyMedData.Controls
 			//ClinicTextBox.TextChanged += (o, e) => UserInputChanged();
 		}		
 
-		private readonly AutocompleteDoctorSuggestionProvider _doctorsProvider;
-		private readonly AutocompleteExaminationTypesSuggestionProvider _examinationTypesProvider;
-		private readonly AutocompleteClinicSuggestionProvider _clinicsProvider;		
+		private readonly CollectionViewSource _doctorsProvider;
+		private readonly CollectionViewSource _examinationTypesProvider;
+		private readonly CollectionViewSource _clinicsProvider;		
 
 		private void RecordDisplay_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
@@ -133,7 +133,7 @@ namespace MyMedData.Controls
 				Doctor = null;
 
 				DoctorLabel.Visibility = Visibility.Collapsed;
-				DoctorTextBox.Visibility = Visibility.Collapsed;
+				DoctorButton.Visibility = Visibility.Collapsed;
 
 				_examinationTypesProvider.Source= session.LabTestTypesCache;
 			}
@@ -143,7 +143,7 @@ namespace MyMedData.Controls
 				Doctor = docExam.Doctor?.DeepCopy() ?? null;
 
 				DoctorLabel.Visibility = Visibility.Visible;
-				DoctorTextBox.Visibility = Visibility.Visible;
+                DoctorButton.Visibility = Visibility.Visible;
 
 				_examinationTypesProvider.Source = session.DoctorTypesCache;
 			}
@@ -211,6 +211,7 @@ namespace MyMedData.Controls
 			DependencyProperty.Register(nameof(ExaminationDate), typeof(DateOnly), typeof(RecordDisplay),
 				new UIPropertyMetadata(DateOnly.FromDateTime(DateTime.Today)));
 
+		ExaminationType _newExaminationTypeInstance = new ExaminationType();
 		public ExaminationType? ExaminationType
 		{
 			set => SetValue(ExaminationTypeTitleProperty, value);
@@ -220,7 +221,7 @@ namespace MyMedData.Controls
 		public static readonly DependencyProperty ExaminationTypeTitleProperty =
 			DependencyProperty.Register(nameof(ExaminationType), typeof(ExaminationType), typeof(RecordDisplay), new UIPropertyMetadata());
 
-
+		Doctor _newDoctorInstance = new Doctor();
 		public Doctor? Doctor
 		{
 			set => SetValue(DoctorNameProperty, value);
@@ -230,7 +231,7 @@ namespace MyMedData.Controls
 		public static readonly DependencyProperty DoctorNameProperty =
 			DependencyProperty.Register(nameof(Doctor), typeof(Doctor), typeof(RecordDisplay), new UIPropertyMetadata());
 
-
+		Clinic _newClinicInstance = new Clinic();
 		public Clinic? Clinic
 		{
 			set => SetValue(ClinicNameProperty, value);
@@ -249,10 +250,41 @@ namespace MyMedData.Controls
 
 		public static readonly DependencyProperty CommentProperty =
 			DependencyProperty.Register(nameof(Comment), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata(""));
-		#endregion
+        #endregion
 
-		//----------------------------------------------------UI EVENTS--------------------------------------------------------------------
-		private void UploadDocButton_Click(object sender, RoutedEventArgs e)
+        //----------------------------------------------------UI EVENTS--------------------------------------------------------------------
+		private void ShowPopup(Button placementTargert, object cache)
+		{
+			if (cache is ObservableCollection<Doctor> || cache is ObservableCollection<ExaminationType> || cache is ObservableCollection<Clinic>)
+			{
+				Popup popup = (Popup)TryFindResource("EntityChoicePopup");
+				popup.PlacementTarget = placementTargert;
+				popup.VerticalOffset = placementTargert.ActualHeight;
+				popup.HorizontalOffset = 0;
+
+				var entityManager = (EntityManager)popup.Child;
+				entityManager.SelectionMade += (o, e) => popup.IsOpen = false;
+				entityManager.DataContext = cache;
+
+				popup.IsOpen = true;
+			}
+        }
+
+        private void ExaminationTypeButton_Click(object sender, RoutedEventArgs e)
+        {
+			Button button = (Button)sender;
+
+			if (DataContext is Session session) 
+			{
+				if (DocOrLab == DocOrLabExamination.Doc)
+					ShowPopup(button, session.DoctorTypesCache);
+				else
+                    ShowPopup(button, session.LabTestTypesCache);
+            }
+
+        }
+
+        private void UploadDocButton_Click(object sender, RoutedEventArgs e)
 		{
 			OpenFileDialog opf = new OpenFileDialog();
 			opf.Filter = "Availible types|*.pdf;*.jpg;*.png";
@@ -388,7 +420,7 @@ namespace MyMedData.Controls
 			else
 				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
 		}
-	}
+    }
 
 	[ValueConversion(typeof(DateTime), typeof(DateOnly))]
 	public class DateTimeToDateOnlyConverter : IValueConverter

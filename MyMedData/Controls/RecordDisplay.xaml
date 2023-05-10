@@ -17,14 +17,18 @@
             <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="Margin" Value="4,10,0,0"/>
         </Style>
-        <DataTemplate x:Key="AutoCompleteItemTemplate">
-            <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1">
-                <TextBlock Text="{Binding }"/>
-            </Border>
-        </DataTemplate>
-        <uc:AutocompleteExaminationTypesSuggestionProvider x:Key="ExTypesSuggProvider"/>
-        <uc:AutocompleteDoctorSuggestionProvider x:Key="DocSuggProvider"/>
-        <uc:AutocompleteClinicSuggestionProvider x:Key="ClinicSuggProvider"/>
+        <Style x:Key="EntityButton" TargetType="Button" BasedOn="{StaticResource UnsizedDarkButtonStyle}">
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkThemeFontColor}"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+        </Style>
+        <CollectionViewSource x:Key="ExTypes"/>
+        <CollectionViewSource x:Key="Doctors"/>
+        <CollectionViewSource x:Key="Clinics"/>
+        <Popup x:Key="EntityChoicePopup" StaysOpen="False">
+            <uc:EntityManager/>
+        </Popup>
     </UserControl.Resources>  
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,39 +57,21 @@
             <TextBlock x:Name="ExamniantionTypeLabel" 
                 DockPanel.Dock="Top"
                 Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
-            <acb:AutoCompleteTextBox Name="ExaminationTypeTextBox" 
-                DockPanel.Dock="Top"
-                Provider="{StaticResource ExTypesSuggProvider}"
-                SelectedItem="{Binding ElementName=ThisRecordDisplay, Path=ExaminationType, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus}"                     
-                Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}">
-                <acb:AutoCompleteTextBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderThickness="1" BorderBrush="{StaticResource BlueConotourColor}">
-                            <TextBox Text="{Binding Name}" Margin="2"/>
-                        </Border>                                
-                    </DataTemplate>
-                </acb:AutoCompleteTextBox.ItemTemplate>
-            </acb:AutoCompleteTextBox>
+            <Button Name="ExaminationTypeButton" 
+                Style="{StaticResource EntityButton}" Click="ExaminationTypeButton_Click"
+               />
             <TextBlock x:Name="DoctorLabel" 
                 DockPanel.Dock="Top"
                 Text="Имя врача" Style="{StaticResource HeaderLabel}"/>
-            <acb:AutoCompleteTextBox x:Name="DoctorTextBox" 
-                DockPanel.Dock="Top" 
-                Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=Doctor.Name, FallbackValue={x:Null},
-                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button x:Name="DoctorButton" 
+                 Style="{StaticResource EntityButton}"
+                />
             <TextBlock x:Name="ClinicLabel" 
                 DockPanel.Dock="Top"
                 Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
-            <acb:AutoCompleteTextBox x:Name="ClinicTextBox"  
-                DockPanel.Dock="Top"
-                Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                ItemTemplate="{StaticResource AutoCompleteItemTemplate}"
-                Text="{Binding ElementName=ThisRecordDisplay,
-                    Path=Clinic.Name,
-                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button x:Name="ClinicButton"  
+                 Style="{StaticResource EntityButton}"
+                />
             <TextBlock x:Name="CommentLabel" 
                         DockPanel.Dock="Top"
                         Text="Примечание" Style="{StaticResource HeaderLabel}"/>
