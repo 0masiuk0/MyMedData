@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         x:Name="AddUserWindowInstance"
         xmlns:uc="clr-namespace:MyMedData.Controls" WindowStyle="None"
-        Title="AddUserWindow" Height="500" Width="604" Style="{StaticResource DarkWindowStyle}">
+        Title="AddUserWindow" Height="500" Width="604" Style="{StaticResource DarkWindowStyle}" KeyDown="AddUserWindowInstance_KeyDown">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34"/>
     </WindowChrome.WindowChrome>
@@ -44,7 +44,7 @@
                     DockPanel.Dock="Right" Click="EditDataFileButton_Click"/>
             <TextBox x:Name="DataFileTextBox" IsReadOnly="True"/>
         </DockPanel>
-        <CheckBox x:Name="OwnDatabaseCheckBox" IsChecked="False" Checked="OwnDatabaseCheckBox_Checked"
+        <CheckBox x:Name="OwnDatabaseCheckBox" IsChecked="False" Checked="OwnDatabaseCheckBox_Changed" Unchecked="OwnDatabaseCheckBox_Changed"
                   DockPanel.Dock="Top" Margin="15,20,15,5" HorizontalAlignment="Center">
             <TextBlock Margin="0,-5,0,0"  FontSize="18" Foreground="{StaticResource DarkThemeFontColor}">
                 Использовать приватную базу врачей и мед. учереждений

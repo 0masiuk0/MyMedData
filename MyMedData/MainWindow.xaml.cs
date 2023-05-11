@@ -54,12 +54,20 @@ namespace MyMedData
 
 		public void LogIn(Session session)
 		{
-			ActiveSession = session;
-			UsernameTextBlock.Text = ActiveUser.Name;
-			DataContext = session;
+			try
+			{
+				ActiveSession = session;
+				UsernameTextBlock.Text = ActiveUser.Name;
+				DataContext = session;
 
-			NewDocExaminationButton.Visibility = Visibility.Visible;
-			NewLabAnalysisButon.Visibility = Visibility.Visible;
+				NewDocExaminationButton.Visibility = Visibility.Visible;
+				NewLabAnalysisButon.Visibility = Visibility.Visible;
+			}
+			catch(Exception ex) 
+			{
+				MessageBox.Show("Не удалось прочитать базу данных.\n" + ex.Message, "Ошибка чтения базы", MessageBoxButton.OK, MessageBoxImage.Error);
+				LogOff();
+			}
 		}
 
 		public void LogOff()

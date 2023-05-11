@@ -71,7 +71,7 @@ namespace MyMedData.Controls
 		{
 			if (e.Item is Doctor doc)
 			{
-				if (!string.IsNullOrWhiteSpace(TitleTextBox.Text))
+				if (!string.IsNullOrWhiteSpace(TitleTextBox.Text.ToLower()))
 				{
 					if (!doc.Name.ToLower().StartsWith(TitleTextBox.Text))
 					{
@@ -82,7 +82,7 @@ namespace MyMedData.Controls
 
 				if(!string.IsNullOrWhiteSpace(CommentTextBox.Text))
 				{
-					if(!doc.Comment.ToLower().StartsWith(CommentTextBox.Text)) 
+					if(!doc.Comment?.ToLower().StartsWith(CommentTextBox.Text.ToLower()) ?? true) 
 					{
 						e.Accepted = false; 
 						return; 
@@ -95,7 +95,7 @@ namespace MyMedData.Controls
 			{
                 if (!string.IsNullOrWhiteSpace(TitleTextBox.Text))
                 {
-                    if (!examinationType.ExaminationTypeTitle.ToLower().StartsWith(TitleTextBox.Text))
+                    if (!examinationType.ExaminationTypeTitle.ToLower().StartsWith(TitleTextBox.Text.ToLower()))
                     {
                         e.Accepted = false;
                         return;
@@ -104,7 +104,7 @@ namespace MyMedData.Controls
 
                 if (!string.IsNullOrWhiteSpace(CommentTextBox.Text))
                 {
-                    if (!examinationType.Comment.ToLower().StartsWith(CommentTextBox.Text))
+                    if (!examinationType.Comment?.ToLower().StartsWith(CommentTextBox.Text.ToLower()) ?? true)
                     {
                         e.Accepted = false;
                         return;
@@ -117,7 +117,7 @@ namespace MyMedData.Controls
 			{
                 if (!string.IsNullOrWhiteSpace(TitleTextBox.Text))
                 {
-                    if (!clinic.Name.ToLower().StartsWith(TitleTextBox.Text))
+                    if (!clinic.Name.ToLower().StartsWith(TitleTextBox.Text.ToLower()))
                     {
                         e.Accepted = false;
                         return;
@@ -126,7 +126,7 @@ namespace MyMedData.Controls
 
                 if (!string.IsNullOrWhiteSpace(CommentTextBox.Text))
                 {
-                    if (!clinic.Comment.ToLower().StartsWith(CommentTextBox.Text))
+                    if (!clinic.Comment?.ToLower().StartsWith(CommentTextBox.Text.ToLower()) ?? true)
                     {
                         e.Accepted = false;
                         return;
@@ -180,20 +180,46 @@ namespace MyMedData.Controls
 		private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			SelectedItem = EntitiesDataGrid.SelectedItem;
-			RaiseEvent(new RoutedEventArgs(SelectionMadeEvent, this));
+			RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
         }
 
-        public static readonly RoutedEvent SelectionMadeEvent = EventManager.RegisterRoutedEvent(
-            name: nameof(SelectionMade),
+        public static readonly RoutedEvent SelectionDoneEvent = EventManager.RegisterRoutedEvent(
+            name: nameof(SelectionDone),
             routingStrategy: RoutingStrategy.Bubble,
             handlerType: typeof(RoutedEventHandler),
             ownerType: typeof(EntityManager));
 
         // Provide CLR accessors for adding and removing an event handler.
-        public event RoutedEventHandler SelectionMade
+        public event RoutedEventHandler SelectionDone
         {
-            add { AddHandler(SelectionMadeEvent, value); }
-            remove { RemoveHandler(SelectionMadeEvent, value); }
+            add { AddHandler(SelectionDoneEvent, value); }
+            remove { RemoveHandler(SelectionDoneEvent, value); }
         }
-    }
+
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+
+        }
+
+		internal void Clear()
+		{
+			TitleTextBox.Text = string.Empty;
+			CommentTextBox.Text = string.Empty;
+			SelectedItem = null;
+		}
+
+		private void EntitiesDataGrid_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter && EntitiesDataGrid.SelectedItem != null) 
+			{
+				SelectedItem = EntitiesDataGrid.SelectedItem;
+				RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
+			}
+			else if (e.Key == Key.Escape)
+			{
+				SelectedItem = null;
+				RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
+			}
+		}
+	}
 }

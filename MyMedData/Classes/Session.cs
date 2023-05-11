@@ -10,6 +10,9 @@ using System.Windows.Data;
 
 namespace MyMedData
 {
+	// DB password for users with no password
+	// P0keCeCuEd6oDX9K
+
 	public class Session : IDisposable
 	{
 		public readonly User ActiveUser;
@@ -57,9 +60,15 @@ namespace MyMedData
 
 			//Reading records
 			var docExaminationRecords = RecordsDatabaseContext
-				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName)
+				.Include(x => x.Doctor)
+				.Include(x => x.Clinic)
+				.Include(x => x.ExaminationType);
+			
 			var labExaminationRecords = RecordsDatabaseContext
-				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
+				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName)
+				.Include(x => x.Clinic)
+				.Include(x => x.ExaminationType); 
 
 			foreach (var docExam in docExaminationRecords.FindAll())
 			{

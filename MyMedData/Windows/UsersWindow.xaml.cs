@@ -149,15 +149,23 @@ namespace MyMedData.Windows
 
 		private void AuthorizeUser(User user)
 		{
-			EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
-			passwordWindow.Owner = this;
-			passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-			passwordWindow.ShowDialog();
-			if (passwordWindow.Password != null)
+			if (user.CheckPassword(""))
 			{
-				MainWindow.LogIn(new Session(user, passwordWindow.Password));
+				MainWindow.LogIn(new Session(user, ""));
 				Close();
+			}
+			else
+			{
+				EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
+				passwordWindow.Owner = this;
+				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+				passwordWindow.ShowDialog();
+				if (passwordWindow.Password != null)
+				{
+					MainWindow.LogIn(new Session(user, passwordWindow.Password));
+					Close();
+				}
 			}
 		}
 
@@ -259,5 +267,11 @@ namespace MyMedData.Windows
 				AuthorizeUser(user);
 			}
         }
-    }
+
+		private void UsersWindowInstance_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Escape)
+				Close();
+		}
+	}
 }

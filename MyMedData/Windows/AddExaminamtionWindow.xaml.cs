@@ -49,5 +49,11 @@ namespace MyMedData.Windows
 
 			theRecordDisplay.ChangesSavedToDB += (o, e) => Close();
 		}
-	}
+
+		private void AddUserWindowInstance_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Escape)
+				Close();
+		}
+    }
 }

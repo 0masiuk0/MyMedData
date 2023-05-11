@@ -10,7 +10,7 @@
         xmlns:uc="clr-namespace:MyMedData.Controls"
         WindowStyle="None"
         Style="{StaticResource DarkWindowStyle}"       
-        Loaded="AddUserWindowInstance_Loaded">
+        Loaded="AddUserWindowInstance_Loaded" KeyDown="AddUserWindowInstance_KeyDown">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34"/>
     </WindowChrome.WindowChrome>

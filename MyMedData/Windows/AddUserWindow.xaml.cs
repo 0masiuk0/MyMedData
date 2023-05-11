@@ -141,9 +141,16 @@ namespace MyMedData.Windows
 			OKbutton.IsEnabled = ValidData;
 		}
 
-		private void OwnDatabaseCheckBox_Checked(object sender, RoutedEventArgs e)
+		private void OwnDatabaseCheckBox_Changed(object sender, RoutedEventArgs e)
 		{
+			NewUser.RunsOwnDoctorsCollection = OwnDatabaseCheckBox.IsChecked ?? false;
 			MessageBox.Show("Эту настройку нельзя изменить после создания пользователя.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
-		}	
+		}
+
+		private void AddUserWindowInstance_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Escape)
+				Close();
+		}
 	}
 }

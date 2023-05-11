@@ -7,10 +7,9 @@
              xmlns:acb="http://wpfcontrols.com/"
              mc:Ignorable="d" 
              x:Name="ThisRecordDisplay"  
-             DataContextChanged="RecordDisplay_DataContextChanged"
              d:DesignHeight="450" d:DesignWidth="350">
     <UserControl.Resources>
-        <uc:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
+        <uc:DateOnlyToDateTimeConverter x:Key="DateOnlyToDateTimeConverter"/>
         <Style x:Key="HeaderLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Calibri"/>
@@ -22,17 +21,15 @@
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
             <Setter Property="BorderBrush" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
-        <CollectionViewSource x:Key="ExTypes"/>
-        <CollectionViewSource x:Key="Doctors"/>
-        <CollectionViewSource x:Key="Clinics"/>
         <Popup x:Key="EntityChoicePopup" StaysOpen="False">
             <uc:EntityManager/>
         </Popup>
     </UserControl.Resources>  
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="140"/>
+            <ColumnDefinition MinWidth="160" d:Width="160"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -45,32 +42,35 @@
                         DockPanel.Dock="Top"
                         Text="Дата" Style="{StaticResource HeaderLabel}"/>
             
-            <DatePicker x:Name="RecordDatePicker" 
+            <DatePicker x:Name="ExaminationDatePicker" 
                 DockPanel.Dock="Top"       
                 FontSize="16" 
                 Style="{StaticResource DarkDatePicker}"
                 SelectedDate="{Binding ElementName=ThisRecordDisplay,
                     Path=ExaminationDate,
-                    Mode=OneWay, UpdateSourceTrigger=PropertyChanged,                       
-                    Converter={StaticResource DateTimeToDateOnlyConverter}}"
-                    SelectedDateChanged="RecordDatePicker_SelectedDateChanged"/>
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,                       
+                    Converter={StaticResource DateOnlyToDateTimeConverter}}"
+                   />
             <TextBlock x:Name="ExamniantionTypeLabel" 
                 DockPanel.Dock="Top"
                 Text="Вид обследования" Style="{StaticResource HeaderLabel}"/>
             <Button Name="ExaminationTypeButton" 
                 Style="{StaticResource EntityButton}" Click="ExaminationTypeButton_Click"
+                d:Content="Вид обследования"
                />
             <TextBlock x:Name="DoctorLabel" 
                 DockPanel.Dock="Top"
                 Text="Имя врача" Style="{StaticResource HeaderLabel}"/>
             <Button x:Name="DoctorButton" 
                  Style="{StaticResource EntityButton}"
+                 d:Content="Выбор врача"
                 />
             <TextBlock x:Name="ClinicLabel" 
                 DockPanel.Dock="Top"
                 Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
             <Button x:Name="ClinicButton"  
                  Style="{StaticResource EntityButton}"
+                 d:Content="Выбор мед. учереждения"
                 />
             <TextBlock x:Name="CommentLabel" 
                         DockPanel.Dock="Top"
@@ -80,7 +80,7 @@
                         AcceptsReturn="True" TextWrapping="WrapWithOverflow"
                         Text="{Binding ElementName=ThisRecordDisplay,
                         Path=Comment,
-                        Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="CommentTextBox_TextChanged"/>
         </DockPanel>
         <DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"

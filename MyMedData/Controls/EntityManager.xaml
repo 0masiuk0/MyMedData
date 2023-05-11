@@ -5,83 +5,91 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyMedData.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="400"
+             d:DesignHeight="450" d:DesignWidth="800"
              DataContextChanged="UserControl_DataContextChanged">
     <UserControl.Resources>
         <CollectionViewSource x:Key="EntitiesView" Filter="CollectionViewSource_Filter"/>
         <Style x:Key="EntityTextBoxStyle" TargetType="TextBox">
             <Setter Property="Height" Value="22"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
             <Setter Property="BorderBrush" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="Margin" Value="4"/>
         </Style>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="LayoutGridColumn0"/>
-            <ColumnDefinition/>
-            <ColumnDefinition MaxWidth="40"/>
-        </Grid.ColumnDefinitions>
-        <TextBox x:Name="TitleTextBox" Style="{StaticResource EntityTextBoxStyle}"/>
-        <TextBox x:Name="CommentTextBox" Grid.Column="1" Style="{StaticResource EntityTextBoxStyle}"/>
-        <Button x:Name="AddNewEntityButton" Grid.Column="2" Style="{StaticResource UnsizedDarkButtonStyle}"
-                Width="25" Height="25" Content="+" FontSize="25" Padding="0,-8,0,0" Margin="7,5,8,0" VerticalAlignment="Top" 
+    <Border BorderBrush="{StaticResource BlueConotourColor}" BorderThickness="4">
+        <DockPanel>
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding ElementName=TitleDataGridColumn, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged, FallbackValue=400}"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="45"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="TitleTextBox" Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="CommentTextBox" Grid.Column="1" Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                <Button x:Name="AddNewEntityButton" Grid.Column="2" Style="{StaticResource UnsizedDarkButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                Width="25" Height="25" Content="+" FontSize="25" Padding="0,-8,0,0" 
                 IsEnabled="False"
                 Click="AddNewEntityButton_Click"/>
+            </Grid>
 
-        <DataGrid x:Name="EntitiesDataGrid"
-                  Grid.Row="1" Grid.ColumnSpan="3"
+            <DataGrid x:Name="EntitiesDataGrid"
+                  BorderThickness="2"
                   Background="{StaticResource LightDarkBackColor}" Foreground="Transparent" 
                   BorderBrush="{StaticResource DarkThemeFontColor}"
                   ItemsSource="{Binding Source={StaticResource EntitiesView}, FallbackValue={x:Null}}"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  AutoGenerateColumns="False"
                   CanUserReorderColumns="False" CanUserDeleteRows="False"
                   CanUserAddRows="False" CanUserResizeRows="False"
                   HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
-                  SelectionMode="Single" SelectionUnit="FullRow">
-            <DataGrid.Resources>
-                <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
-                    <Setter Property="Margin" Value="5,10,5,10" />
-                </Style>
-                <Style TargetType="ScrollBar">
-                    <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Height" Value="30"/>
-                    <Setter Property="Background" Value="#606060"/>
-                    <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-                    <Setter Property="FontWeight" Value="DemiBold"/>
-                    <Setter Property="FontSize" Value="20"/>
-                    <Setter Property="Padding" Value="10,0,0,0"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
-            <DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
-                    <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-                    <Setter Property="FontSize" Value="16"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGridTextColumn x:Name="TitleDataGridColumn"
+                  SelectionMode="Single" SelectionUnit="FullRow"
+                  KeyDown="EntitiesDataGrid_KeyDown">
+                <DataGrid.Resources>
+                    <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
+                        <Setter Property="Margin" Value="5,10,5,10" />
+                    </Style>
+                    <Style TargetType="ScrollBar">
+                        <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="Background" Value="#606060"/>
+                        <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
+                        <Setter Property="FontWeight" Value="DemiBold"/>
+                        <Setter Property="FontSize" Value="20"/>
+                        <Setter Property="Padding" Value="10,0,0,0"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
+                        <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="TitleDataGridColumn"
                                     Header="Наименование" IsReadOnly="True"
-                                    ElementStyle="{StaticResource ColumnElementStyle}"/>
-            
-            <DataGridTextColumn x:Name="CommentDataGridColumn" IsReadOnly="True"
+                                    ElementStyle="{StaticResource ColumnElementStyle}"
+                                    MinWidth="180" Width="250"/>
+
+                    <DataGridTextColumn x:Name="CommentDataGridColumn" IsReadOnly="True"
                                     Header="Примечание" Binding="{Binding Comment}"                                     
-                                    ElementStyle="{StaticResource ColumnElementStyle}"                                
-                                    Width="{Binding ElementName=LayoutGridColumn0, Path=ActualWidth, Mode=OneWayToSource}"/>
-            
-        </DataGrid>
-    </Grid>
+                                    ElementStyle="{StaticResource ColumnElementStyle}"
+                                    Width="450"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Border>
 </UserControl>

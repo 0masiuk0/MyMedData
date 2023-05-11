@@ -10,7 +10,7 @@
         x:Name="UsersWindowInstance"
         Title="Пользователи" WindowStyle="None" WindowStartupLocation="CenterOwner"
         Height="350" MinHeight="210" Width="500" Style="{StaticResource DarkWindowStyle}" 
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded" KeyDown="UsersWindowInstance_KeyDown">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>
