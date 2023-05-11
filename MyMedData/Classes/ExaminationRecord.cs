@@ -212,7 +212,16 @@ namespace MyMedData
 		}
 
 		[BsonIgnore]
-		public override string Title => $"{ExaminationType} - {Doctor}";
+		public override string Title
+		{
+			get
+			{
+				if (Doctor != null)
+					return $"{ExaminationType} - {Doctor}";
+				else
+					return ExaminationType?.ExaminationTypeTitle ?? "...";
+			}
+		}
 
 		public static string DbCollectionName => "DoctorExaminations";
 	}

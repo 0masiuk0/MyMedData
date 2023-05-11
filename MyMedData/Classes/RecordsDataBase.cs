@@ -168,9 +168,10 @@ namespace MyMedData
 			return passwordStringHash16.ToString();
 		}
 
-		public static bool UpdateOrInsertExaminationRecord(LiteDatabase db, ExaminationRecord record)
+		public static bool UpdateOrInsertExaminationRecord(Session session, ref ExaminationRecord record)
 		{
-			FileStorage fs = new(db);
+			LiteDatabase db = session.RecordsDatabaseContext;
+			FileStorage fs = session.FileStorage;
 
 			try
 			{				
@@ -180,15 +181,20 @@ namespace MyMedData
 					{
 						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
 						var recordInDb = col.FindById(docRecord.Id);
+
+						//TODO: не нужно тут искать в базе запись
 						if (recordInDb != null) 
-						{
+						{								
 								ProcessDocumentUploadsChanges(fs, record, recordInDb);
+								return col.Update(docRecord);
 						}
 						else
 						{
 								fs.UploadFilesToStorage(record.Documents);
-						}
-						return col.Upsert(docRecord);
+								var id = col.Insert(docRecord);
+								record.Id = id.AsInt32;
+								return true;
+						}						
 					}
 					case LabExaminationRecord labRecord:
 					{
@@ -197,12 +203,15 @@ namespace MyMedData
 						if (recordInDb != null)
 						{
 							ProcessDocumentUploadsChanges(fs, record, recordInDb);
+							return col.Update(labRecord);
 						}
 						else
 						{
 							fs.UploadFilesToStorage(record.Documents);
+							var id = col.Insert(labRecord);
+							record.Id = id.AsInt32;
+							return true;
 						}
-						return col.Upsert(labRecord);
 					}
 					default:
 						return false;

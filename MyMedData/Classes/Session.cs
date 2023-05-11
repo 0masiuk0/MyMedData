@@ -17,7 +17,7 @@ namespace MyMedData
 	{
 		public readonly User ActiveUser;
 		public readonly LiteDatabase RecordsDatabaseContext;
-		public readonly LiteDatabase EntitiesDatbaseContext;
+		internal readonly FileStorage FileStorage;
 
 		public readonly bool OccupiesUsersDb;
 
@@ -32,24 +32,11 @@ namespace MyMedData
 		{
 			ActiveUser = user;
 			
-			ExaminationRecords = new ObservableCollection<ExaminationRecord>();
+			ExaminationRecords = new ObservableCollection<ExaminationRecord>();			
 
 			//Getting DB context
 			RecordsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
-			if (ActiveUser.RunsOwnDoctorsCollection)
-			{
-				EntitiesDatbaseContext = RecordsDatabaseContext;
-				OccupiesUsersDb = false;
-			}
-			else
-			{
-				string? dbFile = UsersDataBase.GetUsersDbFileNameFromConfig();
-				if (dbFile == null)
-					throw new Exception("Не найдено конфигурации файла общей базы данных.");
-
-				EntitiesDatbaseContext = new LiteDatabase(dbFile);
-				OccupiesUsersDb = true;
-			}
+			FileStorage = new FileStorage(RecordsDatabaseContext);
 			
 			//Building medical entities cashe
 			EntitiesCacheUpdateHelper = new EntitiesCacheUpdateHelper(this);
@@ -92,10 +79,10 @@ namespace MyMedData
 				}
 			}
 
-			if (RecordsDataBase.UpdateOrInsertExaminationRecord(RecordsDatabaseContext, record))
+			EntitiesCacheUpdateHelper.EnsureValuesAreCached(record);
+			if (RecordsDataBase.UpdateOrInsertExaminationRecord(this, ref record))
 			{
 				//this is to trigger ObservableCollection.CollectionChanged and all the bound views to update.
-				//TODO: ensure ExaminationRecord cached record has id
 				if (recordToUpdateIndex >= 0)
 				{
 					ExaminationRecords.RemoveAt(recordToUpdateIndex);
@@ -124,8 +111,6 @@ namespace MyMedData
 
 		public void Dispose()
 		{
-			if (!object.ReferenceEquals(RecordsDatabaseContext, EntitiesDatbaseContext))
-				EntitiesDatbaseContext.Dispose();
 			RecordsDatabaseContext.Dispose();
 		}
 

@@ -13,18 +13,17 @@ namespace MyMedData
 		public EntitiesCacheUpdateHelper(Session session)
 		{
 			this.session = session;
-			CacheDatabaseContext = session.EntitiesDatbaseContext;
 
-			DoctorCache = new(CacheDatabaseContext.GetCollection<Doctor>(Doctor.DbCollectionName)
+			DoctorCache = new(EntitiesDb.GetCollection<Doctor>(Doctor.DbCollectionName)
 					.FindAll());
 
-			LabTestTypesCache = new(CacheDatabaseContext.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName)
+			LabTestTypesCache = new(EntitiesDb.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName)
 				.FindAll());
 
-			DoctorTypesCache = new(CacheDatabaseContext.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName)
+			DoctorTypesCache = new(EntitiesDb.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName)
 				.FindAll());
 
-			ClinicCache = new(CacheDatabaseContext.GetCollection<Clinic>(Clinic.DbCollectionName)
+			ClinicCache = new(EntitiesDb.GetCollection<Clinic>(Clinic.DbCollectionName)
 				.FindAll());						
 		}
 
@@ -33,10 +32,16 @@ namespace MyMedData
 		public ObservableCollection<Doctor> DoctorCache;
 		public ObservableCollection<ExaminationType> DoctorTypesCache;
 		public ObservableCollection<Clinic> ClinicCache;
-		private LiteDatabase CacheDatabaseContext;
 
-		private LiteDatabase EntitiesDb => session.EntitiesDatbaseContext;
-		
+		private LiteDatabase EntitiesDb => session.RecordsDatabaseContext;
+
+		internal void EnsureValuesAreCached(ExaminationRecord record)
+		{
+			if (record is DoctorExaminationRecord docRecord)
+				EnsureValuesAreCached(DocOrLabExamination.Doc, docRecord.ExaminationType, docRecord.Clinic, docRecord.Doctor);
+			else
+				EnsureValuesAreCached(DocOrLabExamination.Lab, record.ExaminationType, record.Clinic, null);
+		}
 
 		internal void EnsureValuesAreCached(DocOrLabExamination docOrLab,
 			ExaminationType? examinationType,

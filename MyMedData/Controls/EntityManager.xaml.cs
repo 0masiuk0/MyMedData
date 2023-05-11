@@ -31,7 +31,8 @@ namespace MyMedData.Controls
 			CommentTextBox.TextChanged += TextBox_TextChanged;
 
 			TitleTextBox.TextChanged += (o, e) => _collectionViewSource.View.Refresh();
-			CommentTextBox.TextChanged += (o, e) => _collectionViewSource.View.Refresh();
+			CommentTextBox.TextChanged += (o, e) => _collectionViewSource.View.Refresh();				
+			
         }
 		
 		public object? SelectedItem

@@ -16,13 +16,14 @@
             <Setter Property="BorderBrush" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="Margin" Value="4"/>
         </Style>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <Border BorderBrush="{StaticResource BlueConotourColor}" BorderThickness="4">
         <DockPanel>
             <Grid DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding ElementName=TitleDataGridColumn, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged, FallbackValue=400}"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="{Binding ElementName=TitleDataGridColumn, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged, FallbackValue=300}"/>
+                    <ColumnDefinition MinWidth="300"/>
                     <ColumnDefinition Width="45"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -38,11 +39,12 @@
 
             <DataGrid x:Name="EntitiesDataGrid"
                   BorderThickness="2"
+                  Visibility="{Binding HasItems, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"
                   Background="{StaticResource LightDarkBackColor}" Foreground="Transparent" 
                   BorderBrush="{StaticResource DarkThemeFontColor}"
                   ItemsSource="{Binding Source={StaticResource EntitiesView}, FallbackValue={x:Null}}"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  AutoGenerateColumns="False"
+                  AutoGenerateColumns="False" CanUserSortColumns="True"
                   CanUserReorderColumns="False" CanUserDeleteRows="False"
                   CanUserAddRows="False" CanUserResizeRows="False"
                   HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"

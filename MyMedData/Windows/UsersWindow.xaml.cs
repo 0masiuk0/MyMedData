@@ -50,36 +50,30 @@ namespace MyMedData.Windows
 
 				UsersDbFileName = appSettings["UserDbName"];
 				if (UsersDbFileName == null)
-				{					
+				{
 					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 					ContentRendered += (o, e) => Close();
 					return;
 				}
 				else
 				{
-					if (MainWindow.ActiveSession?.OccupiesUsersDb ?? false)
+					//Нет активной сессии или она не заниает UsersDb
+					if (File.Exists(UsersDbFileName) && UsersDataBase.FastCheckUserDvValidity(UsersDbFileName))
 					{
-						//Есть сессия и она занимает UsersDb
-						ReadUsers(MainWindow.ActiveSession.EntitiesDatbaseContext);
+						//читаем
+						using (LiteDatabase usersDb = new LiteDatabase(UsersDbFileName))
+						{
+							ReadUsers(usersDb);
+						}
 					}
 					else
-						//Нет активной сессии или она не заниает UsersDb
-						if (File.Exists(UsersDbFileName) && UsersDataBase.FastCheckUserDvValidity(UsersDbFileName))
-						{
-							//читаем
-							using (LiteDatabase usersDb = new LiteDatabase(UsersDbFileName))
-							{
-								ReadUsers(usersDb);
-							}
-						}
-						else
-						{						
-							var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
-								"Ошибка!",
-								MessageBoxButton.OK, MessageBoxImage.Error);
-							ContentRendered += (o, e) => Close();
-							return;
-						}
+					{
+						var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
+							"Ошибка!",
+							MessageBoxButton.OK, MessageBoxImage.Error);
+						ContentRendered += (o, e) => Close();
+						return;
+					}
 				}
 			}
 			catch (ConfigurationErrorsException)
@@ -87,7 +81,7 @@ namespace MyMedData.Windows
 				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 				ContentRendered += (o, e) => Close();
 				return;
-			}	
+			}
 			finally
 			{
 				UsersListBox.Focus();
@@ -95,13 +89,13 @@ namespace MyMedData.Windows
 		}
 
 		private void ReadUsers(LiteDatabase usersDb)
-		{		
+		{
 			var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
 			foreach (User user in usersCollection.FindAll())
 			{
 				Users.Add(user);
 			}
-			
+
 			if (UsersListBox.Items.Count > 0)
 			{
 				UsersListBox.SelectedIndex = 0;
@@ -118,7 +112,7 @@ namespace MyMedData.Windows
 			}
 
 			AddUserWindow addUserWindow = new();
-			addUserWindow.ShowDialog();			
+			addUserWindow.ShowDialog();
 			if (addUserWindow.DialogResult == true)
 			{
 				var newUser = addUserWindow.NewUser;
@@ -135,7 +129,7 @@ namespace MyMedData.Windows
 
 		private void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (UsersListBox.SelectedItem is User user) 
+			if (UsersListBox.SelectedItem is User user)
 			{
 				AuthorizeUser(user);
 			}
@@ -144,7 +138,7 @@ namespace MyMedData.Windows
 		private void UserPlaque_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			UserPlaque plaque = (UserPlaque)sender;
-			if(plaque.DataContext is User user) AuthorizeUser(user);
+			if (plaque.DataContext is User user) AuthorizeUser(user);
 		}
 
 		private void AuthorizeUser(User user)
@@ -207,20 +201,20 @@ namespace MyMedData.Windows
 					return;
 
 				if (MainWindow.ActiveUser != null && MainWindow.ActiveUser.Id == user.Id)
-				{					
+				{
 					MainWindow.LogOff();
 				}
 
 				MessageBoxResult databaseDeletionAnswer = MessageBox.Show(
-					"Удалить базу данных пользователя?", "Удаление данных", 
+					"Удалить базу данных пользователя?", "Удаление данных",
 					MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 				bool databaseDeletion;
 
-				switch(databaseDeletionAnswer) 
+				switch (databaseDeletionAnswer)
 				{
 					case MessageBoxResult.Yes:
 						{
-							switch(MessageBox.Show("Вы уверены, что требуется удалить все данные пользвателя?", "Удаления данных",
+							switch (MessageBox.Show("Вы уверены, что требуется удалить все данные пользвателя?", "Удаления данных",
 										MessageBoxButton.YesNoCancel))
 							{
 								case MessageBoxResult.Yes: databaseDeletion = true; break;
@@ -229,13 +223,13 @@ namespace MyMedData.Windows
 							}
 							break;
 						}
-					case MessageBoxResult.No: databaseDeletion = false; break; 
+					case MessageBoxResult.No: databaseDeletion = false; break;
 					default: return;
 				}
 
 				bool success = UsersDataBase.DeleteUser(user, databaseDeletion, UsersDbFileName);
 
-				if (success) 
+				if (success)
 				{
 					Users.Remove(user);
 					if (Users.Count > 0)
@@ -247,7 +241,7 @@ namespace MyMedData.Windows
 		private void CancelButton_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
-        }
+		}
 
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -261,12 +255,12 @@ namespace MyMedData.Windows
 
 		private void UsersListBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Enter 
-				&& UsersListBox.SelectedItem is User user) 
+			if (e.Key == Key.Enter
+				&& UsersListBox.SelectedItem is User user)
 			{
 				AuthorizeUser(user);
 			}
-        }
+		}
 
 		private void UsersWindowInstance_KeyDown(object sender, KeyEventArgs e)
 		{

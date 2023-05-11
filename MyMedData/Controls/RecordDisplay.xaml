@@ -63,14 +63,14 @@
                 Text="Имя врача" Style="{StaticResource HeaderLabel}"/>
             <Button x:Name="DoctorButton" 
                  Style="{StaticResource EntityButton}"
-                 d:Content="Выбор врача"
+                 d:Content="Выбор врача" Click="DoctorButton_Click"
                 />
             <TextBlock x:Name="ClinicLabel" 
                 DockPanel.Dock="Top"
                 Text="Мед. учреждение" Style="{StaticResource HeaderLabel}"/>
             <Button x:Name="ClinicButton"  
                  Style="{StaticResource EntityButton}"
-                 d:Content="Выбор мед. учереждения"
+                 d:Content="Выбор мед. учереждения" Click="ClinicButton_Click"
                 />
             <TextBlock x:Name="CommentLabel" 
                         DockPanel.Dock="Top"

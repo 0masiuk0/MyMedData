@@ -139,13 +139,7 @@ namespace MyMedData.Windows
 			RepeatPasswordTextBlock.Foreground = PasswordsMatch ? _textBlockDefaultBrush : Brushes.Red;
 			DataFileTextBlock.Foreground = ValidDataFile ? _textBlockDefaultBrush : Brushes.Red;
 			OKbutton.IsEnabled = ValidData;
-		}
-
-		private void OwnDatabaseCheckBox_Changed(object sender, RoutedEventArgs e)
-		{
-			NewUser.RunsOwnDoctorsCollection = OwnDatabaseCheckBox.IsChecked ?? false;
-			MessageBox.Show("Эту настройку нельзя изменить после создания пользователя.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
-		}
+		}		
 
 		private void AddUserWindowInstance_KeyDown(object sender, KeyEventArgs e)
 		{

@@ -43,9 +43,6 @@ namespace MyMedData
 
 		public string DatabaseFile { get; set; }
 
-		public bool RunsOwnDoctorsCollection { get; set; }
-
-
 		private string _name;
 		private Color _accountColor;
 
@@ -59,17 +56,16 @@ namespace MyMedData
 			DatabaseFile = "";
 		}
 
-		public User(string name, SolidColorBrush accountColor, string? password, string recordsFile, bool runsOwnDoctorsCollection)
+		public User(string name, SolidColorBrush accountColor, string? password, string recordsFile)
 		{
 			Name = name;
 			AccountColor = accountColor.Color;
 			SetPassword(password ?? "");
 			DatabaseFile = recordsFile;
-			RunsOwnDoctorsCollection = runsOwnDoctorsCollection;
 		}
 
 		public User(string name, Color accountColor, string? password, string recordsFile, bool runsOwnDoctorsCollection)
-			: this(name, new SolidColorBrush(accountColor), password, recordsFile, runsOwnDoctorsCollection)
+			: this(name, new SolidColorBrush(accountColor), password, recordsFile)
 		{ }
 
 		public void SetPassword(string password)
@@ -198,7 +194,6 @@ namespace MyMedData
 			copy.AccountColor = user.AccountColor;
 			copy.DatabaseFile = user.DatabaseFile;
 			copy.PasswordHash = user.PasswordHash;
-			copy.RunsOwnDoctorsCollection = user.RunsOwnDoctorsCollection;
 			return copy;
 		}
 

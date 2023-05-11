@@ -274,10 +274,29 @@ namespace MyMedData.Controls
 				else
                     ShowPopup(button, session.LabTestTypesCache);
             }
-
         }
 
-        private void UploadDocButton_Click(object sender, RoutedEventArgs e)
+		private void DoctorButton_Click(object sender, RoutedEventArgs e)
+		{
+			Button button = (Button)sender;
+
+			if (DataContext is Session session)
+			{
+				ShowPopup(button, session.DoctorCache);
+			}
+		}
+
+		private void ClinicButton_Click(object sender, RoutedEventArgs e)
+		{
+			Button button = (Button)sender;
+
+			if (DataContext is Session session)
+			{
+				ShowPopup(button, session.ClinicCache);
+			}
+		}
+
+		private void UploadDocButton_Click(object sender, RoutedEventArgs e)
 		{
 			OpenFileDialog opf = new OpenFileDialog();
 			opf.Filter = "Availible types|*.pdf;*.jpg;*.png";
@@ -358,7 +377,7 @@ namespace MyMedData.Controls
 			else
 				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
 		}
-    }
+	}
 
 	public class ChangesSavedToDBEventArgs
 	{
