@@ -10,11 +10,15 @@
     <UserControl.Resources>
         <CollectionViewSource x:Key="EntitiesView" Filter="CollectionViewSource_Filter"/>
         <Style x:Key="EntityTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Height" Value="22"/>
+            <Setter Property="Height" Value="30"/>
             <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
             <Setter Property="BorderBrush" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5,0,0,0"/>
+            <d:Setter Property="Text" Value="Design text"/>
         </Style>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
@@ -30,7 +34,8 @@
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <TextBox x:Name="TitleTextBox" Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-                <TextBox x:Name="CommentTextBox" Grid.Column="1" Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="CommentTextBox" Grid.Column="1" Margin="6,0,0,0"
+                         Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                 <Button x:Name="AddNewEntityButton" Grid.Column="2" Style="{StaticResource UnsizedDarkButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Center"
                 Width="25" Height="25" Content="+" FontSize="25" Padding="0,-8,0,0" 
                 IsEnabled="False"
@@ -38,8 +43,9 @@
             </Grid>
 
             <DataGrid x:Name="EntitiesDataGrid"
-                  BorderThickness="2"
+                  BorderThickness="2"                  
                   Visibility="{Binding HasItems, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  d:Visibility="Visible"
                   Background="{StaticResource LightDarkBackColor}" Foreground="Transparent" 
                   BorderBrush="{StaticResource DarkThemeFontColor}"
                   ItemsSource="{Binding Source={StaticResource EntitiesView}, FallbackValue={x:Null}}"
@@ -52,7 +58,9 @@
                   KeyDown="EntitiesDataGrid_KeyDown">
                 <DataGrid.Resources>
                     <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
-                        <Setter Property="Margin" Value="5,10,5,10" />
+                        <Setter Property="Margin" Value="5,10,5,10"/>
+                        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                        <Setter Property="FontSize" Value="16"/>
                     </Style>
                     <Style TargetType="ScrollBar">
                         <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
@@ -60,11 +68,11 @@
                 </DataGrid.Resources>
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="Height" Value="25"/>
                         <Setter Property="Background" Value="#606060"/>
                         <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
                         <Setter Property="FontWeight" Value="DemiBold"/>
-                        <Setter Property="FontSize" Value="20"/>
+                        <Setter Property="FontSize" Value="18"/>
                         <Setter Property="Padding" Value="10,0,0,0"/>
                         <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
                         <Setter Property="BorderThickness" Value="1"/>

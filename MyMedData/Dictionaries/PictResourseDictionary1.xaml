@@ -422,7 +422,7 @@
     </Image>
 
 
-    <Image x:Key="StethoscopeImagePlus">
+    <Image x:Key="StethoscopeImagePlus"  x:Shared="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>
@@ -458,7 +458,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="StethoscopeImage">
+    <Image x:Key="StethoscopeImage"  x:Shared="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>
@@ -475,7 +475,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="ConfirmIcon">
+    <Image x:Key="ConfirmIcon"  x:Shared="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>
@@ -489,7 +489,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="DenyIcon">
+    <Image x:Key="DenyIcon"  x:Shared="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>
@@ -521,7 +521,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="ScanDocumentIcon">
+    <Image x:Key="ScanDocumentIcon" x:Shared="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>

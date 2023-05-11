@@ -21,7 +21,7 @@ namespace MyMedData.Controls
 		public RecordDisplay()
 		{
 			InitializeComponent();
-
+						
 			HasUnsavedChanges = false;
 
 			ExaminationDatePicker.SelectedDateChanged += (o, e) => UpdateRecordDisplay();			
@@ -29,7 +29,18 @@ namespace MyMedData.Controls
 
 			EntityPopup = (Popup)TryFindResource("EntityChoicePopup");
 			EntityPopup.Closed += EntityPopup_Closed;
-		}		
+
+			ResetDatePickerAndCommentBox();
+		}
+
+		private void RecordDisplay_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			RecordDisplay recordDisplay = (RecordDisplay)sender;
+			if (e.NewValue is not Session)
+			{
+				recordDisplay.ResetDatePickerAndCommentBox();
+			}
+		}
 
 		private static void ItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -53,6 +64,7 @@ namespace MyMedData.Controls
             }
             else
             {
+				recordDisplay.ResetDatePickerAndCommentBox();
                 recordDisplay.DocOrLab = null;
                 recordDisplay.ExamniantionTypeLabel.Text = "Вид обследования";
                 recordDisplay.ExaminationTypeButton.Content = "Выбор исследования";
@@ -89,12 +101,12 @@ namespace MyMedData.Controls
 			DocumentsAttechmentEditedCollection = new ObservableCollection<DocumentAttachment>(item.Documents);
 			DocumentsAttechmentEditedCollection.CollectionChanged += (o, e) => UpdateRecordDisplay(); 
 
-			ExaminationDate = item.Date;
+			ExaminationDatePicker.SelectedDate = item.Date.ToDateTime();
 			ExaminationType = item.ExaminationType?.DeepCopy() ?? null;
 			
 			Clinic = item.Clinic?.DeepCopy() ?? null;
 			ClinicButton.Content = item.Clinic?.ToString() ?? "Выбор мед. учереждения";
-			Comment = item.Comment;
+			CommentTextBox.Text = item.Comment;
 
 			if (item is LabExaminationRecord)
 			{
@@ -124,10 +136,10 @@ namespace MyMedData.Controls
 			if (Item is ExaminationRecord record)
 			{
 				ExaminationRecord editedRecord = record.DeepCopy();
-				
-				editedRecord.Date = ExaminationDate;
+
+				editedRecord.Date = DateOnly.FromDateTime(ExaminationDatePicker.SelectedDate ?? DateTime.Today);
 				editedRecord.Clinic = Clinic;
-				editedRecord.Comment = Comment;
+				editedRecord.Comment = CommentTextBox.Text ?? "";
 				editedRecord.ExaminationType = ExaminationType;				
 
 				if (editedRecord is DoctorExaminationRecord docRecord)
@@ -147,7 +159,7 @@ namespace MyMedData.Controls
             {
                 bool updateSuccess = session.AddOrUpdateExaminationRecord(record);
                 if (updateSuccess)
-                    RaiseChangesSavedToDBEvent();
+                    RaiseChangesSavedToDBEvent(record);
                 else
                     MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
                         MessageBoxImage.Error);
@@ -223,17 +235,6 @@ namespace MyMedData.Controls
 		public static readonly DependencyProperty ItemProperty =
 			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(ItemChanged));
 
-
-		public DateOnly ExaminationDate
-		{
-            get => (DateOnly)GetValue(ExaminationDateProperty);
-            set => SetValue(ExaminationDateProperty, value);
-        }
-
-		public static readonly DependencyProperty ExaminationDateProperty =
-			DependencyProperty.Register(nameof(ExaminationDate), typeof(DateOnly), typeof(RecordDisplay),
-				new UIPropertyMetadata());
-
         public ExaminationType? ExaminationType
 		{
 			get; private set;
@@ -250,20 +251,11 @@ namespace MyMedData.Controls
 			get; private set;
 		}
 
-		public string Comment
-		{
-            get => (string)GetValue(CommentProperty);
-            set => SetValue(CommentProperty, value);
-        }
+		#endregion
+		//----------------------------------------------------UI EVENTS--------------------------------------------------------------------       
 
-        public static readonly DependencyProperty CommentProperty =
-            DependencyProperty.Register(nameof(Comment), typeof(string), typeof(RecordDisplay), new UIPropertyMetadata(""));
-        #endregion
 
-        //----------------------------------------------------UI EVENTS--------------------------------------------------------------------       
-        
-
-        private void ExaminationTypeButton_Click(object sender, RoutedEventArgs e)
+		private void ExaminationTypeButton_Click(object sender, RoutedEventArgs e)
         {
 			Button button = (Button)sender;
 
@@ -353,23 +345,23 @@ namespace MyMedData.Controls
 			}
 		}		
 
-		private void CommentTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			TextBox commentTB = (TextBox)sender;
-			Comment = commentTB?.Text ?? "";
-		}		
-
 		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
 		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);
 
 		public event ChangesSavedToDBEventHandler ChangesSavedToDB;
 
-		protected virtual void RaiseChangesSavedToDBEvent()
+		protected virtual void RaiseChangesSavedToDBEvent(ExaminationRecord newRecord)
 		{
-			ChangesSavedToDB?.Invoke(this, new ChangesSavedToDBEventArgs(ConstructRecordFormUI()));
+			ChangesSavedToDB?.Invoke(this, new ChangesSavedToDBEventArgs(newRecord));
 		}
 
 		//----------------------------------------------------AUXILIARIES----------------------------------------------------------
+		private void ResetDatePickerAndCommentBox()
+		{
+			ExaminationDatePicker.SelectedDate = null;
+			CommentTextBox.Text = "";
+		}
+
 		public ExaminationType? FindExaminationTypeInBothCases(Session session, string examinationTypeTitle, DocOrLabExamination docOrLab)
 		{
 			if (docOrLab == DocOrLabExamination.Doc)
@@ -377,6 +369,7 @@ namespace MyMedData.Controls
 			else
 				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
 		}
+		
 	}
 
 	public class ChangesSavedToDBEventArgs

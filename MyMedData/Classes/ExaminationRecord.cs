@@ -109,6 +109,9 @@ namespace MyMedData
 			if (record == null) 
 				return false;
 
+			if (Date != record.Date)
+				return false;
+
 			if (!Enumerable.SequenceEqual(Documents, record.Documents))
 				return false;
 

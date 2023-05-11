@@ -74,7 +74,7 @@ namespace MyMedData.Controls
 			{
 				if (!string.IsNullOrWhiteSpace(TitleTextBox.Text.ToLower()))
 				{
-					if (!doc.Name.ToLower().StartsWith(TitleTextBox.Text))
+					if (!doc.Name.ToLower().StartsWith(TitleTextBox.Text.ToLower()))
 					{
 						e.Accepted = false;
 						return;
@@ -166,11 +166,13 @@ namespace MyMedData.Controls
 					break;
 				case ObservableCollection<Doctor> cache: 
 					var newItem2 = new Doctor(title, comment);
-                    EntitiesDataGrid.SelectedItem = newItem2;
+					cache.Add(newItem2);
+					EntitiesDataGrid.SelectedItem = newItem2;
                     break;
-				case ObservableCollection<Clinic>:
+				case ObservableCollection<Clinic> cache:
 					var newItem3 = new Clinic(title, comment);
-                    EntitiesDataGrid.SelectedItem = newItem3;
+					cache.Add(newItem3);
+					EntitiesDataGrid.SelectedItem = newItem3;
                     break;
 				default: 
 					SelectedItem = null; 
