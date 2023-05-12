@@ -17,7 +17,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7*" MinWidth="450"/>
-            <ColumnDefinition Width="4*" MinWidth="300"/>
+            <ColumnDefinition Width="4*" MinWidth="328"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
@@ -80,6 +80,7 @@
             <DataGrid.Resources>
                 <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
                     <Setter Property="Margin" Value="5,10,5,10" />
+                    <Setter Property="TextWrapping" Value="Wrap"/>
                 </Style>
                 <Style TargetType="ScrollBar">
                     <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />                    
@@ -125,7 +126,9 @@
 
         <local:RecordDisplay x:Name="RecordDisplay"
             Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="6,0,0,0"
-            Item="{Binding SelectedItem, ElementName=RecordsDataGrid}"/>       
+            Item="{Binding SelectedItem, ElementName=RecordsDataGrid}"
+            Mode="Update"
+            ChangesSavedToDB="RecordDisplay_ChangesSavedToDB"/>       
 
     </Grid>
 </UserControl>

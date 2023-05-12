@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.IO;
 using System.Windows.Controls.Primitives;
+using System.Net.Mail;
 
 namespace MyMedData.Controls
 {
@@ -29,8 +30,9 @@ namespace MyMedData.Controls
 
 			EntityPopup = (Popup)TryFindResource("EntityChoicePopup");
 			EntityPopup.Closed += EntityPopup_Closed;
-
-			ResetDatePickerAndCommentBox();
+						
+			AttachmentEditedCollection.CollectionChanged += (o, e) => UpdateRecordDisplay();
+			ResetRecordView();
 		}
 
 		private void RecordDisplay_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -38,7 +40,7 @@ namespace MyMedData.Controls
 			RecordDisplay recordDisplay = (RecordDisplay)sender;
 			if (e.NewValue is not Session)
 			{
-				recordDisplay.ResetDatePickerAndCommentBox();
+				recordDisplay.ResetRecordView();
 			}
 		}
 
@@ -47,24 +49,29 @@ namespace MyMedData.Controls
             RecordDisplay recordDisplay = (RecordDisplay)d;
 
             //Unsaved changes of old record
-            if (e.OldValue is ExaminationRecord oldRecord && recordDisplay.HasUnsavedChanges && recordDisplay.DataContext is Session sess && sess.ExaminationRecords.Contains(oldRecord))
+            if (e.OldValue is ExaminationRecord oldRecord)
             {
-                if (MessageBox.Show("Сохранить предыдущие изменения?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question)
-                    == MessageBoxResult.Yes)
+				 if(recordDisplay.HasUnsavedChanges 
+					&& recordDisplay.DataContext is Session sess 
+					&& sess.ExaminationRecords.Contains(oldRecord)
+					&& MessageBox.Show("Сохранить предыдущие изменения?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question)
+						== MessageBoxResult.Yes)
                 {
                     recordDisplay.ApplyChangesOfEditedRecord();
                 }
+
+				oldRecord.Documents.ForEach(d => d.ClearData());
             }
             recordDisplay.HasUnsavedChanges = false;
 
             //Rebind to new record
             if (e.NewValue is ExaminationRecord item && recordDisplay.DataContext is Session session)
-            {
+            {				
                 recordDisplay.LoadItemToRecordDisplayUI(item, session);                
             }
             else
             {
-				recordDisplay.ResetDatePickerAndCommentBox();
+				recordDisplay.ResetRecordView();
                 recordDisplay.DocOrLab = null;
                 recordDisplay.ExamniantionTypeLabel.Text = "Вид обследования";
                 recordDisplay.ExaminationTypeButton.Content = "Выбор исследования";
@@ -74,9 +81,31 @@ namespace MyMedData.Controls
         }
 
 		Popup EntityPopup;
-        public ObservableCollection<DocumentAttachment> DocumentsAttechmentEditedCollection { get; private set; }
+
+		TrulyObservableCollection<AttachmentMetaData> _attechmentEditedCollection = new();
+		public TrulyObservableCollection<AttachmentMetaData> AttachmentEditedCollection 
+		{
+			get => _attechmentEditedCollection;
+			private set => _attechmentEditedCollection = value;
+		}
 
 		public DocOrLabExamination? DocOrLab;
+
+		public ExaminationType? ExaminationType
+		{
+			get; private set;
+		}
+
+		public Doctor? Doctor
+		{
+			get; private set;
+		}
+
+		Clinic _newClinicInstance = new Clinic();
+		public Clinic? Clinic
+		{
+			get; private set;
+		}
 
 		private bool _hasUnsavedChanges;
 		public bool HasUnsavedChanges
@@ -98,8 +127,8 @@ namespace MyMedData.Controls
 
 		private void LoadItemToRecordDisplayUI(ExaminationRecord item, Session session)
 		{
-			DocumentsAttechmentEditedCollection = new ObservableCollection<DocumentAttachment>(item.Documents);
-			DocumentsAttechmentEditedCollection.CollectionChanged += (o, e) => UpdateRecordDisplay(); 
+			AttachmentEditedCollection.Clear();
+			item.Documents.ForEach(document => { AttachmentEditedCollection.Add(document.DeepCopy()); });			
 
 			ExaminationDatePicker.SelectedDate = item.Date.ToDateTime();
 			ExaminationType = item.ExaminationType?.DeepCopy() ?? null;
@@ -129,6 +158,8 @@ namespace MyMedData.Controls
 				DoctorLabel.Visibility = Visibility.Visible;
                 DoctorButton.Visibility = Visibility.Visible;
 			}
+
+			UpdateRecordDisplay();
 		}
 
 		private ExaminationRecord? ConstructRecordFormUI()
@@ -145,7 +176,7 @@ namespace MyMedData.Controls
 				if (editedRecord is DoctorExaminationRecord docRecord)
 					docRecord.Doctor = Doctor;
 
-				editedRecord.Documents = new List<DocumentAttachment>(DocumentsAttechmentEditedCollection);
+				editedRecord.Documents = new List<AttachmentMetaData>(AttachmentEditedCollection);
 
 				return editedRecord;
 			}
@@ -157,7 +188,21 @@ namespace MyMedData.Controls
         {
             if (DataContext is Session session && ConstructRecordFormUI() is ExaminationRecord record)
             {
-                bool updateSuccess = session.AddOrUpdateExaminationRecord(record);
+				bool updateSuccess;
+                if (Mode == RecordEditMode.New)
+				{
+					updateSuccess = session.AddExaminationRecord(record);
+				}
+				else if (Item is ExaminationRecord existingRecord)
+				{
+
+					var attachmentsToDelete = existingRecord.Documents.Except(record.Documents);
+					var atatachmentsToUpload = record.Documents.Except(existingRecord.Documents);
+					updateSuccess = session.UpdateExaminationRecord(record, attachmentsToDelete, atatachmentsToUpload);
+				}
+				else
+					updateSuccess = false; 
+
                 if (updateSuccess)
                     RaiseChangesSavedToDBEvent(record);
                 else
@@ -166,24 +211,29 @@ namespace MyMedData.Controls
             }
         }
 
-        private void RemoveDocumentAttachmentById(string documentID)
+        private void RemoveDocumentAttachmentById(int documentID)
 		{
+			AttachmentMetaData? fileToRemove = AttachmentEditedCollection.FirstOrDefault(d => d.Id == documentID, null);
 
-			foreach (var document in DocumentsAttechmentEditedCollection)
+			if (fileToRemove != null)
 			{
-				if (document.Id == documentID)
-					DocumentsAttechmentEditedCollection.Remove(document);
+				AttachmentEditedCollection.Remove(fileToRemove);
 			}
 		}
 
 		private void UpdateRecordDisplay()
 		{
 			if (Item is not ExaminationRecord initialItem)
+			{
+				DocumentManagementButtonsPanel.Visibility = Visibility.Collapsed;
 				return;
+			}
 
 			DoctorButton.Content = Doctor?.ToString() ?? "Выбор врача";
 			ExaminationTypeButton.Content = ExaminationType?.ToString() ?? "Выбор исследования";
 			ClinicButton.Content = Clinic?.ToString() ?? "Выбор мед. учереждения";
+
+			DocumentManagementButtonsPanel.Visibility = Visibility.Visible;
 
 			HasUnsavedChanges = !initialItem.IsDataEqual(ConstructRecordFormUI());
 		}
@@ -235,21 +285,14 @@ namespace MyMedData.Controls
 		public static readonly DependencyProperty ItemProperty =
 			DependencyProperty.Register(nameof(Item), typeof(object), typeof(RecordDisplay), new UIPropertyMetadata(ItemChanged));
 
-        public ExaminationType? ExaminationType
+		public RecordEditMode Mode
 		{
-			get; private set;
+			get => (RecordEditMode)GetValue(ModeProperty);
+			set => SetValue(ModeProperty, value);
 		}
 
-		public Doctor? Doctor
-		{
-            get; private set;
-        }
-
-		Clinic _newClinicInstance = new Clinic();
-		public Clinic? Clinic
-		{
-			get; private set;
-		}
+		public static readonly DependencyProperty ModeProperty =
+			DependencyProperty.Register(nameof(Mode), typeof(RecordEditMode), typeof(RecordDisplay), new UIPropertyMetadata(RecordEditMode.Update));
 
 		#endregion
 		//----------------------------------------------------UI EVENTS--------------------------------------------------------------------       
@@ -296,25 +339,25 @@ namespace MyMedData.Controls
 
 			if (opf.ShowDialog() == true)
 			{
-				foreach (var fileName in opf.FileNames)
+				foreach (var fullFileName in opf.FileNames)
 				{
-					string extention = fileName.Substring(fileName.Length - 4, 3);
+					string extention = Path.GetExtension(fullFileName);
 					DocumentType documentType;
 
 					switch (extention)
 					{
-						case "jpg": documentType = DocumentType.JPEG; break;
-						case "png": documentType = DocumentType.PNG; break;
-						case "pdf": documentType = DocumentType.PDF; break;
-						default: MessageBox.Show(fileName, "Недопустимый файл", MessageBoxButton.OK, MessageBoxImage.Error); return;
+						case ".jpg": documentType = DocumentType.JPEG; break;
+						case ".png": documentType = DocumentType.PNG; break;
+						case ".pdf": documentType = DocumentType.PDF; break;
+						default: MessageBox.Show(fullFileName, "Недопустимый файл", MessageBoxButton.OK, MessageBoxImage.Error); return;
 					}
 
-					DocumentAttachment document = new DocumentAttachment();
-					document.FileName = fileName;
+					AttachmentMetaData document = new AttachmentMetaData();
+					document.FileName = Path.GetFileName(fullFileName);
 					document.DocumentType = documentType;
-					document.Data = File.ReadAllBytes(fileName);
+					document.Data = File.ReadAllBytes(fullFileName);
 
-					DocumentsAttechmentEditedCollection.Add(document);
+					AttachmentEditedCollection.Add(document);
 				}
 			}
 		}
@@ -339,11 +382,19 @@ namespace MyMedData.Controls
 
 		private void RemoveDocButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (DocumentsListBox.SelectedItem is DocumentAttachment document)
+			if (AttachmentListBox.SelectedItem is AttachmentMetaData document)
 			{
 				RemoveDocumentAttachmentById(document.Id);
 			}
-		}		
+		}
+
+		private void DocumentsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (AttachmentListBox.SelectedItem is AttachmentMetaData)
+				RemoveDocButton.Visibility = Visibility.Visible;
+			else
+				RemoveDocButton.Visibility = Visibility.Hidden;
+		}
 
 		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
 		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);
@@ -356,7 +407,7 @@ namespace MyMedData.Controls
 		}
 
 		//----------------------------------------------------AUXILIARIES----------------------------------------------------------
-		private void ResetDatePickerAndCommentBox()
+		private void ResetRecordView()
 		{
 			ExaminationDatePicker.SelectedDate = null;
 			CommentTextBox.Text = "";
@@ -369,7 +420,6 @@ namespace MyMedData.Controls
 			else
 				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
 		}
-		
 	}
 
 	public class ChangesSavedToDBEventArgs
@@ -382,5 +432,11 @@ namespace MyMedData.Controls
 		{
 			NewRecord = newRecord;
 		}
+	}
+
+	public enum RecordEditMode
+	{
+		Update,
+		New
 	}
 }

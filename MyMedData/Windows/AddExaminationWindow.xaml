@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData.Windows"
         mc:Ignorable="d"
-        Title="AddDocExamWindow" Height="500" Width="637"
+        Title="AddDocExamWindow" 
         x:Name="AddUserWindowInstance"
         xmlns:uc="clr-namespace:MyMedData.Controls"
         WindowStyle="None"
@@ -31,8 +31,8 @@
                 Width="22" Height="22" Margin="0,3,5,3" WindowChrome.IsHitTestVisibleInChrome="True"
                 Style="{StaticResource ChromeButtonStyle}" Content="{StaticResource CloseWindowIcon}" Click="CloseButton_Click"/>
 
-        <uc:RecordDisplay x:Name="theRecordDisplay"
-                Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="4,0,4,4"                
+        <uc:RecordDisplay x:Name="theRecordDisplay" Mode="New"
+                Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="8,0,8,8"                
                 />
     </Grid>    
 </Window>

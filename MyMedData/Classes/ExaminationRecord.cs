@@ -44,9 +44,9 @@ namespace MyMedData
 			}
 		}
 
-		private List<DocumentAttachment> _documents = new List<DocumentAttachment>();
-		[BsonRef(DocumentAttachment.DbCollectionName)]
-		public List<DocumentAttachment> Documents
+		private List<AttachmentMetaData> _documents = new List<AttachmentMetaData>();
+		[BsonRef(AttachmentMetaData.DbCollectionName)]
+		public List<AttachmentMetaData> Documents
 		{
 			get => _documents;
 			set
@@ -110,10 +110,7 @@ namespace MyMedData
 				return false;
 
 			if (Date != record.Date)
-				return false;
-
-			if (!Enumerable.SequenceEqual(Documents, record.Documents))
-				return false;
+				return false;			
 
 			if(checkIdEqulity && Id != record.Id) 
 				return false;
@@ -124,11 +121,19 @@ namespace MyMedData
 			if (_examinationType?.ExaminationTypeTitle != record.ExaminationType?.ExaminationTypeTitle || _examinationType?.Comment != record.ExaminationType?.Comment)
 				return false;
 
-			if (Comment != record.Comment) 
+			if ((Comment ?? "") != record.Comment) 
+				return false;
+
+			var joinedAttachmentCol = Documents.Join(record.Documents,
+					d => d.Id,
+					d2 => d2.Id,
+					(d, d2) => new { doc1 = d, doc2 = d2 }).ToArray();
+			if (joinedAttachmentCol.Length != Documents.Count || !joinedAttachmentCol.All(tuple => tuple.doc1.MetaDataEqual(tuple.doc2)))
 				return false;
 
 			return true;
-		}
+		}		
+		
 
 		//---------------------------------EVENTS-------------------------------------------
 
@@ -204,7 +209,7 @@ namespace MyMedData
 			{ 
 				Id = Id, 
 				Date = Date,
-				Documents = new List<DocumentAttachment>(Documents),
+				Documents = new List<AttachmentMetaData>(Documents),
 				ExaminationType = ExaminationType == null ? null : new ExaminationType(ExaminationType.ExaminationTypeTitle, ExaminationType.Comment),
 				Clinic = Clinic == null ? null : new Clinic(Clinic.Name, Clinic.Comment),
 				Doctor = Doctor == null ? null : new Doctor(Doctor.Name, Doctor.Comment),
@@ -257,7 +262,7 @@ namespace MyMedData
 			{
 				Id = Id,
 				Date = Date,
-				Documents = new List<DocumentAttachment>(Documents),
+				Documents = new List<AttachmentMetaData>(Documents),
 				ExaminationType = ExaminationType == null ? null : new ExaminationType(ExaminationType.ExaminationTypeTitle, ExaminationType.Comment),
 				Clinic = Clinic == null ? null : new Clinic(Clinic.Name, Clinic.Comment),
 				Comment = Comment,

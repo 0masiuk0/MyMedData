@@ -50,12 +50,14 @@ namespace MyMedData
 				.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName)
 				.Include(x => x.Doctor)
 				.Include(x => x.Clinic)
-				.Include(x => x.ExaminationType);
+				.Include(x => x.ExaminationType)
+				.Include(x => x.Documents);
 			
 			var labExaminationRecords = RecordsDatabaseContext
 				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName)
 				.Include(x => x.Clinic)
-				.Include(x => x.ExaminationType); 
+				.Include(x => x.ExaminationType)
+				.Include(x => x.Documents);  
 
 			foreach (var docExam in docExaminationRecords.FindAll())
 			{
@@ -67,32 +69,38 @@ namespace MyMedData
 			}
 		}
 
-		public bool AddOrUpdateExaminationRecord(ExaminationRecord record)
+		public bool UpdateExaminationRecord(ExaminationRecord record, IEnumerable<AttachmentMetaData> atatachmentsToDelete, IEnumerable<AttachmentMetaData> atatachmentsToUpload)
 		{
 			int recordToUpdateIndex = -1;
 			for (int i = 0; i < ExaminationRecords.Count; i++)
 			{
-				if (record.Id == ExaminationRecords[i].Id)
+				if (record.Id == ExaminationRecords[i].Id && record.GetType() == ExaminationRecords[i].GetType())
 				{
 					recordToUpdateIndex = i;
 					break;
 				}
 			}
 
-			EntitiesCacheUpdateHelper.EnsureValuesAreCached(record);
-			if (RecordsDataBase.UpdateOrInsertExaminationRecord(this, ref record))
-			{
-				//this is to trigger ObservableCollection.CollectionChanged and all the bound views to update.
-				if (recordToUpdateIndex >= 0)
-				{
-					ExaminationRecords.RemoveAt(recordToUpdateIndex);
-					ExaminationRecords.Insert(recordToUpdateIndex, record);
-				}
-				else 
-					ExaminationRecords.Add(record);							
+			if (recordToUpdateIndex == -1)
+				throw new ArgumentException("Не удалось найти запись в кэше");
 
+			if (RecordsDataBase.UpdateRecord(this, ref record, atatachmentsToDelete, atatachmentsToUpload))
+			{
+				ExaminationRecords.RemoveAt(recordToUpdateIndex);
+				ExaminationRecords.Insert(recordToUpdateIndex, record);
 				return true;
-			}			
+			}
+
+			return false;
+		}
+
+		public bool AddExaminationRecord(ExaminationRecord record)
+		{
+			if (RecordsDataBase.InsertRecord(this, ref record))
+			{
+				ExaminationRecords.Add(record);
+				return true;
+			}
 
 			return false;
 		}

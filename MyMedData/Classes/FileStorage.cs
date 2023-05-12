@@ -6,53 +6,38 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MyMedData
 {
 	internal class FileStorage
 	{
-		public FileStorage(Session session) { db = session.RecordsDatabaseContext; }
+		public FileStorage(Session session) { db = session.RecordsDatabaseContext; storage = db.FileStorage; }
 
-		public FileStorage(LiteDatabase db) { this.db = db; }
+		public FileStorage(LiteDatabase db) { this.db = db; storage = db.FileStorage; }
 
-		LiteDatabase db;
+		readonly LiteDatabase db;
 
-		public bool UploadFilesToStorage(DocumentAttachment document)
+		readonly ILiteStorage<string> storage;
+
+		public bool UploadFileToStorage(AttachmentMetaData attachment)
 		{
-			var storage = db.FileStorage;
-			return storage.Upload(document.Id, document.FileName, new MemoryStream(document.Data)) != null;
+			if (attachment == null)
+				throw new ArgumentNullException("Попытка загурзить в базу приложение в которое не загружен файл.");
+
+			return storage.Upload(attachment.Id.ToString(), attachment.CustomName, new MemoryStream(attachment.Data)) != null;
+		}			
+
+		public bool DeleteFileFromStorage(AttachmentMetaData document)
+		{
+			return storage.Delete(document.Id.ToString());
 		}
 
-		public bool UploadFilesToStorage(IEnumerable<DocumentAttachment> documents)
+		internal byte[] GetFileBytes(int id)
 		{
-			var storage = db.FileStorage;
-			bool success = true;
-
-			foreach (var document in documents)
-			{
-				success &= storage.Upload(document.Id, document.FileName, new MemoryStream(document.Data)) != null;
-			}
-
-			return success;
-		}
-
-		public bool DeleteFilesFromStorage(DocumentAttachment document)
-		{
-			var storage = db.FileStorage;			
-			return storage.Delete(document.Id);
-		}
-
-		public bool DeleteFilesFromStorage(IEnumerable<DocumentAttachment> documents) 
-		{
-			var storage = db.FileStorage;
-			bool success = true;
-			
-			foreach ( var document in documents) 
-			{
-				success &= storage.Delete(document.Id);
-			}
-
-			return success;
+			var stream = new MemoryStream();
+			storage.Download(id.ToString(), stream);
+			return stream.ToArray();
 		}
 	}
 }

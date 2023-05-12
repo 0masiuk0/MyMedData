@@ -78,7 +78,7 @@
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
                     Content="{StaticResource AnalisysImagePlus}" ToolTip="Добавить запись об анализе"
-                    Background="{StaticResource LightDarkBackColor}"/>
+                    Background="{StaticResource LightDarkBackColor}" Click="NewLabAnalysisButon_Click"/>
             
             <Button x:Name="DeleteRecordButton"
                     Height="40" Width="40" BorderBrush="Transparent"

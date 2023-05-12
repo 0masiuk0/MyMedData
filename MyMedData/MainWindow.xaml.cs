@@ -102,6 +102,15 @@ namespace MyMedData
 			}
 		}
 
+		private void NewLabAnalysisButon_Click(object sender, RoutedEventArgs e)
+		{
+			if (ActiveSession is Session session)
+			{
+				AddExaminationWindow AddWindow = new AddExaminationWindow(session, DocOrLabExamination.Lab);
+				AddWindow.ShowDialog();
+			}
+		}
+
 		private void SettingsdButton_Click(object sender, RoutedEventArgs e)
 		{
 			SettingsWindow settingsWindow = new();
@@ -161,7 +170,7 @@ namespace MyMedData
 		private void MinimizeButton_Click(object sender, RoutedEventArgs e)
 		{
 			this.WindowState = WindowState.Minimized;
-		}		
+		}
 	}
 
 }

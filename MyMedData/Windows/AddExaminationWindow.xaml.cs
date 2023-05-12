@@ -33,11 +33,6 @@ namespace MyMedData.Windows
 
 		public DocOrLabExamination DocOrLab { get; private set; }
 
-		private void CloseButton_Click(object sender, RoutedEventArgs e)
-		{			
-			this.Close();
-        }
-
 		private void AddUserWindowInstance_Loaded(object sender, RoutedEventArgs e)
 		{
 			theRecordDisplay.DataContext = Session;
@@ -55,5 +50,10 @@ namespace MyMedData.Windows
 			if (e.Key == Key.Escape)
 				Close();
 		}
-    }
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+		}
+	}
 }

@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace MyMedData
 {
-	public class DocumentAttachment : INotifyPropertyChanged
+	public class AttachmentMetaData : INotifyPropertyChanged
 	{
 		[BsonId]
-		public string Id { get; set; }
+		public int Id { get; set; }
 
 		private DocumentType _documentType;
 		public DocumentType DocumentType
@@ -37,21 +37,56 @@ namespace MyMedData
 				if (_fileName != value)
 				{
 					_fileName = value;
+					_customName = value;
+					OnPropertyChanged();
+					OnPropertyChanged(nameof(CustomName));
+				}
+			}
+		}
+
+		private string _customName;
+		public string CustomName
+		{
+			get
+			{
+					return _customName;
+			}
+			set
+			{
+				if (value != _customName)
+				{
+					_customName = value;
 					OnPropertyChanged();
 				}
 			}
 		}
 
-		[BsonIgnore] 
+
+		[BsonIgnore]
 		public byte[]? Data;
 
-		public const string DbCollectionName = "ArchivedDocuments";	
+		public const string DbCollectionName = "ArchivedDocuments";
 
 		public override string ToString() => FileName;
 
-		public DocumentAttachment DeepCopy()
+		public void ClearData()
 		{
-			return new DocumentAttachment() { Id = Id, DocumentType = DocumentType, FileName = FileName };
+			Data = null;
+		}
+
+		public void LoadData(Session session)
+		{
+			Data = session.FileStorage.GetFileBytes(Id);
+		}
+
+		public AttachmentMetaData DeepCopy()
+		{
+			return new AttachmentMetaData() { Id = Id, DocumentType = DocumentType, FileName = FileName, CustomName = CustomName };
+		}
+
+		public bool MetaDataEqual(AttachmentMetaData other)
+		{
+			return other.FileName == FileName && other.CustomName == CustomName;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

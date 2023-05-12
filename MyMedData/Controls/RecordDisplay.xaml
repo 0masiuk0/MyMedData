@@ -4,10 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:uc="clr-namespace:MyMedData.Controls"             
-             xmlns:acb="http://wpfcontrols.com/"
              mc:Ignorable="d" 
              x:Name="ThisRecordDisplay"  
-             d:DesignHeight="450" d:DesignWidth="350"
+             d:DesignHeight="450"
              DataContextChanged="RecordDisplay_DataContextChanged"
              >
     <UserControl.Resources>
@@ -27,12 +26,12 @@
         </Style>
         <Popup x:Key="EntityChoicePopup" StaysOpen="False">
             <uc:EntityManager/>
-        </Popup>
+        </Popup>        
     </UserControl.Resources>  
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="160" d:Width="160"/>
-            <ColumnDefinition/>
+            <ColumnDefinition MinWidth="160" d:Width="160"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -74,16 +73,15 @@
                         Text="Примечание" Style="{StaticResource HeaderLabel}"/>
             <TextBox x:Name="CommentTextBox"
                         Background="{StaticResource LightDarkBackColor}" Foreground="{StaticResource DarkThemeFontColor}"
-                        AcceptsReturn="True" TextWrapping="WrapWithOverflow"
-                        Text="{Binding ElementName=ThisRecordDisplay,
-                        Path=Comment,
-                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        AcceptsReturn="True" TextWrapping="WrapWithOverflow"/>
         </DockPanel>
         <DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                     Margin="5,0,0,0">
             <TextBlock x:Name="DocumentsLabel" DockPanel.Dock="Top"
                         Text="Документы" Style="{StaticResource HeaderLabel}"/>
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+            <StackPanel x:Name="DocumentManagementButtonsPanel" 
+                        Visibility="Collapsed" d:Visibility="Visible"
+                        Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
                 <Button x:Name="UploadDocButton" Style="{StaticResource UnsizedDarkButtonStyle}"
                         Width="30" Height="30" Margin="5,5,5,0" Padding="2"
                         Content="{StaticResource UploadFileIcon}"
@@ -95,14 +93,16 @@
                 <Button x:Name="RemoveDocButton" Style="{StaticResource UnsizedDarkButtonStyle}"
                         Width="30" Height="30" Margin="5,5,5,0" Padding="2"
                         Content="{StaticResource TrashBinIcon}"
+                        Visibility="Hidden" d:Visibility="Visible"
                         Click="RemoveDocButton_Click"/>
             </StackPanel>
-            <ListBox x:Name="DocumentsListBox" Background="Transparent"
-                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
-                        Margin="0,0,4,0"
-                        ItemsSource="{Binding ElementName=ThisRecordDisplay,
-                        Path=DocumentsAttechmentEditedCollection,
-                        FallbackValue={x:Null}}">
+            <ListBox x:Name="AttachmentListBox" 
+                        Background="Transparent"
+                        Margin="0,0,4,0"  
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=uc:RecordDisplay}, Path=AttachmentEditedCollection}" 
+                        SelectionChanged="DocumentsListBox_SelectionChanged"
+                        d:ItemsSource="{d:SampleData ItemCount=5}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <uc:DocumentPlaque/>

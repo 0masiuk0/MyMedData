@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Transactions;
 
 namespace MyMedData
 {
@@ -168,57 +169,101 @@ namespace MyMedData
 			return passwordStringHash16.ToString();
 		}
 
-		public static bool UpdateOrInsertExaminationRecord(Session session, ref ExaminationRecord record)
+		public static bool UpdateRecord(Session session, ref ExaminationRecord record, IEnumerable<AttachmentMetaData> docsToDeleteFromDB, IEnumerable<AttachmentMetaData> docsToUpload)
 		{
 			LiteDatabase db = session.RecordsDatabaseContext;
 			FileStorage fs = session.FileStorage;
 
+			db.BeginTrans();
 			try
-			{				
+			{
+				var docMetaDataCol = db.GetCollection<AttachmentMetaData>(AttachmentMetaData.DbCollectionName);
+				foreach (AttachmentMetaData doc in docsToDeleteFromDB) 
+				{
+					docMetaDataCol.Delete(doc.Id);
+					fs.DeleteFileFromStorage(doc);
+				}
+				foreach (AttachmentMetaData doc in docsToUpload)
+				{
+					var id = docMetaDataCol.Insert(doc);
+					doc.Id = id.AsInt32;
+					fs.UploadFileToStorage(doc);
+				}
+
 				switch (record)
 				{
 					case DoctorExaminationRecord docRecord:
 					{
 						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
-						var recordInDb = col.FindById(docRecord.Id);
-
-						//TODO: не нужно тут искать в базе запись
-						if (recordInDb != null) 
-						{								
-								ProcessDocumentUploadsChanges(fs, record, recordInDb);
-								return col.Update(docRecord);
-						}
+						if (col.Update(docRecord))
+							goto Commit;
 						else
-						{
-								fs.UploadFilesToStorage(record.Documents);
-								var id = col.Insert(docRecord);
-								record.Id = id.AsInt32;
-								return true;
-						}						
+							throw new Exception();
 					}
 					case LabExaminationRecord labRecord:
 					{
 						var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
-						var recordInDb = col.FindById(labRecord.Id);
-						if (recordInDb != null)
-						{
-							ProcessDocumentUploadsChanges(fs, record, recordInDb);
-							return col.Update(labRecord);
-						}
+						if (col.Update(labRecord))
+							goto Commit;
 						else
-						{
-							fs.UploadFilesToStorage(record.Documents);
-							var id = col.Insert(labRecord);
-							record.Id = id.AsInt32;
-							return true;
+							throw new Exception();
 						}
-					}
 					default:
-						return false;
+						throw new Exception();
 				}
+
+				Commit:
+				db.Commit();
+				return true;
 			}
 			catch (Exception)
 			{
+				db.Rollback();
+				return false;
+			}			
+		}
+
+		public static bool InsertRecord(Session session, ref ExaminationRecord record)
+		{
+			LiteDatabase db = session.RecordsDatabaseContext;
+			FileStorage fs = session.FileStorage;
+
+			db.BeginTrans();
+			try
+			{
+				var docMetaDataCol = db.GetCollection<AttachmentMetaData>(AttachmentMetaData.DbCollectionName);
+				foreach (AttachmentMetaData doc in record.Documents)
+				{
+					doc.Id = docMetaDataCol.Insert(doc).AsInt32;
+					fs.UploadFileToStorage(doc);
+				}
+
+				switch (record)
+				{
+					case DoctorExaminationRecord docRecord:
+						{
+							var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+							docRecord.Id = col.Insert(docRecord).AsInt32;
+							goto Commit;
+							
+						}
+					case LabExaminationRecord labRecord:
+						{
+							var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
+							labRecord.Id = col.Insert(labRecord).AsInt32;
+							goto Commit;
+						}
+					default:
+						throw new Exception();
+				}
+
+				Commit:
+				db.Commit();
+				return true;
+			}
+			catch (Exception)
+			{
+				db.Rollback();
 				return false;
 			}
 		}
@@ -227,21 +272,33 @@ namespace MyMedData
 		{
 			FileStorage fs = new(db);
 
+			db.BeginTrans();
 			try
 			{
+				var docMetaDataCol = db.GetCollection<AttachmentMetaData>(AttachmentMetaData.DbCollectionName);
+				foreach (AttachmentMetaData doc in record.Documents)
+				{
+					docMetaDataCol.Delete(doc.Id);
+					fs.DeleteFileFromStorage(doc);
+				}
+
 				switch (record)
 				{
 					case DoctorExaminationRecord docRecord:
 						{
 							var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
-							fs.DeleteFilesFromStorage(docRecord.Documents);
-							return col.Delete(record.Id);
+							if (col.Delete(record.Id))
+								return db.Commit();
+							else 
+								throw new Exception();
 						}
 					case LabExaminationRecord labRecord:
 						{
 							var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);							
-							fs.DeleteFilesFromStorage(labRecord.Documents);
-							return col.Delete(labRecord.Id);
+							if (col.Delete(labRecord.Id))
+								return db.Commit();
+							else
+								throw new Exception();
 						}
 					default:
 						return false;
@@ -249,18 +306,23 @@ namespace MyMedData
 			}
 			catch (Exception)
 			{
+				db.Rollback();
 				return false;
-			}
+			}			
 		}
 
-		private static void ProcessDocumentUploadsChanges(FileStorage fs, ExaminationRecord updatedRecord, ExaminationRecord recordInDb)
-		{
-			var documentsToDelete = recordInDb.Documents.Except(updatedRecord.Documents);
-			var documentsToAdd = updatedRecord.Documents.Except(recordInDb.Documents);
-			
-			fs.DeleteFilesFromStorage(documentsToDelete);
-			fs.UploadFilesToStorage(documentsToAdd);
-		}
+		//public static IEnumerable<ExaminationRecord> UploadFilesToRecords(this IEnumerable<ExaminationRecord> records, Session session)
+		//{
+		//	foreach (ExaminationRecord record in records)
+		//	{
+		//		foreach (AttachmentMetaData attachment in record.Documents)
+		//		{
+		//			int id = attachment.Id;
+		//			attachment.Data = session.FileStorage.GetFileBytes(id);
+		//		}
+		//		yield return record;
+		//	}
+		//}
 
 		public static List<ExaminationRecord> GenerateSampleExaminationRecordList(int count) => GenerateSampleRecords(count).ToList();
 		

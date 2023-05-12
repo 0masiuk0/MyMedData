@@ -59,7 +59,7 @@
                 <DataGrid.Resources>
                     <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
                         <Setter Property="Margin" Value="5,10,5,10"/>
-                        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                        <Setter Property="TextWrapping" Value="Wrap"/>
                         <Setter Property="FontSize" Value="16"/>
                     </Style>
                     <Style TargetType="ScrollBar">

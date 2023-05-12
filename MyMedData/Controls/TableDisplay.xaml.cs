@@ -62,7 +62,12 @@ namespace MyMedData.Controls
 				column.CanUserSort = true;
 			}
 		
-		}	
+		}
+
+		private void RecordDisplay_ChangesSavedToDB(object sender, ChangesSavedToDBEventArgs e)
+		{
+			RecordsDataGrid.SelectedItem = e.NewRecord;
+		}
 
 		private void RecordsCollectionViewSource_Filter(object sender, FilterEventArgs e)
 		{	
@@ -110,8 +115,6 @@ namespace MyMedData.Controls
 			{
 				throw new Exception("Source item in table datagrid is not ExaminationRecord somehow.");
 			}
-		}
-
-		
-	}
+		}		
+    }
 }
