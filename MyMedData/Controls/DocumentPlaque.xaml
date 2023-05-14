@@ -10,9 +10,9 @@
             BorderThickness="1"
             Background="Transparent">
         <DockPanel>
-            <Viewbox MinWidth="100" StretchDirection="DownOnly" >
-                <TextBox x:Name="UserNameTextBlock"
-                      Margin="15,10,10,10"
+            <Viewbox MinWidth="100" Margin="15,10,10,10"
+                     StretchDirection="DownOnly" HorizontalAlignment="Left">
+                <TextBox x:Name="UserNameTextBlock"                      
                       HorizontalAlignment="Stretch"
                       FontSize="14" Foreground="{StaticResource DarkThemeFontColor}" Background="{StaticResource LightDarkBackColor}"
                       Text="{Binding CustomName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

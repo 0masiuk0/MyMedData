@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Configuration;
-using System.Collections.Specialized;
-using System.Threading.Channels;
-using System.Runtime.CompilerServices;
-using Microsoft.Win32;
 using System.IO;
-using LiteDB;
+using MyMedData.Classes;
+using static MyMedData.Classes.SettingsManager;
 
 namespace MyMedData.Windows
 {
@@ -31,14 +17,13 @@ namespace MyMedData.Windows
 			InitializeComponent();			
 		}
 
-		private Dictionary<string, string> _changedSettings = new();
-		private NameValueCollection AppSettings => ConfigurationManager.AppSettings;
+		private Dictionary<string, string> _changedSettings = new();		
 
 		private MainWindow MainWindow => (MainWindow)this.Owner;
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			string? userDbFileName = AppSettings["UserDbName"];
+			string? userDbFileName = SettingsManager.AppSettings["UserDbName"].Value;
 			if (userDbFileName != null)
 			{
 				if (File.Exists(userDbFileName) && UsersDataBase.FastCheckUserDvValidity(userDbFileName))
@@ -47,7 +32,7 @@ namespace MyMedData.Windows
 				}
 				else
 				{
-					UpdateSetting("UserDbName", "");
+					UpsertSetting("UserDbName", "");
 				}
 			}
 
@@ -75,32 +60,7 @@ namespace MyMedData.Windows
 		{
 			foreach (var settingKeyValue in _changedSettings)
 			{
-				UpdateSetting(settingKeyValue.Key, settingKeyValue.Value);
-			}
-		}
-
-		private void UpdateSetting(string settingName, string newValue)
-		{
-			try
-			{
-				var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-				var settings = configFile.AppSettings.Settings;
-
-				if (settings[settingName] == null)
-				{
-					settings.Add(settingName, newValue);
-				}
-				else
-				{
-					settings[settingName].Value = newValue;
-				}
-
-				configFile.Save(ConfigurationSaveMode.Modified);
-				ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-			}
-			catch (ConfigurationErrorsException)
-			{
-				System.Windows.MessageBox.Show("Ошибка сохранения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);				
+				UpsertSetting(settingKeyValue.Key, settingKeyValue.Value);
 			}
 		}
 
@@ -119,7 +79,7 @@ namespace MyMedData.Windows
 					System.Windows.MessageBox.Show("Создание/перезапись базы дапнных отменена.", "Отмена операции.",
 						MessageBoxButton.OK, MessageBoxImage.Information);
 
-				UpdateSetting("UserDbName", newPath);
+				UpsertSetting("UserDbName", newPath);
 				UsersDbFileNameTextBox.Text = newPath;
 			}
 		}

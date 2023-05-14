@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMedData
 {
-	public class AttachmentMetaData : INotifyPropertyChanged
+	public class AttachmentMetaData : INotifyPropertyChanged, IHasId<int>
 	{
 		[BsonId]
 		public int Id { get; set; }

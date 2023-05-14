@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyMedData.Classes;
 using MyMedData.Windows;
 
 namespace MyMedData
@@ -24,6 +27,8 @@ namespace MyMedData
 	{
 		public Session? ActiveSession { get; private set; }
 		public User? ActiveUser => ActiveSession != null ? ActiveSession.ActiveUser : null;
+		Image AutoLogOn_On_Icon;
+		Image AutoLogOn_Off_Icon;
 
 		public MainWindow()
 		{
@@ -36,6 +41,11 @@ namespace MyMedData
 				});
 
 			StateChanged += MainWindowStateChangeRaised;
+
+			AutoLogOn_Off_Icon = (Image)TryFindResource("AutoLockOffIcon");
+			AutoLogOn_On_Icon = (Image)TryFindResource("AutoLockOnIcon");
+			var autologinParam = SettingsManager.GetOrInsertDefaultValue("auto_log_in", "False");
+			autoLogin = autologinParam == "True" ? true : false;
 		}		
 
 		private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
@@ -43,6 +53,11 @@ namespace MyMedData
 			NewDocExaminationButton.Visibility = Visibility.Collapsed;
 			NewLabAnalysisButon.Visibility = Visibility.Collapsed;
 			RecordsTableDisplay.RecordsDataGrid.SelectionChanged += RecordsDataGrid_SelectionChanged;
+
+			if (autoLogin)
+			{
+				Authorizator.AuthorizeLastUser(this);
+			}
 		}		
 
 		private void OpenUsersDialog()
@@ -91,6 +106,22 @@ namespace MyMedData
 		private void LogOffButton_Click(object sender, RoutedEventArgs e)
 		{
 			LogOff();
+		}
+
+		
+
+		bool _autologin;
+		private bool autoLogin
+		{
+			get => _autologin;
+			set
+			{
+				_autologin = value;
+				if (value) 
+					AutlogInButton.Content = AutoLogOn_On_Icon;
+				else
+					AutlogInButton.Content = AutoLogOn_Off_Icon;
+			}
 		}
 
 		private void NewAppointmentRecordData_Click(object sender, RoutedEventArgs e)
@@ -170,6 +201,12 @@ namespace MyMedData
 		private void MinimizeButton_Click(object sender, RoutedEventArgs e)
 		{
 			this.WindowState = WindowState.Minimized;
+		}
+
+		private void AutlogInButton_Click(object sender, RoutedEventArgs e)
+		{
+			autoLogin = !autoLogin;
+			SettingsManager.UpsertSetting("auto_log_in", autoLogin.ToString());
 		}
 	}
 
