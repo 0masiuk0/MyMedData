@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage.Streams;
 
 namespace MyMedData
 {
@@ -74,11 +76,11 @@ namespace MyMedData
 			Data = null;
 		}
 
-		public void LoadData(Session session)
+		public Task<byte[]> LoadData(Session session)
 		{
-			Data = session.FileStorage.GetFileBytes(Id);
+			return Task<byte[]>.FromResult(session.FileStorage.GetFileBytes(Id));
 		}
-
+		
 		public AttachmentMetaData DeepCopy()
 		{
 			return new AttachmentMetaData() { Id = Id, DocumentType = DocumentType, FileName = FileName, CustomName = CustomName };

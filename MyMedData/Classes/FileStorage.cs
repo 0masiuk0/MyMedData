@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Windows.Storage.Streams;
 
 namespace MyMedData
 {
@@ -35,9 +36,14 @@ namespace MyMedData
 
 		internal byte[] GetFileBytes(int id)
 		{
-			var stream = new MemoryStream();
+			using var stream = new MemoryStream();
 			storage.Download(id.ToString(), stream);
 			return stream.ToArray();
+		}
+
+		internal IInputStream GetFileAsStream(int id)
+		{
+			return storage.OpenRead(id.ToString()).AsInputStream();
 		}
 	}
 }

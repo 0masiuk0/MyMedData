@@ -23,7 +23,7 @@ namespace MyMedData.Windows
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			string? userDbFileName = SettingsManager.AppSettings["UserDbName"].Value;
+			string? userDbFileName = SettingsManager.AppSettings["UserDbName"]?.Value;
 			if (userDbFileName != null)
 			{
 				if (File.Exists(userDbFileName) && UsersDataBase.FastCheckUserDvValidity(userDbFileName))

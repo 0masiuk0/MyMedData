@@ -15,6 +15,7 @@ using MyMedData.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Animation;
+using MyMedData.Classes;
 
 namespace MyMedData.Controls
 {
@@ -400,21 +401,35 @@ namespace MyMedData.Controls
 				RemoveDocButton.Visibility = Visibility.Hidden;
 		}
 
-		private void DocumentPlaque_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		private async void DocumentPlaque_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if (AttachmentListBox.SelectedItem is AttachmentMetaData document && DataContext is Session session)
-			{
-				document.LoadData(session);
-				
-				var imageBytes = (((DocumentPlaque)sender).DataContext as AttachmentMetaData).Data;
-				BitmapImage image = new BitmapImage();
-				image.BeginInit();
-				image.StreamSource = new MemoryStream(document.Data);
-				image.EndInit();
+			if (AttachmentListBox.SelectedItem is AttachmentMetaData document 
+				&& DataContext is Session session
+				&& sender is DocumentPlaque plaque
+				&& plaque.DataContext is AttachmentMetaData attachment)
+			{				
+				var imageBytes = await document.LoadData(session);
 
-				ImageViewWindow imageViewWindow = new ImageViewWindow();
-				imageViewWindow.DataContext = image;
-				imageViewWindow.ShowDialog();
+				if (document.DocumentType == DocumentType.JPEG || document.DocumentType == DocumentType.PNG)
+				{									
+					BitmapImage image = new BitmapImage();
+					image.BeginInit();
+					image.StreamSource = new MemoryStream(imageBytes);
+					image.EndInit();
+
+					ImageViewWindow imageViewWindow = new ImageViewWindow();
+					imageViewWindow.DataContext = image;
+					imageViewWindow.ShowDialog();
+				}
+				else if (document.DocumentType == DocumentType.PDF)
+				{
+					PdfToImageConverter converter = new PdfToImageConverter();
+					await converter.ReadPdfFromBytes(imageBytes);
+
+					PdfViewWindow pdfViewWindow = new PdfViewWindow();
+					pdfViewWindow.DataContext = converter.Images.ToList();
+					pdfViewWindow.ShowDialog();
+				}
 			}
 		}
 

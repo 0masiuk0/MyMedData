@@ -52,8 +52,9 @@ namespace MyMedData.Windows
 					ReadUsers(userDb);
 			}
 			catch (UserDbAccessException ex) 
-			{
-				Close();
+			{				
+				this.Dispatcher.BeginInvoke(Close);
+				return;
 			}
 
 			UsersListBox.Focus();

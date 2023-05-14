@@ -597,4 +597,50 @@
             </DrawingImage>
         </Image.Source>
     </Image>
+
+    <Image x:Key="NextIcon" x:Shared="False">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V47 H47 V0 H0 Z">
+                        <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                            <GeometryDrawing Geometry="F1 M24,24z M0,0z M17,12L5,21 5,3z">
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                                </GeometryDrawing.Pen>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
+
+    <Image x:Key="PreviousIcon" x:Shared="False">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M17,3L17,21 5,12z">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
+
+    <Image x:Key="ResetIcon" x:Shared="False">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V1920 H1920 V0 H0 Z">
+                        <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F0 M1920,1920z M0,0z M960,0L960,213.333C1371.627,213.333 1706.667,548.267 1706.667,960 1706.667,1371.733 1371.627,1706.667 960,1706.667 548.373,1706.667 213.333,1371.733 213.333,960 213.333,762.987 291.733,577.493 426.667,439.253L426.667,693.333 640,693.333 640,106.667 53.333,106.667 53.333,320 244.373,320C88.64,494.08 0,720.96 0,960 0,1489.28 430.613,1920 960,1920 1489.387,1920 1920,1489.28 1920,960 1920,430.72 1489.387,0 960,0" />
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
 </ResourceDictionary>

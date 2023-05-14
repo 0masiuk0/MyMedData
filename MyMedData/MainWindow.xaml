@@ -92,7 +92,7 @@
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
                     Content="{StaticResource SettingsImage}" ToolTip="Настойки" Click="SettingsdButton_Click"/>
 
-            <Button x:Name="CalendarViewButton" Height="25" Width="25" 
+            <!--<Button x:Name="CalendarViewButton" Height="25" Width="25" 
                     Margin="10,4,10,4"
                     DockPanel.Dock="Right"
                     BorderBrush="Transparent"                    
@@ -108,7 +108,7 @@
                     DockPanel.Dock="Right"
                     Content="{StaticResource TableViewImage}"
                     Style="{StaticResource ButtonMousOverStyle}"
-                    ToolTip="Табличный вид"/>
+                    ToolTip="Табличный вид"/>-->
 
             <Button x:Name="AutlogInButton" Height="25" Width="25" 
                     Margin="10,4,10,4"  

@@ -19,7 +19,7 @@ namespace MyMedData.Classes
 			{
 				var appSettings = SettingsManager.AppSettings;
 
-				var UsersDbFileName = appSettings["UserDbName"].Value;
+				string? UsersDbFileName = appSettings["UserDbName"]?.Value;
 				if (UsersDbFileName == null)
 				{
 					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -41,11 +41,11 @@ namespace MyMedData.Classes
 					}
 				}
 			}
-			catch (ConfigurationErrorsException)
+			catch (Exception ex) 
 			{
-				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-				throw new UserDbAccessException();
+				throw new UserDbAccessException("Не удалось прочитать базу пользвателей", ex);
 			}
+
 		}
 
 		public static bool AuthorizeUser(User user, MainWindow mainWindow)
@@ -74,23 +74,31 @@ namespace MyMedData.Classes
 
 		public static bool AuthorizeUser(int userId, MainWindow mainWindow)
 		{
-			using(var userDB = GetUsersDatabase()) 
+			try
 			{
-				User? user = userDB.GetCollection<User>(User.DbCollectionName).FindById(userId);
-				if (user == null) 
-					return false;
-				
-				return AuthorizeUser(user, mainWindow);
+				using (var userDB = GetUsersDatabase())
+				{
+					User? user = userDB.GetCollection<User>(User.DbCollectionName).FindById(userId);
+					if (user == null)
+						return false;
+
+					return AuthorizeUser(user, mainWindow);
+				}
+			}
+			catch (Exception)
+			{
+				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+				return false;
 			}
 		}
 
 		public static bool AuthorizeLastUser(MainWindow mainWindow)
 		{
 			int? id = GetLastUserId();
-			
+
 			if (id is int ID)
 				return AuthorizeUser(ID, mainWindow);
-			else 
+			else
 				return false;
 		}
 
@@ -113,7 +121,7 @@ namespace MyMedData.Classes
 		}
 	}
 
-	public class UserDbAccessException: Exception
+	public class UserDbAccessException : Exception
 	{
 		public UserDbAccessException()
 		{

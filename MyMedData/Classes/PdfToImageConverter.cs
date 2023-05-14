@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,33 +17,19 @@ namespace MyMedData.Classes
 	{
 		public PdfToImageConverter() { Images = new(); }
 
-		byte[] _pdfBytes;
-		public byte[] PdfBytes
+		
+		public List<BitmapImage> Images { get; private set; }
+
+		public async Task ReadPdfFromBytes(byte[] bytes)
 		{
-			get => _pdfBytes;
-			set
-			{
-				_pdfBytes = value;
-				OnBytesChanged(value);
-			}
-		}
+			using var ms = new InMemoryRandomAccessStream();
+			await ms.WriteAsync(bytes.AsBuffer());
+			ms.Seek(0);
+			var doc = await PdfDocument.LoadFromStreamAsync(ms).AsTask();
+			await PdfToImages(doc);
+		}		
 
-		public List<Image> Images { get; private set; }
-
-		private async void OnBytesChanged(byte[] bytes)
-		{
-			using (var stream = new InMemoryRandomAccessStream())
-			{
-				using (var dataReader = new DataReader(stream))
-				{
-					dataReader.ReadBytes(bytes);
-					var doc = await PdfDocument.LoadFromStreamAsync(stream).AsTask();
-					await PdfToImages(doc);
-				}
-			}
-		}
-
-		private async Task PdfToImages( PdfDocument pdfDoc)
+		private async Task PdfToImages(PdfDocument pdfDoc)
 		{
 			if (pdfDoc == null) return;
 
@@ -52,15 +39,8 @@ namespace MyMedData.Classes
 			{
 				using (var page = pdfDoc.GetPage(i))
 				{
-					var bitmap = await PageToBitmapAsync(page);
-					var image = new Image
-					{
-						Source = bitmap,
-						HorizontalAlignment = HorizontalAlignment.Center,
-						Margin = new Thickness(0, 4, 0, 4),
-						MaxWidth = 800
-					};
-					Images.Add(image);
+					var bitmap = await PageToBitmapAsync(page);					
+					Images.Add(bitmap);
 				}
 			}
 		}
