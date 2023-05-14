@@ -34,4 +34,8 @@
     <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\WPF_PDFDocument\WPF_PDFDocument\WPF_PDFDocument.csproj" />
+  </ItemGroup>
+
 </Project>
