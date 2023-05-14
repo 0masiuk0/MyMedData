@@ -77,14 +77,14 @@ namespace MyMedData.Classes
 			try
 			{
 				using (var userDB = GetUsersDatabase())
-				{
-					User? user = userDB.GetCollection<User>(User.DbCollectionName).FindById(userId);
-					if (user == null)
-						return false;
-
-					return AuthorizeUser(user, mainWindow);
-				}
+			{
+				User? user = userDB.GetCollection<User>(User.DbCollectionName).FindById(userId);
+				if (user == null) 
+					return false;
+				
+				return AuthorizeUser(user, mainWindow);
 			}
+		}
 			catch (Exception)
 			{
 				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -95,10 +95,10 @@ namespace MyMedData.Classes
 		public static bool AuthorizeLastUser(MainWindow mainWindow)
 		{
 			int? id = GetLastUserId();
-
+			
 			if (id is int ID)
 				return AuthorizeUser(ID, mainWindow);
-			else
+			else 
 				return false;
 		}
 
