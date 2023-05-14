@@ -4,11 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData.Windows"
-        mc:Ignorable="d"
-        Height="800" Width="600"
+        xmlns:uc="clr-namespace:MyMedData.Controls"
+        mc:Ignorable="d"        
         x:Name="ViewerWindowInstance"
         Title="Просмотр" WindowStyle="None" WindowStartupLocation="CenterOwner"
-        MinHeight="210" Style="{StaticResource DarkWindowStyle}">
+        MinHeight="210" Padding="4" Style="{StaticResource DarkWindowStyle}" Height="304" Width="628">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>
@@ -36,7 +36,15 @@
 
             <TextBlock Text="{Binding ElementName=ViewerWindowInstance, Path=Title}"
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
-
         </DockPanel>
+        <uc:ZoomBorder x:Name="ImageZoomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                       Grid.Row="1" ClipToBounds="True">
+            <Image x:Name="ImageUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding}"/>
+        </uc:ZoomBorder>
+        <Button x:Name="ResetButton" Style="{StaticResource UnsizedDarkButtonStyle}"
+                Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                Background="#99383838"
+                Height="50" Width="50" Margin="15"
+                Content="Сброс" Click="ResetButton_Click"/>
     </Grid>
 </Window>

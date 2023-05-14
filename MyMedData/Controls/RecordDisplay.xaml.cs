@@ -11,6 +11,10 @@ using System.Windows.Data;
 using System.IO;
 using System.Windows.Controls.Primitives;
 using System.Net.Mail;
+using MyMedData.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Media.Animation;
 
 namespace MyMedData.Controls
 {
@@ -195,9 +199,9 @@ namespace MyMedData.Controls
 				}
 				else if (Item is ExaminationRecord existingRecord)
 				{
-
-					var attachmentsToDelete = existingRecord.Documents.Except(record.Documents);
-					var atatachmentsToUpload = record.Documents.Except(existingRecord.Documents);
+					var idComparer = new IDequilityCompare<int>();
+					var attachmentsToDelete = existingRecord.Documents.Except(record.Documents, idComparer).Cast<AttachmentMetaData>();
+					var atatachmentsToUpload = record.Documents.Except(existingRecord.Documents, idComparer).Cast<AttachmentMetaData>();
 					updateSuccess = session.UpdateExaminationRecord(record, attachmentsToDelete, atatachmentsToUpload);
 				}
 				else
@@ -396,6 +400,24 @@ namespace MyMedData.Controls
 				RemoveDocButton.Visibility = Visibility.Hidden;
 		}
 
+		private void DocumentPlaque_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			if (AttachmentListBox.SelectedItem is AttachmentMetaData document && DataContext is Session session)
+			{
+				document.LoadData(session);
+				
+				var imageBytes = (((DocumentPlaque)sender).DataContext as AttachmentMetaData).Data;
+				BitmapImage image = new BitmapImage();
+				image.BeginInit();
+				image.StreamSource = new MemoryStream(document.Data);
+				image.EndInit();
+
+				ImageViewWindow imageViewWindow = new ImageViewWindow();
+				imageViewWindow.DataContext = image;
+				imageViewWindow.ShowDialog();
+			}
+		}
+
 		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
 		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);
 
@@ -419,7 +441,7 @@ namespace MyMedData.Controls
 				return session.DoctorTypesCache.FirstOrDefault(docType => docType.ExaminationTypeTitle == examinationTypeTitle);
 			else
 				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
-		}
+		}		
 	}
 
 	public class ChangesSavedToDBEventArgs

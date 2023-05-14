@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace MyMedData
 {
-	public abstract class ExaminationRecord : INotifyPropertyChanged
+	public abstract class ExaminationRecord : INotifyPropertyChanged, IHasId<int>
 	{
 		[BsonId]
 		private int _id;
@@ -38,7 +38,7 @@ namespace MyMedData
 			{
 				if (_date != value)
 				{
-					_date = value;					
+					_date = value;
 					OnPropertyChanged(nameof(Date));
 				}
 			}
@@ -58,7 +58,7 @@ namespace MyMedData
 				}
 			}
 		}
-				
+
 		private Clinic? _clinic;
 		[BsonRef(Clinic.DbCollectionName)]
 		public Clinic? Clinic
@@ -79,7 +79,7 @@ namespace MyMedData
 
 		protected ExaminationType? _examinationType;
 		public abstract ExaminationType? ExaminationType { get; set; }
-		
+
 
 		private string _comment = "";
 		public string Comment
@@ -101,18 +101,18 @@ namespace MyMedData
 		public abstract string Title { get; }
 
 		//------------------------------------METHODS------------------------------------------
-		
+
 		public abstract ExaminationRecord DeepCopy();
-		
+
 		public virtual bool IsDataEqual(ExaminationRecord? record, bool checkIdEqulity = false)
 		{
-			if (record == null) 
+			if (record == null)
 				return false;
 
 			if (Date != record.Date)
-				return false;			
+				return false;
 
-			if(checkIdEqulity && Id != record.Id) 
+			if (checkIdEqulity && Id != record.Id)
 				return false;
 
 			if (Clinic?.Name != record.Clinic?.Name || Clinic?.Comment != record.Clinic?.Comment)
@@ -121,7 +121,10 @@ namespace MyMedData
 			if (_examinationType?.ExaminationTypeTitle != record.ExaminationType?.ExaminationTypeTitle || _examinationType?.Comment != record.ExaminationType?.Comment)
 				return false;
 
-			if ((Comment ?? "") != record.Comment) 
+			if ((Comment ?? "") != record.Comment)
+				return false;
+
+			if (record.Documents.Count != Documents.Count)
 				return false;
 
 			var joinedAttachmentCol = Documents.Join(record.Documents,
@@ -132,8 +135,8 @@ namespace MyMedData
 				return false;
 
 			return true;
-		}		
-		
+		}
+
 
 		//---------------------------------EVENTS-------------------------------------------
 
@@ -149,9 +152,9 @@ namespace MyMedData
 			OnPropertyChanged(nameof(Documents));
 		}
 	}
-	
+
 	public class DoctorExaminationRecord : ExaminationRecord
-	{		
+	{
 		private Doctor? _doctor;
 		[BsonRef(Doctor.DbCollectionName)]
 		public Doctor? Doctor
@@ -171,7 +174,7 @@ namespace MyMedData
 					OnPropertyChanged(nameof(Title));
 				}
 			}
-		}		
+		}
 
 		[BsonRef(ExaminationType.DoctorTypesDbCollectionName)]
 		public override ExaminationType? ExaminationType
@@ -205,15 +208,15 @@ namespace MyMedData
 
 		public override ExaminationRecord DeepCopy()
 		{
-			var copy = new DoctorExaminationRecord 
-			{ 
-				Id = Id, 
+			var copy = new DoctorExaminationRecord
+			{
+				Id = Id,
 				Date = Date,
 				Documents = new List<AttachmentMetaData>(Documents),
 				ExaminationType = ExaminationType == null ? null : new ExaminationType(ExaminationType.ExaminationTypeTitle, ExaminationType.Comment),
 				Clinic = Clinic == null ? null : new Clinic(Clinic.Name, Clinic.Comment),
 				Doctor = Doctor == null ? null : new Doctor(Doctor.Name, Doctor.Comment),
-				Comment = Comment, 
+				Comment = Comment,
 			};
 
 			return copy;
@@ -280,5 +283,10 @@ namespace MyMedData
 		public override string Title => ExaminationType?.ToString() ?? "";
 
 		public static string DbCollectionName => "LabExaminations";
+	}
+
+	public interface IHasId<T> where T: IComparable
+	{
+		public T Id { get; }
 	}
 }

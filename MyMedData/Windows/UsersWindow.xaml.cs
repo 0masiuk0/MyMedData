@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using MyMedData.Controls;
 using MyMedData.Windows;
 using System.Windows.Markup;
+using MyMedData.Classes;
 
 namespace MyMedData.Windows
 {
@@ -29,6 +30,7 @@ namespace MyMedData.Windows
 		public UsersWindow()
 		{
 			InitializeComponent();
+			Authorizator.UserAuthorized += e => Close();
 		}
 
 		public MainWindow MainWindow => (MainWindow)Owner;
@@ -42,50 +44,19 @@ namespace MyMedData.Windows
 		}
 
 
-		private async void Window_Loaded(object sender, RoutedEventArgs e)
+		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			try
 			{
-				var appSettings = ConfigurationManager.AppSettings;
+				using (var userDb = Authorizator.GetUsersDatabase())
+					ReadUsers(userDb);
+			}
+			catch (UserDbAccessException ex) 
+			{
+				Close();
+			}
 
-				UsersDbFileName = appSettings["UserDbName"];
-				if (UsersDbFileName == null)
-				{
-					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-					ContentRendered += (o, e) => Close();
-					return;
-				}
-				else
-				{
-					//Нет активной сессии или она не заниает UsersDb
-					if (File.Exists(UsersDbFileName) && UsersDataBase.FastCheckUserDvValidity(UsersDbFileName))
-					{
-						//читаем
-						using (LiteDatabase usersDb = new LiteDatabase(UsersDbFileName))
-						{
-							ReadUsers(usersDb);
-						}
-					}
-					else
-					{
-						var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
-							"Ошибка!",
-							MessageBoxButton.OK, MessageBoxImage.Error);
-						ContentRendered += (o, e) => Close();
-						return;
-					}
-				}
-			}
-			catch (ConfigurationErrorsException)
-			{
-				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-				ContentRendered += (o, e) => Close();
-				return;
-			}
-			finally
-			{
-				UsersListBox.Focus();
-			}
+			UsersListBox.Focus();
 		}
 
 		private void ReadUsers(LiteDatabase usersDb)
@@ -131,37 +102,15 @@ namespace MyMedData.Windows
 		{
 			if (UsersListBox.SelectedItem is User user)
 			{
-				AuthorizeUser(user);
+				Authorizator.AuthorizeUser(user, MainWindow);
 			}
 		}
 
 		private void UserPlaque_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			UserPlaque plaque = (UserPlaque)sender;
-			if (plaque.DataContext is User user) AuthorizeUser(user);
-		}
-
-		private void AuthorizeUser(User user)
-		{
-			if (user.CheckPassword(""))
-			{
-				MainWindow.LogIn(new Session(user, ""));
-				Close();
-			}
-			else
-			{
-				EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
-				passwordWindow.Owner = this;
-				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-				passwordWindow.ShowDialog();
-				if (passwordWindow.Password != null)
-				{
-					MainWindow.LogIn(new Session(user, passwordWindow.Password));
-					Close();
-				}
-			}
-		}
+			if (plaque.DataContext is User user) Authorizator.AuthorizeUser(user, MainWindow);
+		}		
 
 		private void EditUserButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -258,7 +207,7 @@ namespace MyMedData.Windows
 			if (e.Key == Key.Enter
 				&& UsersListBox.SelectedItem is User user)
 			{
-				AuthorizeUser(user);
+				Authorizator.AuthorizeUser(user, MainWindow);
 			}
 		}
 
