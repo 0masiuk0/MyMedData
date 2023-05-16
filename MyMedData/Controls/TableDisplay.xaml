@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:MyMedData.Controls"
              xmlns:data="clr-namespace:MyMedData"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:BorderBrush="White" d:BorderThickness="2"
+             d:DesignHeight="450" d:DesignWidth="1000" d:BorderBrush="White" d:BorderThickness="2"
              DataContextChanged="RecordsTableDisplay_DataContextChanged">
     <UserControl.Resources>
         <CollectionViewSource x:Key="RecordsCollectionViewSource"                           
@@ -16,8 +16,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*" MinWidth="450"/>
-            <ColumnDefinition Width="4*" MinWidth="328"/>
+            <ColumnDefinition Width="*" MinWidth="450"/>
+            <ColumnDefinition Width="*" MinWidth="328"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
@@ -83,8 +83,8 @@
                     <Setter Property="TextWrapping" Value="Wrap"/>
                 </Style>
                 <Style TargetType="ScrollBar">
-                    <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />                    
-                </Style>
+                    <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
+                </Style>                
             </DataGrid.Resources>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
@@ -100,13 +100,26 @@
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
-                    <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
-                    <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>                   
+                    <Setter Property="Background" Value="{StaticResource BlueConotourColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontWeight" Value="DemiBold"/>
                     <Setter Property="FontSize" Value="16"/>                  
                     <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
                     <Setter Property="BorderThickness" Value="1"/>
                 </Style>
-            </DataGrid.RowStyle>          
+            </DataGrid.RowStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FF522986"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource DarkBackColor}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="TitleDataGridColumn"
                                     Header="Обследование" Binding="{Binding Title}" IsReadOnly="True"
@@ -119,7 +132,10 @@
                 <DataGridTextColumn x:Name="CommentDataGridColumn" IsReadOnly="True"
                                     Header="Примечание" Binding="{Binding Comment}" 
                                     Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>
-            </DataGrid.Columns>            
+            </DataGrid.Columns>
+            <d:DataGrid.ItemsSource>
+                <d:SampleData/>
+            </d:DataGrid.ItemsSource>
         </DataGrid>
 
         <GridSplitter Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Row="0" Grid.RowSpan="2" Width="1.5" Background="{StaticResource DarkThemeFontColor}"/>

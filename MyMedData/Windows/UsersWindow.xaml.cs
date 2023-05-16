@@ -35,7 +35,6 @@ namespace MyMedData.Windows
 
 		public MainWindow MainWindow => (MainWindow)Owner;
 
-		public string? UsersDbFileName { get; private set; }
 		private ObservableCollection<User> _users = new();
 		public ObservableCollection<User> Users
 		{
@@ -77,18 +76,12 @@ namespace MyMedData.Windows
 
 		private void AddUserButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (UsersDbFileName == null)
-			{
-				MessageBox.Show("Нет подключения к базе пользователей.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-				return;
-			}
-
 			AddUserWindow addUserWindow = new();
 			addUserWindow.ShowDialog();
 			if (addUserWindow.DialogResult == true)
 			{
 				var newUser = addUserWindow.NewUser;
-				using (var usersDb = new LiteDatabase(UsersDbFileName))
+				using (var usersDb = new LiteDatabase(UsersDataBase.GetUsersDbFileNameFromConfig()))
 				{
 					var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
 					usersCollection.Insert(newUser);
@@ -177,7 +170,7 @@ namespace MyMedData.Windows
 					default: return;
 				}
 
-				bool success = UsersDataBase.DeleteUser(user, databaseDeletion, UsersDbFileName);
+				bool success = UsersDataBase.DeleteUser(user, databaseDeletion, UsersDataBase.GetUsersDbFileNameFromConfig());
 
 				if (success)
 				{

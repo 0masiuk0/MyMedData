@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Xml.Serialization;
 using LiteDB;
 using Microsoft.Win32;
+using MyMedData.Classes;
 using MyMedData.Windows;
 
 namespace MyMedData.Windows
@@ -34,7 +35,7 @@ namespace MyMedData.Windows
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			_usersDbFileName = (Owner as UsersWindow).UsersDbFileName;
+			_usersDbFileName = SettingsManager.AppSettings["UserDbName"]?.Value;
 		}
 
 		public User EditedUser { get; private set; }

@@ -61,9 +61,6 @@ namespace MyMedData.Controls
 				this.PreviewMouseRightButtonDown += new MouseButtonEventHandler(
 				  child_PreviewMouseRightButtonDown);
 			}
-
-			BorderThickness = new Thickness(8);
-			BorderBrush = new SolidColorBrush(Colors.Red);						
 		}
 		
 		public void Reset()

@@ -7,7 +7,7 @@
         xmlns:uc="clr-namespace:MyMedData.Controls"
         mc:Ignorable="d"
         Title="Моя Медкнижка" 
-        Height="600" Width="800" MinWidth="700" MinHeight="300"  BorderThickness="2"
+        Height="600" Width="1200" MinWidth="700" MinHeight="300"  BorderThickness="2"
         Style="{StaticResource DarkWindowStyle}" WindowStyle="None" BorderBrush="{StaticResource DarkBackColor}"
         Loaded="MainWindow1_Loaded">
     <WindowChrome.WindowChrome>
@@ -57,6 +57,9 @@
             <Button x:Name="MinimizeButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Mimimize"
                             DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
                             Click="MinimizeButton_Click"/>
+
+            <Image x:Name="AppIconImage" DockPanel.Dock="Left" Height="25" Margin="10,4,4,8"
+                   Source="{StaticResource app_iconDrawingImage}"/>
 
             <TextBlock Text="{Binding ElementName=MainWindow1, Path=Title}"
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>

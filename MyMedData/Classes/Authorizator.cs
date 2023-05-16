@@ -50,6 +50,9 @@ namespace MyMedData.Classes
 
 		public static bool AuthorizeUser(User user, MainWindow mainWindow)
 		{
+			if(mainWindow.ActiveUser == user)
+				return true;
+
 			if (user.CheckPassword(""))
 			{
 				mainWindow.LogIn(new Session(user, ""));
