@@ -382,7 +382,8 @@ namespace MyMedData.Controls
 
 		private void ScanDocButton_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show("Функционал не готов.", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+			DocumentScanWindow documentScanWindow = new DocumentScanWindow();
+			documentScanWindow.ShowDialog();
 		}
 
 		private void RemoveDocButton_Click(object sender, RoutedEventArgs e)
