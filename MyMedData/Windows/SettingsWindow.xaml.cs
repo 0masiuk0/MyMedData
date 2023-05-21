@@ -89,5 +89,32 @@ namespace MyMedData.Windows
 			string accPassword = AccPasswordTextBox.Text ?? "";			
 			DBPasswordTextBox.Text = RecordsDataBase.HashString16(accPassword);			
 		}
-	}
+
+		private void TabItem_Loaded(object sender, RoutedEventArgs e)
+		{
+			ScannerCombBox.Items.Clear();
+			foreach(var scannerName in ScannerManager.GetDeviceNames()) 
+			{
+				ScannerCombBox.Items.Add(scannerName);
+			}
+
+			int index = ScannerCombBox.Items.IndexOf(ScannerManager.GetSetScannerName());
+			if (index > 0)
+			{
+				ScannerCombBox.SelectedIndex = index;
+			}
+			else if (ScannerCombBox.Items.Count > 0) 
+			{ 
+				ScannerCombBox.SelectedIndex = 0;
+			}
+        }
+
+		private void ScannerCombBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ScannerCombBox.SelectedItem.ToString() is string newScannerName && newScannerName != AppSettings[ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY]?.Value)
+				_changedSettings[ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY] = newScannerName;
+			else
+				_changedSettings.Remove(ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY);
+        }
+    }
 }

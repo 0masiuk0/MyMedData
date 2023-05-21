@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="Настройки" Height="300" Width="450" MinHeight="200" MinWidth="200"
         Style="{StaticResource DarkWindowStyle}" Loaded="Window_Loaded">
+    <Window.Resources>
+        <Thickness x:Key="StackPanelChildMargin"
+                        Left="5" Right="5" Top="10" Bottom="0"/>
+    </Window.Resources>
     <DockPanel Margin="5">
         <StackPanel x:Name="ButtonsStackPanel" Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
             <Button x:Name="OKbutton" Content="OK" Style="{StaticResource ButtonStyle1}" Click="OKbutton_Click"/>
@@ -56,10 +60,6 @@
                     </TextBlock>
                 </TabItem.Header>
                 <StackPanel>
-                    <StackPanel.Resources>
-                        <Thickness x:Key="StackPanelChildMargin"
-                        Left="5" Right="5" Top="10" Bottom="0"/>
-                    </StackPanel.Resources>
                     <TextBlock 
                         FontSize="16"
                         Foreground="{StaticResource DarkThemeFontColor}"
@@ -76,6 +76,28 @@
                             VerticalAlignment="Center"        
                             IsReadOnly="True"/>                        
                     </DockPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Loaded="TabItem_Loaded">
+                <TabItem.Header>
+                    Сканер
+                </TabItem.Header>
+                <StackPanel>
+                    <TextBlock 
+                        FontSize="16"
+                        Foreground="{StaticResource DarkThemeFontColor}"
+                        Margin="{StaticResource StackPanelChildMargin}">
+                    Выбор сканера
+                    </TextBlock>
+                    <ComboBox Name="ScannerCombBox" VerticalAlignment="Top" Margin="{StaticResource StackPanelChildMargin}"
+                              SelectionChanged="ScannerCombBox_SelectionChanged"/>
+                    <TextBlock 
+                        FontSize="12"
+                        Foreground="{StaticResource DarkThemeFontColor}"
+                        Margin="{StaticResource StackPanelChildMargin}">
+                    Доступны только сканеры, поддерживающте WIA протокол.
+                    </TextBlock>
                 </StackPanel>
             </TabItem>
             
