@@ -98,6 +98,14 @@
                         Margin="{StaticResource StackPanelChildMargin}">
                     Доступны только сканеры, поддерживающте WIA протокол.
                     </TextBlock>
+                    <TextBlock 
+                        FontSize="16"
+                        Foreground="{StaticResource DarkThemeFontColor}"
+                        Margin="{StaticResource StackPanelChildMargin}">
+                    Разрешение сканирования
+                    </TextBlock>
+                    <ComboBox Name="DPI_CombBox" VerticalAlignment="Top" Margin="{StaticResource StackPanelChildMargin}"
+                              SelectionChanged="DPI_CombBox_SelectionChanged"/>
                 </StackPanel>
             </TabItem>
             

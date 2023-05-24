@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.IO;
 using MyMedData.Classes;
 using static MyMedData.Classes.SettingsManager;
+using System.Linq;
 
 namespace MyMedData.Windows
 {
@@ -107,6 +108,13 @@ namespace MyMedData.Windows
 			{ 
 				ScannerCombBox.SelectedIndex = 0;
 			}
+
+			var dpi = AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value;
+			var dpi_list = new string[] { "100", "150", "200", "300" }.ToList();
+			dpi_list.ForEach(dpi => DPI_CombBox.Items.Add(dpi));
+			
+			if (dpi != null && dpi_list.Contains(dpi))
+				DPI_CombBox.SelectedItem = dpi;
         }
 
 		private void ScannerCombBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -116,5 +124,14 @@ namespace MyMedData.Windows
 			else
 				_changedSettings.Remove(ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY);
         }
+
+		private void DPI_CombBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (DPI_CombBox.SelectedItem is string newDPI
+				&& newDPI != AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value)
+				_changedSettings[ScannerManager.DPI_SETTING_KEY] = newDPI;
+			else
+				_changedSettings.Remove(ScannerManager.DPI_SETTING_KEY);
+		}
     }
 }

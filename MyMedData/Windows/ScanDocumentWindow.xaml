@@ -6,12 +6,21 @@
         xmlns:local="clr-namespace:MyMedData.Windows"
         xmlns:uc="clr-namespace:MyMedData.Controls"
         mc:Ignorable="d"
-        Title="Просмотр" WindowStyle="None" WindowStartupLocation="CenterOwner"
-        MinHeight="210" Padding="4" Style="{StaticResource DarkWindowStyle}" Height="800" Width="600"
-        DataContextChanged="Window_DataContextChanged">
+        x:Name="ScanWindowInstance" Title="Сканирование"
+        WindowStyle="None" WindowStartupLocation="CenterOwner" 
+        MinHeight="210" Padding="4" Style="{StaticResource DarkWindowStyle}" Height="800" Width="600">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <Style x:Key="ButtonStyle" TargetType="Button" BasedOn="{StaticResource UnsizedDarkButtonStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
@@ -34,25 +43,26 @@
                             DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
                             Click="MinimizeButton_Click"/>
 
-            <TextBlock Text="{Binding ElementName=ViewerWindowInstance, Path=Title}"
+            <TextBlock Text="{Binding ElementName=ScanWindowInstance, Path=Title}"
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
-        </DockPanel>
+        </DockPanel>        
         <uc:ZoomBorder x:Name="ImageZoomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        Grid.Row="1" ClipToBounds="True">
-            <Image x:Name="ImageUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Image x:Name="ImageUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                   Source="{Binding ElementName=ScanWindowInstance, Path=ScannedImage}"/>
         </uc:ZoomBorder>
         <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right">
             <Button x:Name="PrevButton" Style="{StaticResource UnsizedDarkButtonStyle}"                
                     Background="#99383838"
                     Height="50" Width="50" Margin="15"  Padding="5"
-                    Content="{StaticResource PreviousIcon}" Click="PrevButton_Click"/>
+                    Content="{StaticResource PreviousIcon}" />
 
             <Button x:Name="NextButton" Style="{StaticResource UnsizedDarkButtonStyle}"                
                     Background="#99383838"
                     Height="50" Width="50" Margin="15"  Padding="5"
-                    Content="{StaticResource NextIcon}" Click="NextButton_Click"/>
+                    Content="{StaticResource NextIcon}" />
 
-            <Button x:Name="ScanButton" Style="{StaticResource UnsizedDarkButtonStyle}"                
+            <Button x:Name="ScanButton" Style="{StaticResource ButtonStyle}"                
                     Background="#99383838"
                     Height="50" Width="50" Margin="15"
                     Content="{StaticResource ScanDocIcon}" Click="ScanButton_Click"/>
