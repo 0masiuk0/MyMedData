@@ -13,10 +13,35 @@
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>
     <Window.Resources>
-        <Style x:Key="ButtonStyle" TargetType="Button" BasedOn="{StaticResource UnsizedDarkButtonStyle}">
+        <LinearGradientBrush x:Key="scanButonGradientBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Transparent" Offset="0"/>
+            <GradientStop Color="Transparent" Offset="1"/>
+            <GradientStop Color="#FF522986" Offset="1"/>
+            <GradientStop Color="#FF522986" Offset="1"/>
+        </LinearGradientBrush>
+        <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{StaticResource scanButonGradientBrush}" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                            </TransformGroup>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="Gray"/>
+                    <Setter Property="Background" Value="Pink"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -45,7 +70,20 @@
 
             <TextBlock Text="{Binding ElementName=ScanWindowInstance, Path=Title}"
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
-        </DockPanel>        
+        </DockPanel>
+        <StackPanel Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style x:Key="top_panel_style" TargetType="{x:Type FrameworkElement}">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="5"/>
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="DPI: " Style="{StaticResource top_panel_style}"/>
+            <ComboBox Name="DPI_ComboBox" Width="80" Style="{StaticResource top_panel_style}"/>
+            <Separator Width="10" Background="Transparent"/>
+            <TextBlock Text="Формат" Style="{StaticResource top_panel_style}"/>
+            <ComboBox Name="FormatComboBox" Width="80" Style="{StaticResource top_panel_style}"/>
+        </StackPanel>
         <uc:ZoomBorder x:Name="ImageZoomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        Grid.Row="1" ClipToBounds="True">
             <Image x:Name="ImageUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -63,7 +101,6 @@
                     Content="{StaticResource NextIcon}" />
 
             <Button x:Name="ScanButton" Style="{StaticResource ButtonStyle}"                
-                    Background="#99383838"
                     Height="50" Width="50" Margin="15"
                     Content="{StaticResource ScanDocIcon}" Click="ScanButton_Click"/>
         </StackPanel>

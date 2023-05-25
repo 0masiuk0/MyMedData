@@ -27,6 +27,7 @@ namespace MyMedData.Classes
 		public const int A4_INCH_HEIGHT = 11_670;
 		public const int A5_INCH_WIDTH = 5_800;
 		public const int A5_INCH_HEIGHT = 8_300;
+		public static string[] AVALIBLE_DPI => new string[] { "100", "150", "200", "300" };
 
 		public static string? GetSetScannerName()
 		{
@@ -51,7 +52,7 @@ namespace MyMedData.Classes
 		static bool scannerBusy;
 		public static bool ScannerIsBusy { get => scannerBusy; }
 
-		public static async Task<BitmapImage> ScanAsync(PaperSize paperSize)
+		public static async Task<BitmapImage> ScanAsync(PaperSize paperSize, int DPI_X, int DPI_Y)
 		{
 			if (!scannerBusy)
 			{
@@ -62,13 +63,7 @@ namespace MyMedData.Classes
 					else
 						throw new ScannerBusyException();
 				}
-			}
-
-			int DPI_X, DPI_Y;
-			if (int.TryParse(SettingsManager.AppSettings[DPI_SETTING_KEY]?.Value, out DPI_X))
-				DPI_Y = DPI_X;
-			else
-				DPI_X = DPI_Y = 150;
+			}			
 
 			ScanParamters scanParamters = new ScanParamters { PaperSize = paperSize, DPI_X = DPI_X, DPI_Y = DPI_Y };
 
@@ -150,18 +145,23 @@ namespace MyMedData.Classes
 		private static void Transfer_PageScanned(object? sender, WiaTransfer.PageScannedEventArgs e)
 		{
 			var image = new BitmapImage();
-			using (e.Stream)
+			try
 			{
-				image.BeginInit();
-				image.CacheOption = BitmapCacheOption.OnLoad;
-				image.StreamSource = e.Stream;
-				image.EndInit();
+				using (e.Stream)
+				{
+					image.BeginInit();
+					image.CacheOption = BitmapCacheOption.OnLoad;
+					image.StreamSource = e.Stream;
+					image.EndInit();
 
-				image.Freeze();
-				scanTaskCompletion.TrySetResult(image);
-				
+					image.Freeze();
+					scanTaskCompletion.TrySetResult(image);					
+				}
 			}
-			// TODO: try set exception
+			catch (Exception ex) 
+			{
+				scanTaskCompletion.TrySetException(ex);
+			}
 		}		
 
 		public static event EventHandler<WiaTransfer.ProgressEventArgs> Progress;		

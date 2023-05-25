@@ -27,14 +27,39 @@ namespace MyMedData.Windows
 		public ScanDocumentWindow()
 		{
 			InitializeComponent();
+			LinearGradientBrush scanButtonBrush = (LinearGradientBrush)TryFindResource("scanButonGradientBrush");
+			scanProgressGradientStop1 = scanButtonBrush.GradientStops[1];
+			scanProgressGradientStop2 = scanButtonBrush.GradientStops[2];
+
+			ScannerManager.AVALIBLE_DPI.ToList().ForEach(dpi => DPI_ComboBox.Items.Add(dpi));
+			if (SettingsManager.AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value is string dpi)
+				DPI_ComboBox.SelectedItem = dpi;
+			else
+				DPI_ComboBox.SelectedIndex = 0;
+
+			FormatComboBox.Items.Add("A4");
+			FormatComboBox.Items.Add("A5");
+			FormatComboBox.SelectedIndex = 0;
 		}
+
+		GradientStop scanProgressGradientStop1;
+		GradientStop scanProgressGradientStop2;
 
 		private async void ScanButton_Click(object sender, RoutedEventArgs e)
 		{
 			try
 			{
 				ScanButton.IsEnabled = false;
-				ScannedImage = await ScannerManager.ScanAsync(PaperSize.A4);
+				ScannerManager.Progress += ScannerManager_Progress;
+				PaperSize paperSize = FormatComboBox.SelectedItem == "A5" ? PaperSize.A5 : PaperSize.A4;
+
+				int DPI_X, DPI_Y;
+				if (int.TryParse(SettingsManager.AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value, out DPI_X))
+					DPI_Y = DPI_X;
+				else
+					DPI_X = DPI_Y = 100;
+
+				ScannedImage = await ScannerManager.ScanAsync(PaperSize.A4, DPI_X, DPI_Y);
 			}
 			catch(ScannerBusyException)
 			{
@@ -46,8 +71,16 @@ namespace MyMedData.Windows
 			}
 			finally
 			{
+				ScannerManager.Progress -= ScannerManager_Progress;
+				scanProgressGradientStop1.Offset = scanProgressGradientStop2.Offset = 1;
 				ScanButton.IsEnabled = true;
 			}
+		}
+
+		private void ScannerManager_Progress(object? sender, WiaTransfer.ProgressEventArgs e)
+		{
+			this.Dispatcher.BeginInvoke(
+				() => scanProgressGradientStop1.Offset = scanProgressGradientStop2.Offset = 1 - ((double)e.Percent / 100));
 		}
 
 		#region stuff

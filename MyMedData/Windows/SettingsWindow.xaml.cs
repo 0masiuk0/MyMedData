@@ -110,7 +110,7 @@ namespace MyMedData.Windows
 			}
 
 			var dpi = AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value;
-			var dpi_list = new string[] { "100", "150", "200", "300" }.ToList();
+			var dpi_list = ScannerManager.AVALIBLE_DPI.ToList();
 			dpi_list.ForEach(dpi => DPI_CombBox.Items.Add(dpi));
 			
 			if (dpi != null && dpi_list.Contains(dpi))
