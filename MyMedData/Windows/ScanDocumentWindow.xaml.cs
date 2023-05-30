@@ -83,15 +83,27 @@ namespace MyMedData.Windows
 				() => scanProgressGradientStop1.Offset = scanProgressGradientStop2.Offset = 1 - ((double)e.Percent / 100));
 		}
 
-		#region stuff
-		public BitmapImage? ScannedImage 
+		private void Rotate(double angle)
 		{
-			get => (BitmapImage)GetValue(ScannedImageProperty);
+			TransformedBitmap transformedBitmap = new TransformedBitmap();
+			transformedBitmap.BeginInit();
+			transformedBitmap.Source = ScannedImage;
+			transformedBitmap.Transform = new RotateTransform(angle, 0.5, 0.5);
+			transformedBitmap.EndInit();
+			transformedBitmap.Freeze();
+			
+			ScannedImage = transformedBitmap;
+		}
+
+		#region stuff
+		public BitmapSource? ScannedImage 
+		{
+			get => (BitmapSource)GetValue(ScannedImageProperty);
 			private set => SetValue(ScannedImageProperty, value); 
 		}
 
 		public static DependencyProperty ScannedImageProperty =
-			DependencyProperty.Register(nameof(ScannedImage), typeof(BitmapImage), typeof(ScanDocumentWindow), new PropertyMetadata());
+			DependencyProperty.Register(nameof(ScannedImage), typeof(BitmapSource), typeof(ScanDocumentWindow), new PropertyMetadata());
 
 		private void RestoreButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -119,6 +131,16 @@ namespace MyMedData.Windows
 			Close();
 		}
 		#endregion
+
+		private void RotateLeftButton_Click(object sender, RoutedEventArgs e)
+		{
+			Rotate(-90.0);
+		}
+
+		private void RotateRightButton_Click(object sender, RoutedEventArgs e)
+		{
+			Rotate(90.0);
+		}
 	}
 
 	internal class ScannerOperationException: Exception

@@ -47,12 +47,12 @@ namespace MyMedData.Classes
 			}
 		}
 
-		static TaskCompletionSource<BitmapImage?> scanTaskCompletion;
+		static TaskCompletionSource<BitmapSource?> scanTaskCompletion;
 		static object scannerBusyLock = new object();
 		static bool scannerBusy;
 		public static bool ScannerIsBusy { get => scannerBusy; }
 
-		public static async Task<BitmapImage> ScanAsync(PaperSize paperSize, int DPI_X, int DPI_Y)
+		public static async Task<BitmapSource> ScanAsync(PaperSize paperSize, int DPI_X, int DPI_Y)
 		{
 			if (!scannerBusy)
 			{
@@ -67,7 +67,7 @@ namespace MyMedData.Classes
 
 			ScanParamters scanParamters = new ScanParamters { PaperSize = paperSize, DPI_X = DPI_X, DPI_Y = DPI_Y };
 
-			scanTaskCompletion = new TaskCompletionSource<BitmapImage>();
+			scanTaskCompletion = new TaskCompletionSource<BitmapSource>();
 			await Task.Run(() => DoScan(scanParamters));
 			return await scanTaskCompletion.Task;
 		}

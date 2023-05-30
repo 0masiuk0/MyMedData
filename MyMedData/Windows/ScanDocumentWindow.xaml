@@ -90,15 +90,15 @@
                    Source="{Binding ElementName=ScanWindowInstance, Path=ScannedImage}"/>
         </uc:ZoomBorder>
         <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Panel.ZIndex="5">
-            <Button x:Name="PrevButton" Style="{StaticResource UnsizedDarkButtonStyle}"                
-                    Background="#99383838"
+            <Button x:Name="RotateLeftButton" Style="{StaticResource UnsizedDarkButtonStyle}"                
+                    Background="#99383838" BorderBrush="Transparent"
                     Height="50" Width="50" Margin="15"  Padding="5"
-                    Content="{StaticResource PreviousIcon}" />
+                    Content="{StaticResource RotateLeftIcon}" Click="RotateLeftButton_Click" />
 
-            <Button x:Name="NextButton" Style="{StaticResource UnsizedDarkButtonStyle}"                
-                    Background="#99383838"
+            <Button x:Name="RotateRigtButton" Style="{StaticResource UnsizedDarkButtonStyle}"                
+                    Background="#99383838" BorderBrush="Transparent"
                     Height="50" Width="50" Margin="15"  Padding="5"
-                    Content="{StaticResource NextIcon}" />
+                    Content="{StaticResource RotateRightIcon}" Click="RotateRightButton_Click" />
 
             <Button x:Name="ScanButton" Style="{StaticResource ButtonStyle}"                
                     Height="50" Width="50" Margin="15"

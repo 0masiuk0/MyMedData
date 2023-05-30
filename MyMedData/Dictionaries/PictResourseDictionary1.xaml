@@ -737,4 +737,50 @@
             </DrawingImage>
         </Image.Source>
     </Image>
+
+    <Image x:Key="RotateLeftIcon" x:Shared="False">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V48 H48 V0 H0 Z">
+                        <DrawingGroup Opacity="1">
+                            <DrawingGroup Opacity="1">
+                                <DrawingGroup Opacity="1">
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M5.7,2A2,2,0,0,1,8,4L8,8.9A22,22,0,0,1,46,24L46,24A2,2,0,0,1,42,24L42,24A18,18,0,0,0,10.6,12L15.9,12A2.1,2.1,0,0,1,18,13.7A2,2,0,0,1,16,16L6,16A2,2,0,0,1,4,14L4,4.1A2.1,2.1,0,0,1,5.7,2z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M24,42L24,42A2,2,0,1,1,22,44A2,2,0,0,1,24,42z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M33,39.6L33,39.6A1.9,1.9,0,0,1,35.7,40.3A1.9,1.9,0,0,1,35,43A2,2,0,0,1,33,39.6z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M39.6,33A1.9,1.9,0,0,1,42.3,32.3A2,2,0,0,1,43.1,35A2.1,2.1,0,0,1,40.3,35.7A1.9,1.9,0,0,1,39.6,33z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M5.7,32.3A1.9,1.9,0,0,1,8.4,33L8.4,33A1.9,1.9,0,0,1,7.7,35.7A1.9,1.9,0,0,1,5,35A1.9,1.9,0,0,1,5.7,32.3z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M15,39.6L15,39.6A1.9,1.9,0,0,1,15.7,42.3A2,2,0,0,1,13,43.1A2.1,2.1,0,0,1,12.3,40.3A1.9,1.9,0,0,1,15,39.6z" />
+                                </DrawingGroup>
+                            </DrawingGroup>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
+
+    <Image x:Key="RotateRightIcon" x:Shared="False">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V48 H48 V0 H0 Z">
+                        <DrawingGroup Opacity="1">
+                            <DrawingGroup Opacity="1">
+                                <DrawingGroup Opacity="1">
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M42.3,2A2,2,0,0,0,40,4L40,8.9A22,22,0,0,0,2,24L2,24A2,2,0,0,0,6,24L6,24A18,18,0,0,1,37.4,12L32.1,12A2.1,2.1,0,0,0,30,13.7A2,2,0,0,0,32,16L42,16A2,2,0,0,0,44,14L44,4.1A2.1,2.1,0,0,0,42.3,2z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M24,42L24,42A2,2,0,1,0,26,44A2,2,0,0,0,24,42z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M15,39.6L15,39.6A1.9,1.9,0,0,0,12.3,40.3A1.9,1.9,0,0,0,13,43A2,2,0,0,0,15,39.6z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M8.4,33A1.9,1.9,0,0,0,5.7,32.3A2,2,0,0,0,4.9,35A2.1,2.1,0,0,0,7.7,35.7A1.9,1.9,0,0,0,8.4,33z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M42.3,32.3A1.9,1.9,0,0,0,39.6,33L39.6,33A1.9,1.9,0,0,0,40.3,35.7A1.9,1.9,0,0,0,43,35A1.9,1.9,0,0,0,42.3,32.3z" />
+                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M48,48z M0,0z M33,39.6L33,39.6A1.9,1.9,0,0,0,32.3,42.3A2,2,0,0,0,35,43.1A2.1,2.1,0,0,0,35.7,40.3A1.9,1.9,0,0,0,33,39.6z" />
+                                </DrawingGroup>
+                            </DrawingGroup>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
 </ResourceDictionary>
