@@ -76,9 +76,17 @@ namespace MyMedData
 			Data = null;
 		}
 
-		public Task<byte[]> LoadData(Session session)
+		public async Task<byte[]> LoadData(Session session)
 		{
-			return Task<byte[]>.FromResult(session.FileStorage.GetFileBytes(Id));
+			if (Data == null)
+			{
+				Task<byte[]> task = new Task<byte[]>( 
+					() => session.FileStorage.GetFileBytes(Id));	
+				task.Start();
+				return await task;
+			}
+			else
+				return await Task.FromResult(Data);
 		}
 		
 		public AttachmentMetaData DeepCopy()

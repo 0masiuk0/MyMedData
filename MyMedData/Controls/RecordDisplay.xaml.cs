@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Animation;
 using MyMedData.Classes;
+using System.Xml.Linq;
 
 namespace MyMedData.Controls
 {
@@ -384,6 +385,22 @@ namespace MyMedData.Controls
 		{
 			ScanDocumentWindow scanDocumentWindow = new ScanDocumentWindow();
 			scanDocumentWindow.ShowDialog();
+
+			if (scanDocumentWindow.ScannedImage is BitmapSource scannedImage)
+			{				
+				using var stream = new MemoryStream();
+				BitmapEncoder encoder = new JpegBitmapEncoder();
+				encoder.Frames.Add(BitmapFrame.Create(scannedImage));
+				encoder.Save(stream);
+
+				AttachmentMetaData document = new AttachmentMetaData();
+				document.FileName = scannedImage.GetHashCode().ToString().PadLeft(10, '0').Substring(0, 10) + ".jpg";
+				document.DocumentType = DocumentType.JPEG;
+				document.Data = stream.ToArray();
+
+				AttachmentEditedCollection.Add(document);
+			}
+
 		}
 
 		private void RemoveDocButton_Click(object sender, RoutedEventArgs e)

@@ -103,7 +103,16 @@ namespace MyMedData.Windows
 		}
 
 		public static DependencyProperty ScannedImageProperty =
-			DependencyProperty.Register(nameof(ScannedImage), typeof(BitmapSource), typeof(ScanDocumentWindow), new PropertyMetadata());
+			DependencyProperty.Register(nameof(ScannedImage), typeof(BitmapSource), typeof(ScanDocumentWindow), new PropertyMetadata(ScannedImageChanged));
+
+		private static void ScannedImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			ScanDocumentWindow window = (ScanDocumentWindow)d;
+			if (e.NewValue is BitmapSource image)
+				window.AcceptButtonsPanel.Visibility = Visibility.Visible;
+			else 
+				window.AcceptButtonsPanel.Visibility= Visibility.Collapsed;
+		}
 
 		private void RestoreButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -140,6 +149,17 @@ namespace MyMedData.Windows
 		private void RotateRightButton_Click(object sender, RoutedEventArgs e)
 		{
 			Rotate(90.0);
+		}
+
+		private void AcceptImageButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (ScannedImage is BitmapSource image)
+				Close();
+		}
+
+		private void DiscardImageButton_Click(object sender, RoutedEventArgs e)
+		{
+			ScannedImage = null;
 		}
 	}
 
