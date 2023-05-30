@@ -54,12 +54,12 @@ namespace MyMedData.Windows
 				PaperSize paperSize = FormatComboBox.SelectedItem == "A5" ? PaperSize.A5 : PaperSize.A4;
 
 				int DPI_X, DPI_Y;
-				if (int.TryParse(SettingsManager.AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value, out DPI_X))
+				if (int.TryParse(DPI_ComboBox.SelectedItem?.ToString(), out DPI_X))
 					DPI_Y = DPI_X;
 				else
 					DPI_X = DPI_Y = 100;
 
-				ScannedImage = await ScannerManager.ScanAsync(PaperSize.A4, DPI_X, DPI_Y);
+				ScannedImage = await ScannerManager.ScanAsync(paperSize, DPI_X, DPI_Y);
 			}
 			catch(ScannerBusyException)
 			{
