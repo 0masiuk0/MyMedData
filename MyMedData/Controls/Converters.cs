@@ -9,6 +9,7 @@ using System.Windows;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace MyMedData.Controls
 {
@@ -57,6 +58,28 @@ namespace MyMedData.Controls
 			}
 
 			return DependencyProperty.UnsetValue;
+		}
+	}
+
+	[ValueConversion(typeof(ExaminationRecord), typeof(ImageSource))]
+	internal class RecordToIconConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value is ExaminationRecord examinationRecord) 
+			{
+				if (examinationRecord is DoctorExaminationRecord)
+					return Application.Current.Resources["AnalisysImage"];
+				else
+					return Application.Current.Resources["StethoscopeImage"];
+			}
+
+			return DependencyProperty.UnsetValue;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 

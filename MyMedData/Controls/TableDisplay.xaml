@@ -13,6 +13,7 @@
         <CollectionViewSource x:Key="RecordsCollectionViewSource"                           
                               Source="{Binding ExaminationRecords}"                             
                               Filter="RecordsCollectionViewSource_Filter"/>
+        <local:RecordToIconConverter x:Key="RecordToIconConv"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -121,6 +122,13 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
+                <DataGridTemplateColumn Width="40">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Converter={StaticResource RecordToIconConv}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn x:Name="TitleDataGridColumn"
                                     Header="Обследование" Binding="{Binding Title}" IsReadOnly="True"
                                     Width="*" ElementStyle="{StaticResource ColumnElementStyle}"/>
