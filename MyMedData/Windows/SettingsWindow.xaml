@@ -79,7 +79,7 @@
                 </StackPanel>
             </TabItem>
 
-            <TabItem Loaded="TabItem_Loaded">
+            <TabItem Loaded="ScannerTabItem_Loaded">
                 <TabItem.Header>
                     Сканер
                 </TabItem.Header>

@@ -381,6 +381,13 @@ namespace MyMedData.Controls
 			}
 		}
 
+		private void ResetRecordView()
+		{
+			ExaminationDatePicker.SelectedDate = null;
+			CommentTextBox.Text = "";
+			AttachmentEditedCollection.Clear();
+		}
+
 		private void ScanDocButton_Click(object sender, RoutedEventArgs e)
 		{
 			ScanDocumentWindow scanDocumentWindow = new ScanDocumentWindow();
@@ -462,12 +469,7 @@ namespace MyMedData.Controls
 		}
 
 		//----------------------------------------------------AUXILIARIES----------------------------------------------------------
-		private void ResetRecordView()
-		{
-			ExaminationDatePicker.SelectedDate = null;
-			CommentTextBox.Text = "";
-		}
-
+		
 		public ExaminationType? FindExaminationTypeInBothCases(Session session, string examinationTypeTitle, DocOrLabExamination docOrLab)
 		{
 			if (docOrLab == DocOrLabExamination.Doc)

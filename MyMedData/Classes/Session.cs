@@ -34,7 +34,7 @@ namespace MyMedData
 			
 			ExaminationRecords = new ObservableCollection<ExaminationRecord>();			
 
-			//Getting DB context
+			//Getting DB context			
 			RecordsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
 			FileStorage = new FileStorage(RecordsDatabaseContext);
 			

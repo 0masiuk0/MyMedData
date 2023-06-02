@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using MyMedData.Windows;
 using NAPS2;
 using NAPS2.Wia;
+using Windows.UI.Composition;
 using static System.Math;
 
 
@@ -29,9 +32,24 @@ namespace MyMedData.Classes
 		public const int A5_INCH_HEIGHT = 8_300;
 		public static string[] AVALIBLE_DPI => new string[] { "100", "150", "200", "300" };
 
-		public static string? GetSetScannerName()
+		public static string? GetPreferenceScannerName()
 		{
 			return SettingsManager.AppSettings[DEFAULT_SCANNER_NAME_SETTING_KEY]?.Value;
+		}
+
+		public static async Task<bool> CheckThatPrefereedScannerIsAvailible()
+		{
+			if (GetPreferenceScannerName() is not string preferredScannerName)
+				return false;
+
+			return await Task.Run(() => PingScanner(preferredScannerName));
+		}
+
+		private static Task<bool>? PingScanner(string scannerName)
+		{
+			using WiaDeviceManager wiaDeviceManager = new WiaDeviceManager();
+			var devices = wiaDeviceManager.GetDeviceInfos();
+			return Task.FromResult(devices.Any(device => device.Name() == scannerName));
 		}
 
 		static (int X, int Y) GetPixelSize(PaperSize paperSize)
@@ -83,7 +101,7 @@ namespace MyMedData.Classes
 			{
 				using WiaDeviceManager wiaDeviceManager = new WiaDeviceManager();
 				var devices = wiaDeviceManager.GetDeviceInfos();
-				var scannerName = ScannerManager.GetSetScannerName();
+				var scannerName = ScannerManager.GetPreferenceScannerName();
 				if (scannerName == null)
 				{
 					MessageBox.Show("Сканер не выбран. Выберите сканер в настройках приложения", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

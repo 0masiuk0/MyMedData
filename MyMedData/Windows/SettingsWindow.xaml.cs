@@ -91,7 +91,7 @@ namespace MyMedData.Windows
 			DBPasswordTextBox.Text = RecordsDataBase.HashString16(accPassword);			
 		}
 
-		private void TabItem_Loaded(object sender, RoutedEventArgs e)
+		private void ScannerTabItem_Loaded(object sender, RoutedEventArgs e)
 		{
 			ScannerCombBox.Items.Clear();
 			foreach(var scannerName in ScannerManager.GetDeviceNames()) 
@@ -99,7 +99,7 @@ namespace MyMedData.Windows
 				ScannerCombBox.Items.Add(scannerName);
 			}
 
-			int index = ScannerCombBox.Items.IndexOf(ScannerManager.GetSetScannerName());
+			int index = ScannerCombBox.Items.IndexOf(ScannerManager.GetPreferenceScannerName());
 			if (index > 0)
 			{
 				ScannerCombBox.SelectedIndex = index;

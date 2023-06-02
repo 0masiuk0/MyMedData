@@ -37,16 +37,8 @@ namespace MyMedData.Windows
 		{
 			if (PasswrodBox.Password is string pswrd)
 			{
-				if (_user.CheckPassword(pswrd))
-				{
-					Password = pswrd;
-					Close();
-				}
-				else
-				{
-					Password = null;
-					MessageBox.Show("Неверный пароль.", "Неудача.", MessageBoxButton.OK, MessageBoxImage.Warning);
-				}
+				Password = pswrd;
+				Close();
 			}
 		}
 

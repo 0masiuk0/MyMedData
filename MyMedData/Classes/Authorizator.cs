@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
+using System.Threading;
 
 namespace MyMedData.Classes
 {
@@ -53,11 +54,11 @@ namespace MyMedData.Classes
 			if(mainWindow.ActiveUser == user)
 				return true;
 
+			string? pwrd;
+
 			if (user.CheckPassword(""))
 			{
-				mainWindow.LogIn(new Session(user, ""));
-				RaiseUserAuthorizedEvent(user);
-				return true;
+				pwrd = "";
 			}
 			else
 			{
@@ -67,12 +68,24 @@ namespace MyMedData.Classes
 				passwordWindow.ShowDialog();
 				if (passwordWindow.Password != null)
 				{
-					mainWindow.LogIn(new Session(user, passwordWindow.Password));
-					RaiseUserAuthorizedEvent(user);
-					return true;
+					var passwordToCheck = passwordWindow.Password;
+					if (passwordToCheck != null && user.CheckPassword(passwordToCheck))
+					{
+						RaiseUserAuthorizedEvent(user);
+						pwrd = passwordToCheck;
+					}
+					else
+						return false;
 				}
+				else
+					return false;
 			}
-			return false;
+
+			Session session = new(user, pwrd);			
+
+			mainWindow.LogIn(session);
+			RaiseUserAuthorizedEvent(user);
+			return true;
 		}
 
 		public static bool AuthorizeUser(int userId, MainWindow mainWindow)
