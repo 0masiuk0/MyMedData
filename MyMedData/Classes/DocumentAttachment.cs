@@ -80,8 +80,9 @@ namespace MyMedData
 		{
 			if (Data == null)
 			{
+				using FileStorage fs = new FileStorage(session);
 				Task<byte[]> task = new Task<byte[]>( 
-					() => session.FileStorage.GetFileBytes(Id));	
+					() => fs.GetFileBytes(Id));	
 				task.Start();
 				return await task;
 			}

@@ -11,13 +11,13 @@ using Windows.Storage.Streams;
 
 namespace MyMedData
 {
-	internal class FileStorage
+	internal class FileStorage: IDisposable
 	{
+		LiteDatabase db;
+
 		public FileStorage(Session session) { db = session.RecordsDatabaseContext; storage = db.FileStorage; }
 
-		public FileStorage(LiteDatabase db) { this.db = db; storage = db.FileStorage; }
-
-		readonly LiteDatabase db;
+		public FileStorage(LiteDatabase db) { this.db = db; storage = db.FileStorage; } 		
 
 		readonly ILiteStorage<string> storage;
 
@@ -44,6 +44,11 @@ namespace MyMedData
 		internal IInputStream GetFileAsStream(int id)
 		{
 			return storage.OpenRead(id.ToString()).AsInputStream();
+		}
+
+		public void Dispose()
+		{
+			db = null;
 		}
 	}
 }

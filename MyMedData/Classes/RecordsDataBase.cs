@@ -172,7 +172,7 @@ namespace MyMedData
 		public static bool UpdateRecord(Session session, ref ExaminationRecord record, IEnumerable<AttachmentMetaData> docsToDeleteFromDB, IEnumerable<AttachmentMetaData> docsToUpload)
 		{
 			LiteDatabase db = session.RecordsDatabaseContext;
-			FileStorage fs = session.FileStorage;
+			using FileStorage fs = new FileStorage(session);
 
 			db.BeginTrans();
 			try
@@ -226,7 +226,7 @@ namespace MyMedData
 		public static bool InsertRecord(Session session, ref ExaminationRecord record)
 		{
 			LiteDatabase db = session.RecordsDatabaseContext;
-			FileStorage fs = session.FileStorage;
+			using FileStorage fs = new(session);
 
 			db.BeginTrans();
 			try
@@ -270,7 +270,7 @@ namespace MyMedData
 
 		internal static bool DeleteRecord(LiteDatabase db, ExaminationRecord record)
 		{
-			FileStorage fs = new(db);
+			using FileStorage fs = new(db);
 
 			db.BeginTrans();
 			try

@@ -17,7 +17,6 @@ namespace MyMedData
 	{
 		public readonly User ActiveUser;
 		public readonly LiteDatabase RecordsDatabaseContext;
-		internal readonly FileStorage FileStorage;
 
 		public readonly bool OccupiesUsersDb;
 
@@ -34,9 +33,8 @@ namespace MyMedData
 			
 			ExaminationRecords = new ObservableCollection<ExaminationRecord>();			
 
-			//Getting DB context			
+			//Getting DB context
 			RecordsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
-			FileStorage = new FileStorage(RecordsDatabaseContext);
 			
 			//Building medical entities cashe
 			EntitiesCacheUpdateHelper = new EntitiesCacheUpdateHelper(this);
@@ -116,7 +114,7 @@ namespace MyMedData
 			MessageBox.Show("Не удалось удалит запись.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 			return false;
 		}
-
+	
 		public void Dispose()
 		{
 			RecordsDatabaseContext.Dispose();

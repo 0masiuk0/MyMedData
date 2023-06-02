@@ -12,6 +12,7 @@ namespace MyMedData
 	{
 		public EntitiesCacheUpdateHelper(Session session)
 		{
+			var EntitiesDb = session.RecordsDatabaseContext;
 			this.session = session;
 
 			DoctorCache = new(EntitiesDb.GetCollection<Doctor>(Doctor.DbCollectionName)
@@ -32,8 +33,6 @@ namespace MyMedData
 		public ObservableCollection<Doctor> DoctorCache;
 		public ObservableCollection<ExaminationType> DoctorTypesCache;
 		public ObservableCollection<Clinic> ClinicCache;
-
-		private LiteDatabase EntitiesDb => session.RecordsDatabaseContext;
 
 		internal void EnsureValuesAreCached(ExaminationRecord record)
 		{
@@ -61,6 +60,7 @@ namespace MyMedData
 
 		public void UpdateExaminationTypesCache(DocOrLabExamination docOrLab, ExaminationType examinationType)
 		{
+			var EntitiesDb = session.RecordsDatabaseContext;
 			ILiteCollection<ExaminationType> collection;
 			if (docOrLab == DocOrLabExamination.Doc)
 				collection = EntitiesDb.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
@@ -72,12 +72,14 @@ namespace MyMedData
 
 		public void UpdateDoctorCache(Doctor doctor)
 		{
+			var EntitiesDb = session.RecordsDatabaseContext;
 			var collection = EntitiesDb.GetCollection<Doctor>(Doctor.DbCollectionName);
 			collection.Upsert(doctor);
 		}
 
 		public void UpdateClinicCache(Clinic clinic)
 		{
+			var EntitiesDb = session.RecordsDatabaseContext;
 			var collection = EntitiesDb.GetCollection<Clinic>(Clinic.DbCollectionName);
 			collection.Upsert(clinic);
 		}
