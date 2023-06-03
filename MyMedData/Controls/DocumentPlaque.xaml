@@ -5,14 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyMedData.Controls"
              mc:Ignorable="d" Name="ArchivedDocumentPlaque"
-             d:DesignHeight="40" d:DesignWidth="300">
+             d:DesignHeight="40" d:DesignWidth="300"
+             MouseDoubleClick="UserControl_MouseDoubleClick">
     <Border BorderBrush="{StaticResource DarkThemeFontColor}"
             BorderThickness="1"
-            Background="#FF3A4F92">        
-            <TextBox x:Name="UserNameTextBlock"                      
+            Background="#FF3A4F92">
+        <DockPanel>
+            <Image Height="30" MouseDown="Image_MouseDown"
+                Source="{StaticResource ViewFileDrawing}"/>
+            <TextBox x:Name="UserNameTextBlock"                  
                      Margin="5" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                     FontSize="16" Foreground="{StaticResource DarkThemeFontColor}" Background="{StaticResource LightDarkBackColor}"
                     Text="{Binding CustomName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         d:Text="Sample filename"/>
+        </DockPanel>
     </Border>
 </UserControl>

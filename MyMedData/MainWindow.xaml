@@ -104,6 +104,15 @@
                     Background="{StaticResource LightDarkBackColor}" Click="DeleteRecordButton_Click"
                     Visibility="Collapsed" d:Visibility="Visible"/>
 
+            <Separator Width="15" Background="Transparent"/>
+
+            <Button x:Name="EntitiesEditorButton"
+                    Height="40" Width="40" BorderBrush="Transparent"
+                    Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
+                   ToolTip="Настойки" Click="EntitiesEditorButton_Click">
+                <Image Source="{StaticResource MedicalEntitiesIcon}"/>
+            </Button>
+
             <Button x:Name="SettingsdButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
