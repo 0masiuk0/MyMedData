@@ -66,26 +66,33 @@ namespace MyMedData.Classes
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
 				passwordWindow.ShowDialog();
-				if (passwordWindow.Password != null)
+				if (passwordWindow.Password is string passwordToCheck
+					&& user.CheckPassword(passwordToCheck))
 				{
-					var passwordToCheck = passwordWindow.Password;
-					if (passwordToCheck != null && user.CheckPassword(passwordToCheck))
-					{
-						RaiseUserAuthorizedEvent(user);
-						pwrd = passwordToCheck;
-					}
-					else
-						return false;
+					RaiseUserAuthorizedEvent(user);
+					pwrd = passwordToCheck;
 				}
 				else
 					return false;
 			}
 
-			Session session = new(user, pwrd);			
+			try
+			{
+				Session session = new(user, pwrd);
 
-			mainWindow.LogIn(session);
-			RaiseUserAuthorizedEvent(user);
-			return true;
+				mainWindow.LogIn(session);
+				RaiseUserAuthorizedEvent(user);
+				return true;
+			}
+			catch(System.IO.IOException ifileBusyEx)
+			{
+				MessageBox.Show("Файл занят", ifileBusyEx.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Непредвиденная ошибка", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			return false;
 		}
 
 		public static bool AuthorizeUser(int userId, MainWindow mainWindow)

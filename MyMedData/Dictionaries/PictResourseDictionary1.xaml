@@ -354,18 +354,8 @@
 
     <DrawingImage x:Key="AnalisysImage" x:Shared="False">
         <DrawingImage.Drawing>
-            <DrawingGroup ClipGeometry="M0,0 V496 H496 V0 H0 Z">
-                <DrawingGroup Opacity="1">
-                    <DrawingGroup Opacity="1">
-                        <DrawingGroup Opacity="1">
-                            <GeometryDrawing Brush="White" Geometry="F1 M496,496z M0,0z M405.88,480L391.616,434.336 391.656,434.344 415.144,358.008C421.016,338.912 424,319.08 424,299.056 424,234.456 392.608,173.464 340.04,135.912L306.56,112 288,112 288,112.248C280.704,102.448,269.128,96,256,96L216,96 216,0 160,0 160,96 128,96 128,112 144,112 144,201.824 99.92,177.032 92.08,190.968 104,197.672 104,221.784 77.024,266.744 130.744,298.976 152,263.552 152,304 208,304 208,256.176 220.08,262.968 227.92,249.032 197.648,232 240,232 240,256 312,256 312,232 325.184,232C335.56,232,344,240.44,344,250.816L344,352 304,352 304,336 312,336 312,320 112,320 112,336 240,336 240,368 112,368 112,384 128,384 128,416 224,416 224,384 240,384 240,480 184,480 184,440 168,440 168,480 0,480 0,496 496,496 496,480 405.88,480z M208,400L144,400 144,384 208,384 208,400z M256,112C269.232,112 280,122.768 280,136 280,149.232 269.232,160 256,160 242.768,160 232,149.232 232,136 232,122.768 242.768,112 256,112z M176,16L200,16 200,32 176,32 176,16z M176,48L200,48 200,96 176,96 176,48z M125.256,277.024L98.976,261.256 114.744,234.976 141.024,250.744 125.256,277.024z M120,219.472L120,206.68 179.248,240 154.224,240 120,219.472z M192,288L168,288 168,256 192,256 192,288z M240,216L169.2,216 160,210.824 160,144 200,144 200,128 160,128 160,112 224.208,112C219.128,118.704 216,126.96 216,136 216,152.36 225.896,166.416 240,172.608L240,216z M325.184,216L296,216 296,240 256,240 256,176C278.056,176 296,158.056 296,136 296,133.264 295.72,130.584 295.192,128L301.44,128 330.744,148.928C379.12,183.488 408,239.608 408,299.056 408,317.48 405.256,335.728 399.832,353.312L383.192,407.408 373.704,377.032C371.264,369.224,366.344,362.8,360,358.4L360,250.816C360,231.616,344.384,216,325.184,216z M304,480L256,480 256,464 304,464 304,480z M304,387.664L304,448 256,448 256,336 288,336 288,368 309.96,368C306.208,373.648,304,380.392,304,387.664z M320,480L320,387.664C320,376.824 328.824,368 339.664,368 348.312,368 355.848,373.544 358.432,381.8L389.12,480 320,480z">
-                                <GeometryDrawing.Pen>
-                                    <Pen Brush="White" Thickness="2" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
-                                </GeometryDrawing.Pen>
-                            </GeometryDrawing>
-                        </DrawingGroup>
-                    </DrawingGroup>
-                </DrawingGroup>
+            <DrawingGroup ClipGeometry="M0,0 V256 H256 V0 H0 Z">
+                <GeometryDrawing Brush="White" Geometry="F1 M256,256z M0,0z M237.65674,86.34326L177.65674,26.34326A8.00063,8.00063,0,0,0,166.34274,26.34326L62.39453,130.29193 62.38281,130.30322 36.34281,156.34322A44.76956,44.76956,0,0,0,99.65681,219.6567L177.605,141.70868 177.6177,141.6958 212.32131,106.99219 234.52981,99.58936A7.9996,7.9996,0,0,0,237.65681,86.34326z M205.47021,92.41064A8.00221,8.00221,0,0,0,202.34277,94.34326L166.74463,129.94147C164.59663,131.4613 148.84963,141.48108 123.57763,128.84473 112.57909,123.34509 102.76663,121.21411 94.39647,120.9173L172,43.314 217.19043,88.504z" />
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
@@ -382,86 +372,58 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
-    
-    <Image x:Key="AnalisysImagePlus">
-        <Image.Source>
-            <DrawingImage>
-                <DrawingImage.Drawing>
-                    <DrawingGroup ClipGeometry="M0,0 V496 H496 V0 H0 Z">
-                        <DrawingGroup Opacity="1">
-                            <DrawingGroup Opacity="1">
-                                <DrawingGroup Opacity="1">
-                                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M496,496z M0,0z M405.88,480L391.616,434.336 391.656,434.344 415.144,358.008C421.016,338.912 424,319.08 424,299.056 424,234.456 392.608,173.464 340.04,135.912L306.56,112 288,112 288,112.248C280.704,102.448,269.128,96,256,96L216,96 216,0 160,0 160,96 128,96 128,112 144,112 144,201.824 99.92,177.032 92.08,190.968 104,197.672 104,221.784 77.024,266.744 130.744,298.976 152,263.552 152,304 208,304 208,256.176 220.08,262.968 227.92,249.032 197.648,232 240,232 240,256 312,256 312,232 325.184,232C335.56,232,344,240.44,344,250.816L344,352 304,352 304,336 312,336 312,320 112,320 112,336 240,336 240,368 112,368 112,384 128,384 128,416 224,416 224,384 240,384 240,480 184,480 184,440 168,440 168,480 0,480 0,496 496,496 496,480 405.88,480z M208,400L144,400 144,384 208,384 208,400z M256,112C269.232,112 280,122.768 280,136 280,149.232 269.232,160 256,160 242.768,160 232,149.232 232,136 232,122.768 242.768,112 256,112z M176,16L200,16 200,32 176,32 176,16z M176,48L200,48 200,96 176,96 176,48z M125.256,277.024L98.976,261.256 114.744,234.976 141.024,250.744 125.256,277.024z M120,219.472L120,206.68 179.248,240 154.224,240 120,219.472z M192,288L168,288 168,256 192,256 192,288z M240,216L169.2,216 160,210.824 160,144 200,144 200,128 160,128 160,112 224.208,112C219.128,118.704 216,126.96 216,136 216,152.36 225.896,166.416 240,172.608L240,216z M325.184,216L296,216 296,240 256,240 256,176C278.056,176 296,158.056 296,136 296,133.264 295.72,130.584 295.192,128L301.44,128 330.744,148.928C379.12,183.488 408,239.608 408,299.056 408,317.48 405.256,335.728 399.832,353.312L383.192,407.408 373.704,377.032C371.264,369.224,366.344,362.8,360,358.4L360,250.816C360,231.616,344.384,216,325.184,216z M304,480L256,480 256,464 304,464 304,480z M304,387.664L304,448 256,448 256,336 288,336 288,368 309.96,368C306.208,373.648,304,380.392,304,387.664z M320,480L320,387.664C320,376.824 328.824,368 339.664,368 348.312,368 355.848,373.544 358.432,381.8L389.12,480 320,480z">
-                                        <GeometryDrawing.Pen>
-                                            <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
-                                        </GeometryDrawing.Pen>
-                                    </GeometryDrawing>
-                                </DrawingGroup>
-                            </DrawingGroup>
-                        </DrawingGroup>
-                        <GeometryDrawing>
-                            <GeometryDrawing.Geometry>
-                                <GeometryGroup>
-                                    <PathGeometry>
-                                        <PathFigure StartPoint="350, 408.47">
-                                            <LineSegment Point="496, 408.47"/>
-                                        </PathFigure>
-                                    </PathGeometry>
-                                    <PathGeometry>
-                                        <PathFigure StartPoint="423, 335">
-                                            <LineSegment Point="423, 480"/>
-                                        </PathFigure>
-                                    </PathGeometry>
-                                </GeometryGroup>
-                            </GeometryDrawing.Geometry>
-                            <GeometryDrawing.Pen>
-                                <Pen Thickness="30" Brush="Orange"/>
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingImage.Drawing>
-            </DrawingImage>
-        </Image.Source>
-    </Image>
+
+    <DrawingImage x:Key="AnalisysImagePlus">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup ClipGeometry="M0,0 V256 H256 V0 H0 Z">
+                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M256,256z M0,0z M237.65674,86.34326L177.65674,26.34326A8.00063,8.00063,0,0,0,166.34274,26.34326L62.39453,130.29193 62.38281,130.30322 36.34281,156.34322A44.76956,44.76956,0,0,0,99.65681,219.6567L177.605,141.70868 177.6177,141.6958 212.32131,106.99219 234.52981,99.58936A7.9996,7.9996,0,0,0,237.65681,86.34326z M205.47021,92.41064A8.00221,8.00221,0,0,0,202.34277,94.34326L166.74463,129.94147C164.59663,131.4613 148.84963,141.48108 123.57763,128.84473 112.57909,123.34509 102.76663,121.21411 94.39647,120.9173L172,43.314 217.19043,88.504z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 
 
-    <Image x:Key="StethoscopeImagePlus"  x:Shared="False">
-        <Image.Source>
-            <DrawingImage>
-                <DrawingImage.Drawing>
-                    <DrawingGroup ClipGeometry="M-2.5,0 V19 H17 V-2.5 H0 Z">
-                        <DrawingGroup.Transform>
-                            <TranslateTransform X="2.5" Y="0" />
-                        </DrawingGroup.Transform>
-                        <DrawingGroup Opacity="1">
-                            <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M19,19z M0,0z M11.56,10.11L11.56,12.156A3.827,3.827,0,1,1,3.905,12.156L3.905,11.706A3.61,3.61,0,0,1,0.851,8.141L0.851,5.25A1.682,1.682,0,0,1,1.614,3.842A1.207,1.207,0,1,1,2.094,4.882A0.571,0.571,0,0,0,1.959,5.25L1.959,8.14A2.5,2.5,0,0,0,6.959,8.14L6.959,5.25A0.57,0.57,0,0,0,6.851,4.916A1.208,1.208,0,1,1,7.384,3.898A1.681,1.681,0,0,1,8.067,5.25L8.067,8.14A3.61,3.61,0,0,1,5.013,11.705L5.013,12.155A2.719,2.719,0,0,0,10.451,12.155L10.451,10.11A2.144,2.144,0,1,1,11.559,10.11z M12.04,8.04A1.035,1.035,0,1,0,11.005,9.075A1.037,1.037,0,0,0,12.041,8.04z" />
-                            <GeometryDrawing>
-                                <GeometryDrawing.Geometry>
-                                    <GeometryGroup>
-                                        <PathGeometry>
-                                            <PathFigure StartPoint="12,15">
-                                                <LineSegment Point="17,15"/>
-                                            </PathFigure>
-                                        </PathGeometry>
-                                        <PathGeometry>
-                                            <PathFigure StartPoint="14.5, 12.5">
-                                                <LineSegment Point="14.5, 17.5"/>
-                                            </PathFigure>
-                                        </PathGeometry>
-                                    </GeometryGroup>
-                                </GeometryDrawing.Geometry>
-                                <GeometryDrawing.Pen>
-                                    <Pen Thickness="1" Brush="Orange"/>
-                                </GeometryDrawing.Pen>
-                            </GeometryDrawing>
-                        </DrawingGroup>
-                    </DrawingGroup>
-                </DrawingImage.Drawing>
-            </DrawingImage>
-        </Image.Source>
-    </Image>
+    <DrawingImage x:Key="StethoscopeImagePlus"  x:Shared="False">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M-2.5,0 V19 H17 V-2.5 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="2.5" Y="0" />
+                </DrawingGroup.Transform>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{StaticResource BlueConotourColor}" Geometry="F1 M19,19z M0,0z M11.56,10.11L11.56,12.156A3.827,3.827,0,1,1,3.905,12.156L3.905,11.706A3.61,3.61,0,0,1,0.851,8.141L0.851,5.25A1.682,1.682,0,0,1,1.614,3.842A1.207,1.207,0,1,1,2.094,4.882A0.571,0.571,0,0,0,1.959,5.25L1.959,8.14A2.5,2.5,0,0,0,6.959,8.14L6.959,5.25A0.57,0.57,0,0,0,6.851,4.916A1.208,1.208,0,1,1,7.384,3.898A1.681,1.681,0,0,1,8.067,5.25L8.067,8.14A3.61,3.61,0,0,1,5.013,11.705L5.013,12.155A2.719,2.719,0,0,0,10.451,12.155L10.451,10.11A2.144,2.144,0,1,1,11.559,10.11z M12.04,8.04A1.035,1.035,0,1,0,11.005,9.075A1.037,1.037,0,0,0,12.041,8.04z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 
-    <Image x:Key="ConfirmIcon"  x:Shared="False">
+    <DrawingImage x:Key="PlusImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing >
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup >
+                            <PathGeometry>
+                                <PathFigure StartPoint="12,15">
+                                    <LineSegment Point="17,15"/>
+                                </PathFigure>
+                            </PathGeometry>
+                            <PathGeometry>
+                                <PathFigure StartPoint="14.5, 12.5">
+                                    <LineSegment Point="14.5, 17.5"/>
+                                </PathFigure>
+                            </PathGeometry>
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Pen>
+                        <Pen Thickness="1" Brush="Orange"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <Image x:Key="ConfirmIcon" x:Shared="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>

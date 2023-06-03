@@ -49,6 +49,22 @@ namespace MyMedData.Windows
 			{
 				using (var userDb = Authorizator.GetUsersDatabase())
 					ReadUsers(userDb);
+				if (MainWindow.ActiveUser is User user)
+				{
+					User? dbUser = _users.FirstOrDefault(u => u.Id == user.Id, null);
+					if (dbUser != null)
+					{
+						foreach(User u in UsersListBox.Items)
+						{
+							if (u.Id == user.Id) 
+							{
+								UsersListBox.SelectedItem = u;
+								return;
+							}
+						}
+					}
+				}
+				UsersListBox.SelectedIndex = 0;
 			}
 			catch (UserDbAccessException ex) 
 			{				
@@ -65,11 +81,6 @@ namespace MyMedData.Windows
 			foreach (User user in usersCollection.FindAll())
 			{
 				Users.Add(user);
-			}
-
-			if (UsersListBox.Items.Count > 0)
-			{
-				UsersListBox.SelectedIndex = 0;
 			}
 		}
 

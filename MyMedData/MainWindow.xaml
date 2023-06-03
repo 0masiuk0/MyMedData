@@ -12,7 +12,7 @@
         Loaded="MainWindow1_Loaded">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34" />
-    </WindowChrome.WindowChrome>   
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <Style x:Key="ButtonMousOverStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
@@ -75,21 +75,35 @@
             <Button x:Name="NewDocExaminationButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="0"
-                    Content="{StaticResource StethoscopeImagePlus}" ToolTip="Добавить запись о приеме"
-                    Background="{StaticResource LightDarkBackColor}" Click="NewAppointmentRecordData_Click"/>
+                    ToolTip="Добавить запись о приеме"
+                    Background="{StaticResource LightDarkBackColor}" Click="NewAppointmentRecordData_Click">
+                <Grid>
+                    <Image Source="{StaticResource StethoscopeImagePlus}"/>
+                    <Image Source="{StaticResource PlusImage}"
+                           VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                           Height="11" Width="11"/>
+                </Grid>
+            </Button>
             <Button x:Name="NewLabAnalysisButon"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
-                    Content="{StaticResource AnalisysImagePlus}" ToolTip="Добавить запись об анализе"
-                    Background="{StaticResource LightDarkBackColor}" Click="NewLabAnalysisButon_Click"/>
-            
+                    ToolTip="Добавить запись об анализе"
+                    Background="{StaticResource LightDarkBackColor}" Click="NewLabAnalysisButon_Click">
+                <Grid>
+                    <Image Source="{StaticResource AnalisysImagePlus}"/>
+                    <Image Source="{StaticResource PlusImage}"
+                           VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                           Height="11" Width="11"/>
+                </Grid>
+            </Button>
+
             <Button x:Name="DeleteRecordButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="5"
                     Content="{StaticResource TrashBinIcon}" ToolTip="Удалить запись"
                     Background="{StaticResource LightDarkBackColor}" Click="DeleteRecordButton_Click"
                     Visibility="Collapsed" d:Visibility="Visible"/>
-            
+
             <Button x:Name="SettingsdButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"

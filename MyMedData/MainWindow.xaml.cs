@@ -71,6 +71,7 @@ namespace MyMedData
 		{
 			try
 			{
+				ActiveSession?.Dispose();
 				ActiveSession = session;
 				UsernameTextBlock.Text = ActiveUser.Name;
 				DataContext = session;
