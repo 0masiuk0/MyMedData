@@ -28,16 +28,20 @@ namespace MyMedData.Controls
 		public RecordDisplay()
 		{
 			InitializeComponent();
-						
+
 			HasUnsavedChanges = false;
 
-			ExaminationDatePicker.SelectedDateChanged += (o, e) => UpdateRecordDisplay();			
+			ExaminationDatePicker.SelectedDateChanged += (o, e) => UpdateRecordDisplay();
 			CommentTextBox.TextChanged += (o, e) => UpdateRecordDisplay();
+			AttachmentEditedCollection.CollectionChanged += (o, e) => UpdateRecordDisplay();
+
+			Loaded += (o, e) => UpdateScannerAvailibity();
+			SettingsManager.ParametersChanged +=
+				(paramName, newValue) => { if (paramName == ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY) UpdateScannerAvailibity(); };
 
 			EntityPopup = (Popup)TryFindResource("EntityChoicePopup");
 			EntityPopup.Closed += EntityPopup_Closed;
 						
-			AttachmentEditedCollection.CollectionChanged += (o, e) => UpdateRecordDisplay();
 			ResetRecordView();
 		}
 
@@ -242,6 +246,11 @@ namespace MyMedData.Controls
 			DocumentManagementButtonsPanel.Visibility = Visibility.Visible;
 
 			HasUnsavedChanges = !initialItem.IsDataEqual(ConstructRecordFormUI());
+		}
+
+		private async void UpdateScannerAvailibity()
+		{
+			ScanDocButton.IsEnabled = await ScannerManager.CheckThatPrefereedScannerIsAvailible();
 		}
 
         private void ShowPopup(Button placementTargert, object cache)
@@ -476,7 +485,7 @@ namespace MyMedData.Controls
 				return session.DoctorTypesCache.FirstOrDefault(docType => docType.ExaminationTypeTitle == examinationTypeTitle);
 			else
 				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
-		}		
+		}
 	}
 
 	public class ChangesSavedToDBEventArgs

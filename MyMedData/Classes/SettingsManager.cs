@@ -37,6 +37,7 @@ namespace MyMedData.Classes
 
 				ConfigFile.Save(ConfigurationSaveMode.Modified);
 				ConfigurationManager.RefreshSection(ConfigFile.AppSettings.SectionInformation.Name);
+				RaiseParamtersChangedEvent(settingName, newValue);
 			}
 			catch (ConfigurationErrorsException)
 			{
@@ -61,6 +62,16 @@ namespace MyMedData.Classes
 				System.Windows.MessageBox.Show("Ошибка сохранения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 				throw e;
 			}
+		}
+
+
+		public delegate void ParametersChangedEventHandler(string parameterName, string newValue);
+
+		public static event ParametersChangedEventHandler ParametersChanged;
+
+		public static void RaiseParamtersChangedEvent(string parameterName, string newValue)
+		{
+			ParametersChanged?.Invoke(parameterName, newValue);
 		}
 	}
 }

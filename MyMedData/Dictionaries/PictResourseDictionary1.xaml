@@ -453,7 +453,7 @@
         </Image.Source>
     </Image>
 
-    <Image x:Key="UploadFileIcon">
+    <Image x:Key="UploadFileIcon" x:Shared ="False">
         <Image.Source>
             <DrawingImage>
                 <DrawingImage.Drawing>

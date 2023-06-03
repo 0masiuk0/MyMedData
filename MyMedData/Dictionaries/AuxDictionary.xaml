@@ -48,7 +48,7 @@
                 <Setter Property="FontWeight" Value="Bold"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Background" Value="Gray"/>
+                <Setter Property="Opacity" Value="0.3"/>
                 <Setter Property="Foreground" Value="#FF202020"/>
             </Trigger>
         </Style.Triggers>

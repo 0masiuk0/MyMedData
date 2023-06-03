@@ -208,6 +208,14 @@ namespace MyMedData
 		{
 			autoLogin = !autoLogin;
 			SettingsManager.UpsertSetting("auto_log_in", autoLogin.ToString());
+
+			if (sender is not Button button)
+				return;
+
+			if (autoLogin)
+				button.ToolTip = "Автологин при запуске приложения включен.";
+			else
+				button.ToolTip = "Автологин при запуске приложения выключен.";
 		}
 	
 	}

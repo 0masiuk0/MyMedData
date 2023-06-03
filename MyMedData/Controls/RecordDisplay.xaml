@@ -7,8 +7,7 @@
              mc:Ignorable="d" 
              x:Name="ThisRecordDisplay"  
              d:DesignHeight="450" d:Width="500"
-             DataContextChanged="RecordDisplay_DataContextChanged"
-             >
+             DataContextChanged="RecordDisplay_DataContextChanged">
     <UserControl.Resources>
         <uc:DateOnlyToDateTimeConverter x:Key="DateOnlyToDateTimeConverter"/>
         <Style x:Key="HeaderLabel" TargetType="TextBlock">
@@ -93,7 +92,8 @@
                 <Button x:Name="RemoveDocButton" Style="{StaticResource UnsizedDarkButtonStyle}"
                         Width="30" Height="30" Margin="5,5,5,0" Padding="2"
                         Content="{StaticResource TrashBinIcon}"
-                        Visibility="Hidden" d:Visibility="Visible"
+                        Visibility="Hidden" 
+                        d:Visibility="Visible" d:IsEnabled="False"
                         Click="RemoveDocButton_Click"/>
             </StackPanel>
             <ListBox x:Name="AttachmentListBox" 
