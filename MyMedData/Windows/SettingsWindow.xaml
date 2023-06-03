@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData.Windows"
         mc:Ignorable="d"
-        Title="Настройки" Height="300" Width="450" MinHeight="200" MinWidth="200"
+        Title="Настройки" Height="300" Width="480" MinHeight="200" MinWidth="480"
         Style="{StaticResource DarkWindowStyle}" Loaded="Window_Loaded">
     <Window.Resources>
         <Thickness x:Key="StackPanelChildMargin"
@@ -43,15 +43,15 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            
+
             <TabItem x:Name="DbaseTabItem">
                 <TabItem.Header>
-                    <TextBlock x:Name="dbTabHeaderTextBlcok" Text="Настройки базы данных" d:Foreground="{StaticResource DarkBackColor}">
+                    <TextBlock x:Name="dbTabHeaderTextBlcok" Text="Настройки базы данных" FontSize="14">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{StaticResource DarkBackColor}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected, ElementName=DbaseTabItem}">
+                                    <DataTrigger Binding="{Binding ElementName=DbaseTabItem, Path=IsSelected}" Value="True">
                                         <Setter Property="Foreground" Value="{StaticResource DarkBackColor}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -79,9 +79,21 @@
                 </StackPanel>
             </TabItem>
 
-            <TabItem Loaded="ScannerTabItem_Loaded">
+            <TabItem  x:Name="ScannerTabItem"
+                      Loaded="ScannerTabItem_Loaded">
                 <TabItem.Header>
-                    Сканер
+                    <TextBlock x:Name="scannerTabHeaderTextBlcok" Text="Настройки базы данных" FontSize="14">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=ScannerTabItem, Path=IsSelected}" Value="True">
+                                        <Setter Property="Foreground" Value="{StaticResource DarkBackColor}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </TabItem.Header>
                 <StackPanel>
                     <TextBlock 
