@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Animation;
 using MyMedData.Classes;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 
 namespace MyMedData.Controls
 {
@@ -433,39 +434,7 @@ namespace MyMedData.Controls
 				RemoveDocButton.Visibility = Visibility.Visible;
 			else
 				RemoveDocButton.Visibility = Visibility.Hidden;
-		}
-
-		private async void DocumentPlaque_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-		{
-			if (AttachmentListBox.SelectedItem is AttachmentMetaData document 
-				&& DataContext is Session session
-				&& sender is DocumentPlaque plaque
-				&& plaque.DataContext is AttachmentMetaData attachment)
-			{				
-				var imageBytes = await document.LoadData(session);
-
-				if (document.DocumentType == DocumentType.JPEG || document.DocumentType == DocumentType.PNG)
-				{									
-					BitmapImage image = new BitmapImage();
-					image.BeginInit();
-					image.StreamSource = new MemoryStream(imageBytes);
-					image.EndInit();
-
-					ImageViewWindow imageViewWindow = new ImageViewWindow();
-					imageViewWindow.DataContext = image;
-					imageViewWindow.ShowDialog();
-				}
-				else if (document.DocumentType == DocumentType.PDF)
-				{
-					PdfToImageConverter converter = new PdfToImageConverter();
-					await converter.ReadPdfFromBytes(imageBytes);
-
-					PdfViewWindow pdfViewWindow = new PdfViewWindow();
-					pdfViewWindow.DataContext = converter.Images.ToList();
-					pdfViewWindow.ShowDialog();
-				}
-			}
-		}
+		}			
 
 		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
 		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);

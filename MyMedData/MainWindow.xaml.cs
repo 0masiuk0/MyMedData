@@ -217,7 +217,11 @@ namespace MyMedData
 			else
 				button.ToolTip = "Автологин при запуске приложения выключен.";
 		}
-	
+
+		private void EntitiesEditorButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
 	}
 
 }

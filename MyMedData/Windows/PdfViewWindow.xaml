@@ -34,7 +34,7 @@
                             DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
                             Click="MinimizeButton_Click"/>
 
-            <TextBlock Text="{Binding ElementName=ViewerWindowInstance, Path=Title}"
+            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}"
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
         </DockPanel>
         <uc:ZoomBorder x:Name="ImageZoomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
