@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace MyMedData
 {
-	public abstract class ExaminationRecord : INotifyPropertyChanged, IHasId<int>
+	public abstract class ExaminationRecord : INotifyPropertyChanged, IHasId<int>, IHasComment
 	{
 		[BsonId]
 		private int _id;
@@ -283,10 +283,5 @@ namespace MyMedData
 		public override string Title => ExaminationType?.ToString() ?? "";
 
 		public static string DbCollectionName => "LabExaminations";
-	}
-
-	public interface IHasId<T> where T: IComparable
-	{
-		public T Id { get; }
 	}
 }

@@ -136,7 +136,7 @@
                     Style="{StaticResource ButtonMousOverStyle}"
                     ToolTip="Табличный вид"/>-->
 
-            <Button x:Name="AutlogInButton" Height="25" Width="25" 
+            <Button x:Name="AutologInButton" Height="25" Width="25" 
                     Margin="10,4,10,4"  
                     BorderBrush="Transparent"
                     Background="Transparent"

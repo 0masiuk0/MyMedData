@@ -52,12 +52,15 @@ namespace MyMedData
 		{
 			NewDocExaminationButton.Visibility = Visibility.Collapsed;
 			NewLabAnalysisButon.Visibility = Visibility.Collapsed;
+			EntitiesEditorButton.Visibility = Visibility.Collapsed;
 			RecordsTableDisplay.RecordsDataGrid.SelectionChanged += RecordsDataGrid_SelectionChanged;
 
 			if (autoLogin)
 			{
 				Authorizator.AuthorizeLastUser(this);
 			}
+
+			UpdateAutologinTooltip();
 		}		
 
 		private void OpenUsersDialog()
@@ -78,6 +81,7 @@ namespace MyMedData
 
 				NewDocExaminationButton.Visibility = Visibility.Visible;
 				NewLabAnalysisButon.Visibility = Visibility.Visible;
+				EntitiesEditorButton.Visibility = Visibility.Visible;
 			}
 			catch(Exception ex) 
 			{
@@ -97,6 +101,7 @@ namespace MyMedData
 			}
 			NewDocExaminationButton.Visibility = Visibility.Collapsed;
 			NewLabAnalysisButon.Visibility = Visibility.Collapsed;
+			EntitiesEditorButton.Visibility = Visibility.Collapsed;
 		}
 
 		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
@@ -119,9 +124,9 @@ namespace MyMedData
 			{
 				_autologin = value;
 				if (value) 
-					AutlogInButton.Content = AutoLogOn_On_Icon;
+					AutologInButton.Content = AutoLogOn_On_Icon;
 				else
-					AutlogInButton.Content = AutoLogOn_Off_Icon;
+					AutologInButton.Content = AutoLogOn_Off_Icon;
 			}
 		}
 
@@ -212,15 +217,21 @@ namespace MyMedData
 			if (sender is not Button button)
 				return;
 
+			UpdateAutologinTooltip();
+		}
+
+		private void UpdateAutologinTooltip()
+		{
 			if (autoLogin)
-				button.ToolTip = "Автологин при запуске приложения включен.";
+				AutologInButton.ToolTip = "Автологин при запуске приложения включен.";
 			else
-				button.ToolTip = "Автологин при запуске приложения выключен.";
+				AutologInButton.ToolTip = "Автологин при запуске приложения выключен.";
 		}
 
 		private void EntitiesEditorButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			var entitiesWindow = new EntitiesEditorWindow();
+			entitiesWindow.ShowDialog();
 		}
 	}
 
