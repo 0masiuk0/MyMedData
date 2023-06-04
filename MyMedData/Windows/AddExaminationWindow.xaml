@@ -29,7 +29,6 @@
                 Style="{StaticResource ChromeButtonStyle}" Content="{StaticResource CloseWindowIcon}" Click="CloseButton_Click"/>
 
         <uc:RecordDisplay x:Name="theRecordDisplay" Mode="New"
-                Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="8,0,8,8"                
-                />
+                Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="8,0,8,8"/>
     </Grid>    
 </Window>
