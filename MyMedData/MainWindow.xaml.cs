@@ -230,7 +230,7 @@ namespace MyMedData
 
 		private void EntitiesEditorButton_Click(object sender, RoutedEventArgs e)
 		{
-			var entitiesWindow = new EntitiesEditorWindow();
+			var entitiesWindow = new EntitiesEditorWindow(ActiveSession);
 			entitiesWindow.ShowDialog();
 		}
 	}

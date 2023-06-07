@@ -8,7 +8,8 @@
         mc:Ignorable="d"        
         x:Name="ViewerWindowInstance"
         Title="Просмотр" WindowStyle="None" WindowStartupLocation="CenterOwner"
-        MinHeight="210" Padding="4" Style="{StaticResource DarkWindowStyle}" Height="304" Width="628">
+        MinHeight="210" Padding="4" Style="{StaticResource DarkWindowStyle}" Height="304" Width="628"
+        BorderBrush="{StaticResource BlueConotourColor}" BorderThickness="2">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>

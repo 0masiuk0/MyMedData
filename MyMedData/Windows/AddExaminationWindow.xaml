@@ -9,7 +9,7 @@
         x:Name="AddUserWindowInstance"
         xmlns:uc="clr-namespace:MyMedData.Controls"
         WindowStyle="None" Width="760" WindowStartupLocation="CenterScreen"
-        Style="{StaticResource DarkWindowStyle}"       
+        Style="{StaticResource DarkWindowStyle}" BorderBrush="{StaticResource BlueConotourColor}" BorderThickness="2"
         Loaded="AddUserWindowInstance_Loaded" KeyDown="AddUserWindowInstance_KeyDown">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34"/>
