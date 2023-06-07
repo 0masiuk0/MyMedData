@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         x:Name="ScanWindowInstance" Title="Сканирование"
         WindowStyle="None" WindowStartupLocation="CenterOwner" 
+        BorderBrush="{StaticResource BlueConotourColor}" BorderThickness="2"
         MinHeight="210" Padding="4" Style="{StaticResource DarkWindowStyle}" Height="800" Width="600">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30" />

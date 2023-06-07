@@ -1,18 +1,10 @@
 ﻿using LiteDB;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Xml.Linq;
 
 namespace MyMedData
 {
 #pragma warning disable CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
-	public class Doctor : INotifyPropertyChanged, IHasId<string>, IHasComment
+	public class Doctor : IMedicalEntity
 	{
 		private string _name;
 		[BsonId]
@@ -71,7 +63,7 @@ namespace MyMedData
 		public string Id => _name; // For IHasId
 	}
 
-	public class Clinic : INotifyPropertyChanged, IHasId<string>, IHasComment
+	public class Clinic : IMedicalEntity
 	{
 		private string _name;
 		[BsonId]
@@ -129,7 +121,7 @@ namespace MyMedData
 		public string Id => _name; // For IHasId
 	}
 
-	public class ExaminationType : INotifyPropertyChanged, IHasId<string>, IHasComment
+	public class ExaminationType : IMedicalEntity
 	{
 		private string _examinationTypeTitle;
 		[BsonId]

@@ -4,9 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData.Windows"
+        xmlns:data="clr-namespace:MyMedData"
         mc:Ignorable="d" WindowStyle="None"
+        x:Name="EntitiesManagerWindowInstance"
         Style="{StaticResource DarkWindowStyle}"
         Title="Редактор базы данных" Height="450" Width="800"
+        BorderBrush="{StaticResource BlueConotourColor}" BorderThickness="3"
         Loaded="Window_Loaded">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="35"/>
@@ -19,28 +22,31 @@
             <Setter Property="Margin" Value="10,0,0,0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        
+
         <Style x:Key="TextBoxStyle" TargetType="TextBox">
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Calibri"/>
-            <Setter Property="Background" Value="{StaticResource DarkThemeFontColor}"/>            
+            <Setter Property="Background" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        
+
         <Style x:Key="AcceptionButton" TargetType="Button" BasedOn="{StaticResource UnsizedDarkButtonStyle}">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Width" Value="30"/>
             <Setter Property="Background" Value="{StaticResource LightDarkBackColor}"/>
             <Setter Property="BorderBrush" Value="{StaticResource DarkThemeFontColor}"/>
         </Style>
+
+        <CollectionViewSource x:Key="EntitiesCollectionViewSource" Source="{Binding ElementName=EntitiesManagerWindowInstance, Path=Entities}"
+                              Filter="CollectionViewSource_Filter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <DockPanel x:Name="customChromePanel" HorizontalAlignment="Stretch" Grid.Row="0" Height="40">      
-            
+        <DockPanel x:Name="customChromePanel" HorizontalAlignment="Stretch" Grid.Row="0" Height="40">
+
             <Rectangle DockPanel.Dock="Bottom" Height="2" Fill="{StaticResource DarkThemeFontColor}" Stroke="Transparent"/>
 
             <Image x:Name="AppIconImage" DockPanel.Dock="Left" Height="25" Margin="8,4,4,8"
@@ -60,7 +66,7 @@
 
             <Button x:Name="MinimizeButton" Style="{StaticResource ChromeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Mimimize"
                             DockPanel.Dock="Right" Content="{StaticResource MinimizeWindowIcon}" Padding="0,10,0,0"
-                            Click="MinimizeButton_Click"/>            
+                            Click="MinimizeButton_Click"/>
 
             <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}"
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
@@ -96,14 +102,28 @@
                      HorizontalAlignment="Stretch" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged"/>
 
             <ListBox x:Name="EntitiesListBox" Grid.Row="2"
+                     ItemsSource="{Binding Source={StaticResource EntitiesCollectionViewSource}}"
                      Background="{StaticResource LightDarkBackColor}"
                      Margin="5" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="EntitiesListBox_SelectionChanged"/>
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     SelectionChanged="EntitiesListBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="data:NameAndCommentDecorator">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding Id}" FontSize="16" FontFamily="Calibri" FontWeight="Bold" 
+                                           Foreground="{StaticResource DarkThemeFontColor}" Margin="10,5,5,0"/>
+                            <TextBlock Text="{Binding Comment}" FontSize="14" FontFamily="Calibri" 
+                                           Foreground="{StaticResource DarkThemeFontColor}" Margin="10,5,5,5"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
             <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" BorderThickness="1"
                 CornerRadius="5" Margin="5" Padding="0,10,0,0"
                     BorderBrush="{StaticResource DarkThemeFontColor}">
-                <Grid>
+                <Grid x:Name="EntityViewGrid"
+                    DataContext="{Binding ElementName=EntitiesListBox, Path=SelectedItem}" DataContextChanged="Grid_DataContextChanged">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150"/>
                         <ColumnDefinition/>
@@ -118,28 +138,35 @@
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="2*"/>
                     </Grid.RowDefinitions>
-                    
+
                     <TextBlock x:Name="NameLabel" Text="Наименование" Style="{StaticResource HeaderLabel}"/>
-                    <TextBox x:Name="NameTextBox" Grid.Column="1" Margin="0,0,5,0" Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox x:Name="NameTextBox" Grid.Column="1" Margin="0,0,5,0"
+                             TextChanged="NameTextBox_TextChanged" KeyDown="NameTextBox_KeyDown"
+                             Style="{StaticResource TextBoxStyle}"/>
                     <Button x:Name="AcceptNameChangeButton" Content="{StaticResource ConfirmIcon}"
-                            Style="{StaticResource AcceptionButton}" Grid.Column="2"/>
+                            Style="{StaticResource AcceptionButton}" Grid.Column="2" 
+                            Click="AcceptNameChangeButton_Click"/>
                     <Button x:Name="DenyNameChangeButton" Content="{StaticResource DenyIcon}"
-                            Style="{StaticResource AcceptionButton}" Grid.Column="3"/>
+                            Style="{StaticResource AcceptionButton}" Grid.Column="3"
+                            Click="DenyNameChangeButton_Click"/>
 
                     <TextBlock x:Name="CommentLabel" Text="Комментарий" Grid.Row="2" Grid.ColumnSpan="2"
                                Style="{StaticResource HeaderLabel}" HorizontalAlignment="Center"/>
-                    <TextBox x:Name="NameCommentBox" Grid.ColumnSpan="2" Grid.Row="3" Style="{StaticResource TextBoxStyle}"
-                             VerticalAlignment="Stretch" Margin="10,5,5,5"/>
+                    <TextBox x:Name="CommentTextBox" Grid.ColumnSpan="2" Grid.Row="3" Style="{StaticResource TextBoxStyle}"
+                             VerticalAlignment="Stretch" Margin="10,5,5,5" 
+                             TextChanged="CommentTextBox_TextChanged" KeyDown="CommentTextBox_KeyDown"/>
                     <Button x:Name="AcceptCommentChangeButton" Content="{StaticResource ConfirmIcon}"
-                            Style="{StaticResource AcceptionButton}" Grid.Column="2" Grid.Row="3"/>
+                            Style="{StaticResource AcceptionButton}" Grid.Column="2" Grid.Row="3"
+                            Click="AcceptCommentChangeButton_Click"/>
                     <Button x:Name="DenyCommentChangeButton" Content="{StaticResource DenyIcon}"
-                            Style="{StaticResource AcceptionButton}" Grid.Column="3" Grid.Row="3"/>
+                            Style="{StaticResource AcceptionButton}" Grid.Column="3" Grid.Row="3"
+                            Click="DenyCommentChangeButton_Click"/>
 
                     <ListBox x:Name="RecordsListBox" Grid.Row="5" Grid.ColumnSpan="4"
                             Background="{StaticResource LightDarkBackColor}"
                             Margin="10" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        
+
                     </ListBox>
                 </Grid>
             </Border>
