@@ -26,7 +26,6 @@ namespace MyMedData.Windows
 	public partial class EntitiesEditorWindow : Window
 	{
 		readonly DependencyPropertyDescriptor propertyDecriptor;
-		Session ActiveSession;
 
 		public EntitiesEditorWindow(Session session)
 		{
