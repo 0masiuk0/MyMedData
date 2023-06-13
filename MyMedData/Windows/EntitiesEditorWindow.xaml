@@ -170,7 +170,7 @@
                             DataContextChanged="RecordsListBox_DataContextChanged" d:ItemsSource="{d:SampleData ItemCount=5}"                            >
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="data:ExaminationRecord">
-                                <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1" Margin="3">
+                                <Border BorderBrush="{StaticResource DarkThemeFontColor}" BorderThickness="1" Margin="3" MouseDown="RecordItem_MouseDown">
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="DemiBold" Foreground="{StaticResource DarkThemeFontColor}"
                                                    Margin="10,5,5,0"/>

@@ -33,7 +33,7 @@ namespace MyMedData.Windows
 
 		public DocOrLabExamination DocOrLab { get; private set; }
 
-		private void AddUserWindowInstance_Loaded(object sender, RoutedEventArgs e)
+		protected virtual void AddUserWindowInstance_Loaded(object sender, RoutedEventArgs e)
 		{
 			theRecordDisplay.DataContext = Session;
 

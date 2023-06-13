@@ -455,6 +455,20 @@ namespace MyMedData.Controls
 			else
 				return session.LabTestTypesCache.FirstOrDefault(labType => labType.ExaminationTypeTitle == examinationTypeTitle);
 		}
+
+		public void MakeReadonly()
+		{
+			DocumentManagementButtonsPanel.Visibility = Visibility.Collapsed;
+			AcceptChangesButton.Visibility = Visibility.Collapsed;
+			ExaminationDatePicker.IsEnabled = false;
+			ExaminationTypeButton.IsEnabled = false;
+			DoctorButton.IsEnabled = false;
+			ClinicButton.IsEnabled = false;
+			CommentTextBox.IsReadOnly = true;
+			CommentTextBox.MouseLeave += (o, e) => AttachmentListBox.Focus();
+			AttachmentListBox.Focus();
+		}
+
 	}
 
 	public class ChangesSavedToDBEventArgs

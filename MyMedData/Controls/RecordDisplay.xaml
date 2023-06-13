@@ -22,6 +22,12 @@
             <Setter Property="BorderBrush" Value="{StaticResource DarkThemeFontColor}"/>
             <Setter Property="DockPanel.Dock" Value="Top"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Popup x:Key="EntityChoicePopup" StaysOpen="False">
             <uc:EntityManager/>

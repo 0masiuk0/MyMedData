@@ -26,7 +26,7 @@ namespace MyMedData.Windows
 	public partial class EntitiesEditorWindow : Window
 	{
 		readonly DependencyPropertyDescriptor propertyDecriptor;
-
+		Session ActiveSession;
 		public EntitiesEditorWindow(Session session)
 		{
 			InitializeComponent();
@@ -166,6 +166,7 @@ namespace MyMedData.Windows
 			{
 				var relevantsRecords = from record in ActiveSession.ExaminationRecords
 									   where record is DoctorExaminationRecord && record.ExaminationType?.Id == docType.Id
+									   orderby record.Date descending
 									   select record;
 				foreach(var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
 			}
@@ -173,6 +174,7 @@ namespace MyMedData.Windows
 			{
 				var relevantsRecords = from record in ActiveSession.ExaminationRecords
 									   where record is LabExaminationRecord && record.ExaminationType?.Id == labExaminationType.Id
+									   orderby record.Date descending
 									   select record;
 				foreach (var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
 			}
@@ -180,6 +182,7 @@ namespace MyMedData.Windows
 			{
 				var relevantsRecords = from record in ActiveSession.ExaminationRecords
 									   where record.Clinic?.Id == clinic.Id
+									   orderby record.Date descending
 									   select record;
 				foreach (var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
 			}
@@ -187,6 +190,7 @@ namespace MyMedData.Windows
 			{
 				var relevantsRecords = from record in ActiveSession.ExaminationRecords
 									   where record is DoctorExaminationRecord docRec && docRec.Doctor?.Id == doc.Id
+									   orderby record.Date descending
 									   select record;
 				foreach (var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
 			}
@@ -206,6 +210,12 @@ namespace MyMedData.Windows
 				e.Accepted = true;
 			else
 				e.Accepted = false;
+		}
+
+		private void ViewRecord(ExaminationRecord record)
+		{
+			var viewExaminationWindow = new ViewExaminationWindow(ActiveSession, record);
+			viewExaminationWindow.ShowDialog();
 		}
 
 		//----------------------------------------------UI EVENTS---------------------------------------------------
@@ -347,6 +357,16 @@ namespace MyMedData.Windows
 				Mode = EntityType.Clinic;
 			else if (senderCheckBox == DoctorTypeCheckBox)
 				Mode = EntityType.DoctorType;
+		}
+
+		private void RecordItem_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2
+				&& sender is Border itemBorder 
+				&& itemBorder.DataContext is ExaminationRecord record)
+			{
+				ViewRecord(record);
+			}
 		}		
 	}
 }
