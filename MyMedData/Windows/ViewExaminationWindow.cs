@@ -12,17 +12,21 @@ namespace MyMedData.Windows
     {
 		ExaminationRecord examinationRecord;
 
+		public bool ChangesMade { get; private set; }
+
         public ViewExaminationWindow(Session session, ExaminationRecord record) 
             : base(session, record is DoctorExaminationRecord ? DocOrLabExamination.Doc : DocOrLabExamination.Lab)
 		{
 			examinationRecord = record;
-            theRecordDisplay.MakeReadonly();
+			theRecordDisplay.ChangesSavedToDB += (o, e) => ChangesMade = true;
+			ChangesMade = false;
+			theRecordDisplay.Mode = Controls.RecordEditMode.Update;
         }
 
 		protected override void AddUserWindowInstance_Loaded(object sender, RoutedEventArgs e)
 		{
 			theRecordDisplay.DataContext = Session;
-			theRecordDisplay.Item = examinationRecord;			
+			theRecordDisplay.Item = examinationRecord.DeepCopy();			
 		}
 	}
 }
