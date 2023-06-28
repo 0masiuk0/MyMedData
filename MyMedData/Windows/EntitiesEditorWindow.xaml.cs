@@ -63,11 +63,7 @@ namespace MyMedData.Windows
 				SetMode(senderCheckBox);
 
 				//loading data
-				LoadEntities();
-
-				EntitiesListBox.Focus();
-				if (Entities.Count > 0)
-					EntitiesListBox.SelectedIndex = 0;
+				LoadEntities();				
 			}
 			finally
 			{
@@ -104,6 +100,10 @@ namespace MyMedData.Windows
 				default: throw new Exception("ImpossibleException 2");
 			}
 			foreach (var entity in entities) Entities.Add(entity);
+
+			EntitiesListBox.Focus();
+			if (Entities.Count > 0)
+				EntitiesListBox.SelectedIndex = 0;
 		}
 
 		IdAndComment? _editedEntity;
@@ -216,6 +216,7 @@ namespace MyMedData.Windows
 		{
 			var viewExaminationWindow = new ViewExaminationWindow(ActiveSession, record);
 			viewExaminationWindow.ShowDialog();
+			if (viewExaminationWindow.ChangesMade) LoadEntities();
 		}
 
 		//----------------------------------------------UI EVENTS---------------------------------------------------

@@ -18,6 +18,7 @@ using System.Windows.Media.Animation;
 using MyMedData.Classes;
 using System.Xml.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace MyMedData.Controls
 {
@@ -56,7 +57,7 @@ namespace MyMedData.Controls
 		}
 
 		private static void ItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
+         {
             RecordDisplay recordDisplay = (RecordDisplay)d;
 
             //Unsaved changes of old record
@@ -205,20 +206,23 @@ namespace MyMedData.Controls
 					updateSuccess = session.AddExaminationRecord(record);
 				}
 				else if (Item is ExaminationRecord existingRecord)
-				{
+				{		
 					var idComparer = new IDequilityCompare<int>();
 					var attachmentsToDelete = existingRecord.Documents.Except(record.Documents, idComparer).Cast<AttachmentMetaData>();
 					var atatachmentsToUpload = record.Documents.Except(existingRecord.Documents, idComparer).Cast<AttachmentMetaData>();
 					updateSuccess = session.UpdateExaminationRecord(record, attachmentsToDelete, atatachmentsToUpload);
 				}
 				else
-					updateSuccess = false; 
+					updateSuccess = false;
 
-                if (updateSuccess)
-                    RaiseChangesSavedToDBEvent(record);
-                else
-                    MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+				if (updateSuccess)
+				{
+					RaiseChangesSavedToDBEvent(record);
+					if (Item != record) Item = record;
+				}
+				else
+					MessageBox.Show("Не получилось обновить запись в базе.", "Ошибка", MessageBoxButton.OK,
+						MessageBoxImage.Error);
             }
         }
 

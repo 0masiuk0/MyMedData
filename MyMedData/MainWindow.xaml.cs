@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -29,6 +30,7 @@ namespace MyMedData
 		public User? ActiveUser => ActiveSession != null ? ActiveSession.ActiveUser : null;
 		Image AutoLogOn_On_Icon;
 		Image AutoLogOn_Off_Icon;
+		readonly BlurEffect blurEffect;
 
 		public MainWindow()
 		{
@@ -46,6 +48,10 @@ namespace MyMedData
 			AutoLogOn_On_Icon = (Image)TryFindResource("AutoLockOnIcon");
 			var autologinParam = SettingsManager.GetOrInsertDefaultValue("auto_log_in", "False");
 			autoLogin = autologinParam == "True" ? true : false;
+
+			blurEffect = new BlurEffect();
+			blurEffect.KernelType = KernelType.Gaussian;
+			blurEffect.Radius = 4;
 		}		
 
 		private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
@@ -65,9 +71,17 @@ namespace MyMedData
 
 		private void OpenUsersDialog()
 		{
-			Window usersWindow = new UsersWindow();
-			usersWindow.Owner = this;
-			usersWindow.ShowDialog();
+			try
+			{				
+				this.Effect = blurEffect;
+				Window usersWindow = new UsersWindow();
+				usersWindow.Owner = this;
+				usersWindow.ShowDialog();
+			}
+			finally
+			{
+				this.Effect = null;
+			}
 		}
 
 		public void LogIn(Session session)

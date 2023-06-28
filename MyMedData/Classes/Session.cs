@@ -84,8 +84,9 @@ namespace MyMedData
 
 			if (RecordsDataBase.UpdateRecord(this, ref record, atatachmentsToDelete, atatachmentsToUpload))
 			{
-				ExaminationRecords.RemoveAt(recordToUpdateIndex);
-				ExaminationRecords.Insert(recordToUpdateIndex, record);
+				//ExaminationRecords.RemoveAt(recordToUpdateIndex);
+				//ExaminationRecords.Insert(recordToUpdateIndex, record);
+				ExaminationRecords[recordToUpdateIndex] = record;
 				return true;
 			}
 
