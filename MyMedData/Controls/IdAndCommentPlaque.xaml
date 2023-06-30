@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="MyMedData.Controls.IdAndCommentPlaque"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyMedData.Controls"
+             mc:Ignorable="d" MinWidth="180"
+             d:DesignWidth="240">
+    <UserControl.Resources>
+        <local:BoolToVisibilityConverter x:Key="boolToVisConverter"/>
+        <local:BoolToRedColorConverter x:Key="booldToRedConverter"/>
+    </UserControl.Resources>
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button x:Name="DeleteButton" Grid.Column="1" Grid.RowSpan="2" Width="30"
+                Margin="5,10,5,10"    
+                Visibility="{Binding Obsolete, Converter={StaticResource boolToVisConverter}}"
+                Style="{StaticResource UnsizedDarkButtonStyle}"
+                Content="{StaticResource TrashBinIcon}"
+                Click="DeleteButton_Click"/>
+        <TextBlock Text="{Binding Id}" 
+                   FontSize="16" FontFamily="Calibri" FontWeight="Bold" TextWrapping="Wrap"
+                   Foreground="{Binding Obsolete, Converter={StaticResource booldToRedConverter}}" Margin="10,5,5,0"
+                   d:Foreground="{StaticResource DarkThemeFontColor}"
+                   d:Text="Имя мед. учреждения очень длинное"/>
+        <TextBlock Text="{Binding Comment}" Grid.Row="1"
+                   FontSize="14" FontFamily="Calibri" TextWrapping="NoWrap"
+                   Foreground="{StaticResource DarkThemeFontColor}" Margin="10,5,5,5"
+                   d:Text="Комментарий очень длинный и не влезающий в поле"/>
+    </Grid>
+</UserControl>

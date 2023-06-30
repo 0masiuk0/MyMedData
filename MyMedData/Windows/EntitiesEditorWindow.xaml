@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMedData.Windows"
+        xmlns:uc="clr-namespace:MyMedData.Controls"
         xmlns:data="clr-namespace:MyMedData"
         mc:Ignorable="d" WindowStyle="None"
         x:Name="EntitiesManagerWindowInstance"
@@ -79,6 +80,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
@@ -98,26 +100,25 @@
                 <CheckBox Name="ClinicCheckBox" Content="Медицинские учреждения" Style="{StaticResource ChecBoxStyle}"/>
             </StackPanel>
 
-            <TextBox x:Name="SearchTextBox" Grid.Row="1" Margin="5" Background="{StaticResource DarkThemeFontColor}"
+            <TextBox x:Name="SearchTextBox" Grid.Row="1" Margin="5,5,10,5" Background="{StaticResource DarkThemeFontColor}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged"/>
 
-            <ListBox x:Name="EntitiesListBox" Grid.Row="2"
+            <ListBox x:Name="EntitiesListBox" Grid.Row="2" Margin="5,5,10,5"
                      ItemsSource="{Binding Source={StaticResource EntitiesCollectionViewSource}}"
                      Background="{StaticResource LightDarkBackColor}"
-                     Margin="5" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     SelectionChanged="EntitiesListBox_SelectionChanged">
+                     HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"                     
+                     SelectionChanged="EntitiesListBox_SelectionChanged" d:ItemsSource="{d:SampleData ItemCount=5}">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="data:NameAndCommentDecorator">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                            <TextBlock Text="{Binding Id}" FontSize="16" FontFamily="Calibri" FontWeight="Bold" 
-                                           Foreground="{StaticResource DarkThemeFontColor}" Margin="10,5,5,0"/>
-                            <TextBlock Text="{Binding Comment}" FontSize="14" FontFamily="Calibri" 
-                                           Foreground="{StaticResource DarkThemeFontColor}" Margin="10,5,5,5"/>
-                        </StackPanel>
+                    <DataTemplate>
+                        <uc:IdAndCommentPlaque DeletionRequested="IdAndCommentPlaque_DeletionRequested"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            
+            <GridSplitter Grid.Column="0"  Grid.Row="1" Grid.RowSpan="2" 
+                          VerticalAlignment="Stretch" HorizontalAlignment="Right"
+                          Width="1.5" Background="{StaticResource DarkThemeFontColor}"/>
 
             <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" BorderThickness="1"
                 CornerRadius="5" Margin="5" Padding="0,10,0,0"

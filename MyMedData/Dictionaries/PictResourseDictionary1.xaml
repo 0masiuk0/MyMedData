@@ -444,7 +444,7 @@
                     <DrawingGroup ClipGeometry="M0,0 V328 H328 V0 H0 Z">
                         <DrawingGroup Opacity="1">
                             <DrawingGroup Opacity="1">
-                                <GeometryDrawing Brush="#BF3A3A" Geometry="F0 M512,512z M0,0z M328.96,30.2933L328.96,30.2933 298.6667,0 164.48,134.4 30.2933,0 0,30.2933 134.4,164.48 0,298.6667 30.2933,328.96 164.48,194.56 298.6667,328.96 328.96,298.6667 194.56,164.48z" />
+                                <GeometryDrawing Brush="{StaticResource DarkThemeRedColor}" Geometry="F0 M512,512z M0,0z M328.96,30.2933L328.96,30.2933 298.6667,0 164.48,134.4 30.2933,0 0,30.2933 134.4,164.48 0,298.6667 30.2933,328.96 164.48,194.56 298.6667,328.96 328.96,298.6667 194.56,164.48z" />
                             </DrawingGroup>
                         </DrawingGroup>
                     </DrawingGroup>

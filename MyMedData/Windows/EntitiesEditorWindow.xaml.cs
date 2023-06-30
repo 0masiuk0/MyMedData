@@ -99,7 +99,11 @@ namespace MyMedData.Windows
 					break;
 				default: throw new Exception("ImpossibleException 2");
 			}
-			foreach (var entity in entities) Entities.Add(entity);
+			foreach (var entity in entities)
+			{
+				entity.Obsolete = GetRecordsAssociatedWithEntity(entity).Any(); 
+				Entities.Add(entity);
+			}
 
 			EntitiesListBox.Focus();
 			if (Entities.Count > 0)
@@ -131,7 +135,6 @@ namespace MyMedData.Windows
 
 		private void ApplyChanges()
 		{
-			
 			_editedEntity = null;
 		}	
 
@@ -159,43 +162,46 @@ namespace MyMedData.Windows
 		}
 
 		private void FillRecordsList(IdAndComment entity)
-		{			
+		{
+			foreach (var rec in GetRecordsAssociatedWithEntity(entity)) 
+				RecordsListBox.Items.Add(rec);
+		}
+
+		private IEnumerable<ExaminationRecord> GetRecordsAssociatedWithEntity(IdAndComment entity)
+		{
 			IMedicalEntity medicalEntity = entity.GenerateEntity();
-			
-			if (Mode == EntityType.DoctorType && medicalEntity is ExaminationType docType) 
+
+			if (Mode == EntityType.DoctorType && medicalEntity is ExaminationType docType)
 			{
-				var relevantsRecords = from record in ActiveSession.ExaminationRecords
-									   where record is DoctorExaminationRecord && record.ExaminationType?.Id == docType.Id
-									   orderby record.Date descending
-									   select record;
-				foreach(var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
+				 return from record in ActiveSession.ExaminationRecords
+						where record is DoctorExaminationRecord && record.ExaminationType?.Id == docType.Id
+						orderby record.Date descending
+						select record;
+				
 			}
 			else if (Mode == EntityType.LabExaminaionType && medicalEntity is ExaminationType labExaminationType)
 			{
-				var relevantsRecords = from record in ActiveSession.ExaminationRecords
-									   where record is LabExaminationRecord && record.ExaminationType?.Id == labExaminationType.Id
-									   orderby record.Date descending
-									   select record;
-				foreach (var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
+				return from record in ActiveSession.ExaminationRecords
+					   where record is LabExaminationRecord && record.ExaminationType?.Id == labExaminationType.Id
+					   orderby record.Date descending
+					   select record;
 			}
 			else if (Mode == EntityType.Clinic && medicalEntity is Clinic clinic)
 			{
-				var relevantsRecords = from record in ActiveSession.ExaminationRecords
-									   where record.Clinic?.Id == clinic.Id
-									   orderby record.Date descending
-									   select record;
-				foreach (var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
+				return from record in ActiveSession.ExaminationRecords
+					   where record.Clinic?.Id == clinic.Id
+					   orderby record.Date descending
+					   select record;
 			}
 			else if (Mode == EntityType.Doctor && medicalEntity is Doctor doc)
 			{
-				var relevantsRecords = from record in ActiveSession.ExaminationRecords
-									   where record is DoctorExaminationRecord docRec && docRec.Doctor?.Id == doc.Id
-									   orderby record.Date descending
-									   select record;
-				foreach (var rec in relevantsRecords) RecordsListBox.Items.Add(rec);
+				return from record in ActiveSession.ExaminationRecords
+					   where record is DoctorExaminationRecord docRec && docRec.Doctor?.Id == doc.Id
+					   orderby record.Date descending
+					   select record;
 			}
 			else
-				 throw new Exception("Impossible exception 5"); 
+				throw new Exception("Impossible exception 5");
 		}
 
 		private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
@@ -368,6 +374,11 @@ namespace MyMedData.Windows
 			{
 				ViewRecord(record);
 			}
-		}		
-	}
+		}
+
+		private void IdAndCommentPlaque_DeletionRequested(object sender, RoutedEventArgs e)
+		{
+
+        }
+    }
 }

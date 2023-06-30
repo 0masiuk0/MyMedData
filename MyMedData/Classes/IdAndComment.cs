@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMedData
 {
-	public class IdAndComment
+	public class IdAndComment: INotifyPropertyChanged
 	{
 		private IdAndComment(string Id, string Comment)
 		{ }
@@ -36,7 +37,7 @@ namespace MyMedData
 			else throw new Exception("Impossible exception 1");
 
 			_comment = item.Comment;
-		}
+		}		
 
 		DataType _type;
 
@@ -44,14 +45,42 @@ namespace MyMedData
 		public string Id
 		{
 			get { return _id; }
-			set { _id = value; }
+			set 
+			{
+				if (_id != value)
+				{
+					_id = value;
+					OnPropertyChanged(nameof(Id));
+				}
+			}
 		}
 
 		string _comment;
 		public string Comment
 		{
 			get { return _comment; }
-			set { _comment = value; }
+			set 
+			{
+				if (_comment != value)
+				{
+					_comment = value;
+					OnPropertyChanged(nameof(Comment));
+				}
+			}
+		}
+
+		bool _obsolete = false; //for marker that there are no records in db. handled by EntityEditor
+		public bool Obsolete
+		{
+			get => _obsolete;
+			set
+			{
+				if (value != _obsolete)
+				{
+					_obsolete = value;
+					OnPropertyChanged(nameof(Obsolete));
+				}
+			}
 		}
 
 		public IMedicalEntity GenerateEntity() 
@@ -70,6 +99,13 @@ namespace MyMedData
 			IdAndComment idAndComment = new(_id, _comment);
 			idAndComment._type = _type;
 			return idAndComment;
+		}
+
+		public event PropertyChangedEventHandler? PropertyChanged;
+
+		protected void OnPropertyChanged(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		enum DataType 

@@ -75,7 +75,7 @@
             <Button x:Name="NewDocExaminationButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="0"
-                    ToolTip="Добавить запись о приеме"
+                    ToolTip="Добавить запись о приеме" ToolTipService.InitialShowDelay="200"
                     Background="{StaticResource LightDarkBackColor}" Click="NewAppointmentRecordData_Click">
                 <Grid>
                     <Image Source="{StaticResource StethoscopeImagePlus}"/>
@@ -87,7 +87,7 @@
             <Button x:Name="NewLabAnalysisButon"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
-                    ToolTip="Добавить запись об анализе"
+                    ToolTip="Добавить запись об анализе" ToolTipService.InitialShowDelay="200"
                     Background="{StaticResource LightDarkBackColor}" Click="NewLabAnalysisButon_Click">
                 <Grid>
                     <Image Source="{StaticResource AnalisysImagePlus}"/>
@@ -100,7 +100,7 @@
             <Button x:Name="DeleteRecordButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="5"
-                    Content="{StaticResource TrashBinIcon}" ToolTip="Удалить запись"
+                    Content="{StaticResource TrashBinIcon}" ToolTip="Удалить запись" ToolTipService.InitialShowDelay="200"
                     Background="{StaticResource LightDarkBackColor}" Click="DeleteRecordButton_Click"
                     Visibility="Collapsed" d:Visibility="Visible"/>
 
@@ -109,14 +109,16 @@
             <Button x:Name="EntitiesEditorButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
-                   ToolTip="Настойки" Click="EntitiesEditorButton_Click">
+                   ToolTip="Настойки" ToolTipService.InitialShowDelay="200"
+                    Click="EntitiesEditorButton_Click">
                 <Image Source="{StaticResource MedicalEntitiesIcon}"/>
             </Button>
 
             <Button x:Name="SettingsdButton"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
-                    Content="{StaticResource SettingsImage}" ToolTip="Настойки" Click="SettingsdButton_Click"/>
+                    Content="{StaticResource SettingsImage}" ToolTip="Настойки" ToolTipService.InitialShowDelay="200"
+                    Click="SettingsdButton_Click"/>
 
             <!--<Button x:Name="CalendarViewButton" Height="25" Width="25" 
                     Margin="10,4,10,4"
@@ -143,7 +145,7 @@
                     DockPanel.Dock="Right"
                     Content="{StaticResource AutoLockOnIcon}"
                     Style="{StaticResource ButtonMousOverStyle}"
-                    ToolTip="Авто логин"
+                    ToolTip="Авто логин" ToolTipService.InitialShowDelay="0"
                     Click="AutlogInButton_Click"/>
 
             <Button x:Name="LogOffButton" Height="25" Width="25" 
@@ -153,14 +155,14 @@
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonMousOverStyle}"
                     Content="{StaticResource LogOffImage}" Click="LogOffButton_Click"
-                    ToolTip="Выход"/>
+                    ToolTip="Выход" ToolTipService.InitialShowDelay="200"/>
 
             <Button x:Name="AuthorizationButton" Background="Transparent" BorderBrush="Transparent"
                     Width="30" Height="30" Margin="10,4,4,4"
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonMousOverStyle}"
                     Content="{StaticResource AuthButtonDrawing}" Click="AuthorizationButton_Click"
-                    ToolTip="Авторизация и управление пользователями"/>
+                    ToolTip="Авторизация и управление пользователями" ToolTipService.InitialShowDelay="200"/>
 
             <TextBlock x:Name="UsernameTextBlock"
                         FontSize="14"

@@ -38,8 +38,8 @@ namespace MyMedData
 			UsernameTextBlock.MouseDown += new MouseButtonEventHandler(
 				(o, mouseEventArgs) =>
 				{
-					if (mouseEventArgs.ClickCount == 2)				
-						OpenUsersDialog();				
+					if (mouseEventArgs.ClickCount == 2)
+						OpenUsersDialog();
 				});
 
 			StateChanged += MainWindowStateChangeRaised;
@@ -52,7 +52,7 @@ namespace MyMedData
 			blurEffect = new BlurEffect();
 			blurEffect.KernelType = KernelType.Gaussian;
 			blurEffect.Radius = 4;
-		}		
+		}
 
 		private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -67,21 +67,15 @@ namespace MyMedData
 			}
 
 			UpdateAutologinTooltip();
-		}		
+		}
 
 		private void OpenUsersDialog()
 		{
-			try
-			{				
-				this.Effect = blurEffect;
-				Window usersWindow = new UsersWindow();
-				usersWindow.Owner = this;
-				usersWindow.ShowDialog();
-			}
-			finally
-			{
-				this.Effect = null;
-			}
+			this.Effect = blurEffect;
+			Window usersWindow = new UsersWindow();
+			usersWindow.Owner = this;
+			usersWindow.ShowDialog();
+			this.Effect = null;
 		}
 
 		public void LogIn(Session session)
@@ -97,7 +91,7 @@ namespace MyMedData
 				NewLabAnalysisButon.Visibility = Visibility.Visible;
 				EntitiesEditorButton.Visibility = Visibility.Visible;
 			}
-			catch(Exception ex) 
+			catch (Exception ex)
 			{
 				MessageBox.Show("Не удалось прочитать базу данных.\n" + ex.Message, "Ошибка чтения базы", MessageBoxButton.OK, MessageBoxImage.Error);
 				LogOff();
@@ -128,7 +122,7 @@ namespace MyMedData
 			LogOff();
 		}
 
-		
+
 
 		bool _autologin;
 		private bool autoLogin
@@ -137,7 +131,7 @@ namespace MyMedData
 			set
 			{
 				_autologin = value;
-				if (value) 
+				if (value)
 					AutologInButton.Content = AutoLogOn_On_Icon;
 				else
 					AutologInButton.Content = AutoLogOn_Off_Icon;
@@ -176,7 +170,7 @@ namespace MyMedData
 
 		private void MainWindowStateChangeRaised(object? sender, EventArgs e)
 		{
-			switch(WindowState)
+			switch (WindowState)
 			{
 				case WindowState.Normal:
 					RestoreButton.Visibility = Visibility.Collapsed;
@@ -205,17 +199,17 @@ namespace MyMedData
 			if (ActiveSession != null && RecordsTableDisplay.RecordsDataGrid.SelectedItem is ExaminationRecord record)
 			{
 				ActiveSession.DeleteRecord(record);
-			}			
+			}
 		}
 
 		private void RestoreButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.WindowState = WindowState.Normal;			
+			this.WindowState = WindowState.Normal;
 		}
 
 		private void MaximizeButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.WindowState = WindowState.Maximized;			
+			this.WindowState = WindowState.Maximized;
 		}
 
 		private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -244,8 +238,10 @@ namespace MyMedData
 
 		private void EntitiesEditorButton_Click(object sender, RoutedEventArgs e)
 		{
+			this.Effect = blurEffect;
 			var entitiesWindow = new EntitiesEditorWindow(ActiveSession);
 			entitiesWindow.ShowDialog();
+			this.Effect = null;
 		}
 	}
 
