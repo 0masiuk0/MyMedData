@@ -26,7 +26,7 @@ namespace MyMedData.Windows
 		protected override void AddUserWindowInstance_Loaded(object sender, RoutedEventArgs e)
 		{
 			theRecordDisplay.DataContext = Session;
-			theRecordDisplay.Item = examinationRecord;			
+			theRecordDisplay.Item = examinationRecord.DeepCopy();			
 		}
 	}
 }
