@@ -80,8 +80,8 @@
                 <Grid>
                     <Image Source="{StaticResource StethoscopeImagePlus}"/>
                     <Image Source="{StaticResource PlusImage}"
-                           VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                           Height="11" Width="11"/>
+                           VerticalAlignment="Bottom"
+                           Height="11" Margin="23,0,0,0"/>
                 </Grid>
             </Button>
             <Button x:Name="NewLabAnalysisButon"
@@ -118,7 +118,7 @@
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
                     Content="{StaticResource SettingsImage}" ToolTip="Настойки" ToolTipService.InitialShowDelay="200"
-                    Click="SettingsdButton_Click"/>
+                    Click="SettingsButton_Click"/>
 
             <!--<Button x:Name="CalendarViewButton" Height="25" Width="25" 
                     Margin="10,4,10,4"

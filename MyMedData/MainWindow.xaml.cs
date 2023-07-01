@@ -142,8 +142,10 @@ namespace MyMedData
 		{
 			if (ActiveSession is Session session)
 			{
+				Effect = blurEffect;
 				AddExaminationWindow AddWindow = new AddExaminationWindow(session, DocOrLabExamination.Doc);
 				AddWindow.ShowDialog();
+				Effect = null;
 			}
 		}
 
@@ -151,16 +153,20 @@ namespace MyMedData
 		{
 			if (ActiveSession is Session session)
 			{
+				Effect = blurEffect;
 				AddExaminationWindow AddWindow = new AddExaminationWindow(session, DocOrLabExamination.Lab);
 				AddWindow.ShowDialog();
+				Effect = null;
 			}
 		}
 
-		private void SettingsdButton_Click(object sender, RoutedEventArgs e)
+		private void SettingsButton_Click(object sender, RoutedEventArgs e)
 		{
+			Effect = blurEffect;
 			SettingsWindow settingsWindow = new();
 			settingsWindow.Owner = this;
 			settingsWindow.ShowDialog();
+			Effect = null;
 		}
 
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
