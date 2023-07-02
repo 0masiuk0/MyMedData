@@ -23,8 +23,7 @@ namespace MyMedData.Classes
 				string? UsersDbFileName = appSettings["UserDbName"]?.Value;
 				if (UsersDbFileName == null)
 				{
-					MessageBox.Show("Адрес базы данных пользователей не настроен!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-					throw new UserDbAccessException();
+					throw new UserDbAccessException("Адрес базы данных пользователей не настроен!");
 				}
 				else
 				{
@@ -35,14 +34,15 @@ namespace MyMedData.Classes
 					}
 					else
 					{
-						var needToCreateNewUsersDb = MessageBox.Show($"Не найден корректный файл с базой пользователей.",
-							"Ошибка!",
-							MessageBoxButton.OK, MessageBoxImage.Error);
-						throw new UserDbAccessException();
+						throw new UserDbAccessException("Не найден корректный файл с базой пользователей.");
 					}
 				}
 			}
-			catch (Exception ex) 
+			catch (UserDbAccessException dbEx)
+			{
+				throw dbEx;
+			}
+			catch (Exception ex)
 			{
 				throw new UserDbAccessException("Не удалось прочитать базу пользвателей", ex);
 			}
@@ -51,7 +51,7 @@ namespace MyMedData.Classes
 
 		public static bool AuthorizeUser(User user, MainWindow mainWindow)
 		{
-			if(mainWindow.ActiveUser == user)
+			if (mainWindow.ActiveUser == user)
 				return true;
 
 			string? pwrd;
@@ -84,9 +84,9 @@ namespace MyMedData.Classes
 				RaiseUserAuthorizedEvent(user);
 				return true;
 			}
-			catch(System.IO.IOException ifileBusyEx)
+			catch (System.IO.IOException ifileBusyEx)
 			{
-				MessageBox.Show("Файл занят", ifileBusyEx.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("Файл базы данных занят другим приложением.", "", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			catch (Exception ex)
 			{
@@ -100,17 +100,17 @@ namespace MyMedData.Classes
 			try
 			{
 				using (var userDB = GetUsersDatabase())
-			{
-				User? user = userDB.GetCollection<User>(User.DbCollectionName).FindById(userId);
-				if (user == null) 
-					return false;
-				
-				return AuthorizeUser(user, mainWindow);
+				{
+					User? user = userDB.GetCollection<User>(User.DbCollectionName).FindById(userId);
+					if (user == null)
+						return false;
+
+					return AuthorizeUser(user, mainWindow);
+				}
 			}
-		}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				MessageBox.Show("Ошибка чтения настроек!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
 				return false;
 			}
 		}
@@ -118,10 +118,10 @@ namespace MyMedData.Classes
 		public static bool AuthorizeLastUser(MainWindow mainWindow)
 		{
 			int? id = GetLastUserId();
-			
+
 			if (id is int ID)
 				return AuthorizeUser(ID, mainWindow);
-			else 
+			else
 				return false;
 		}
 

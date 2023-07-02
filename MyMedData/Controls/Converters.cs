@@ -64,14 +64,19 @@ namespace MyMedData.Controls
 	[ValueConversion(typeof(ExaminationRecord), typeof(ImageSource))]
 	internal class RecordToIconConverter : IValueConverter
 	{
+		static object analysisImage = Application.Current.Resources["AnalisysImage"];
+		static object docExamImage = Application.Current.Resources["StethoscopeImage"];
+
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
+		{		
+
+
 			if (value is ExaminationRecord examinationRecord) 
 			{
-				if (examinationRecord is DoctorExaminationRecord)
-					return Application.Current.Resources["AnalisysImage"];
+				if (examinationRecord is LabExaminationRecord)
+					return analysisImage;
 				else
-					return Application.Current.Resources["StethoscopeImage"];
+					return docExamImage;
 			}
 
 			return DependencyProperty.UnsetValue;

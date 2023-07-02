@@ -25,7 +25,7 @@ namespace MyMedData
 				if (dbCreationOptions == DbCreationOptions.Ask)
 				{
 					var answer = MessageBox.Show("Найден существующий файл.\n Да - использовать его.\n Нет - файл будет очищен.", "Ошибка!",
-									MessageBoxButton.YesNoCancel, MessageBoxImage.Error);
+									MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
 					if (answer == MessageBoxResult.Yes)
 					{
 						return CreateNewUsersDb(filename, DbCreationOptions.UseExistingIfFound);
@@ -45,7 +45,7 @@ namespace MyMedData
 					if (!UsersDataBase.FastCheckUserDvValidity(filename))
 					{
 						if (MessageBox.Show("Указанная база не соответствует формату. Отформатировать с очисткой?", "Ошибка!",
-							MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
 						{
 							//очищаем файл						
 							return CreateNewUsersDb(filename, DbCreationOptions.Override);								

@@ -36,14 +36,15 @@ namespace MyMedData.Controls
 			remove { RemoveHandler(DeletionRequestedEvent, value); }
 		}
 
-		void RaiseDeletionRequestedRoutedEvent(RoutedEventArgs e)
-		{		
-			RaiseEvent(e);
+		void RaiseDeletionRequestedRoutedEvent()
+		{
+			RoutedEventArgs eArgs = new RoutedEventArgs(DeletionRequestedEvent, this);
+			RaiseEvent(eArgs);
 		}
 
 		private void DeleteButton_Click(object sender, RoutedEventArgs e)
 		{
-			RaiseDeletionRequestedRoutedEvent(e);
+			RaiseDeletionRequestedRoutedEvent();
 		}
 	}
 

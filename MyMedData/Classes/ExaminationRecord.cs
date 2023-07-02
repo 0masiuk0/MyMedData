@@ -14,9 +14,9 @@ using System.Reflection;
 namespace MyMedData
 {
 	public abstract class ExaminationRecord : INotifyPropertyChanged, IHasId<int>, IHasComment
-	{
-		[BsonId]
+	{		
 		private int _id;
+		[BsonId]
 		public int Id
 		{
 			get => _id;

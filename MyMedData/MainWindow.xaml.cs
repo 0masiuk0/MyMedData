@@ -61,12 +61,12 @@ namespace MyMedData
 			EntitiesEditorButton.Visibility = Visibility.Collapsed;
 			RecordsTableDisplay.RecordsDataGrid.SelectionChanged += RecordsDataGrid_SelectionChanged;
 
+			CheckUserDb();
 			if (autoLogin)
 			{
 				Authorizator.AuthorizeLastUser(this);
 			}
-
-			UpdateAutologinTooltip();
+			UpdateAutologinTooltip();			
 		}
 
 		private void OpenUsersDialog()
@@ -112,17 +112,22 @@ namespace MyMedData
 			EntitiesEditorButton.Visibility = Visibility.Collapsed;
 		}
 
-		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
+		public void CheckUserDb()
 		{
-			OpenUsersDialog();
+			try
+			{
+				using var userDb = Authorizator.GetUsersDatabase();
+			}
+			catch
+			{
+				autoLogin = false;
+				if (MessageBox.Show("Не удалось определить базу данных пользвателей. Создайте или укажите в настройках файл базы пользвателей.",
+						"Не найдена база пользвателей", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) == MessageBoxResult.OK)
+				{
+					OpenSettings();
+				}
+			}
 		}
-
-		private void LogOffButton_Click(object sender, RoutedEventArgs e)
-		{
-			LogOff();
-		}
-
-
 
 		bool _autologin;
 		private bool autoLogin
@@ -136,6 +141,16 @@ namespace MyMedData
 				else
 					AutologInButton.Content = AutoLogOn_Off_Icon;
 			}
+		}
+
+		private void AuthorizationButton_Click(object sender, RoutedEventArgs e)
+		{
+			OpenUsersDialog();
+		}
+
+		private void LogOffButton_Click(object sender, RoutedEventArgs e)
+		{
+			LogOff();
 		}
 
 		private void NewAppointmentRecordData_Click(object sender, RoutedEventArgs e)
@@ -161,6 +176,11 @@ namespace MyMedData
 		}
 
 		private void SettingsButton_Click(object sender, RoutedEventArgs e)
+		{
+			OpenSettings();
+		}
+
+		private void OpenSettings()
 		{
 			Effect = blurEffect;
 			SettingsWindow settingsWindow = new();

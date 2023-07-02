@@ -1,5 +1,6 @@
 ﻿using ABI.Windows.ApplicationModel.Activation;
 using MyMedData.Classes;
+using MyMedData.Controls;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -378,7 +379,36 @@ namespace MyMedData.Windows
 
 		private void IdAndCommentPlaque_DeletionRequested(object sender, RoutedEventArgs e)
 		{
+			if (sender is IdAndCommentPlaque plaque && plaque.DataContext is IdAndComment idAndCommentEntity)
+			{
+				IMedicalEntity entity = idAndCommentEntity.GenerateEntity();
+				bool success;
+				switch (entity)
+				{
+					case Clinic clinic:
+						success = ActiveSession.DeleteClinic(clinic); 
+						break;
 
+					case ExaminationType exType:
+						if (Mode == EntityType.LabExaminaionType)
+							success = ActiveSession.DeleteLabTestType(exType);
+						else if (Mode == EntityType.DoctorType)
+							success = ActiveSession.DeleteDoctorType(exType);
+						else
+							throw new Exception("Impossible exception 7");
+						break;		
+						
+					case Doctor doctor:
+						success = ActiveSession.DeleteDoctor(doctor); break;
+
+					default: throw new Exception("Impossible exception 6");
+				}
+
+				if (success)
+					Entities.Remove(idAndCommentEntity);
+				else
+					MessageBox.Show("Удаление не удалось.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
         }
     }
 }

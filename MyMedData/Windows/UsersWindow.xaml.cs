@@ -67,7 +67,8 @@ namespace MyMedData.Windows
 				UsersListBox.SelectedIndex = 0;
 			}
 			catch (UserDbAccessException ex) 
-			{				
+			{
+				MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 				this.Dispatcher.BeginInvoke(Close);
 				return;
 			}

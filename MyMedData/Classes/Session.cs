@@ -115,11 +115,66 @@ namespace MyMedData
 			MessageBox.Show("Не удалось удалит запись.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 			return false;
 		}
-	
+
+		internal bool DeleteClinic(Clinic clinic)
+		{
+			if (ClinicCache.FirstOrDefault(cl => cl.Id == clinic.Id, null) is Clinic cachedClinic)
+			{
+				if (RecordsDataBase.DeleteClinic(RecordsDatabaseContext, cachedClinic))
+				{
+					ClinicCache.Remove(cachedClinic);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		internal bool DeleteLabTestType(ExaminationType exType)
+		{
+			if (LabTestTypesCache.FirstOrDefault(et => et.Id == exType.Id, null) is ExaminationType cachedExType)
+			{
+				if (RecordsDataBase.DeleteLabTestType(RecordsDatabaseContext, cachedExType))
+				{
+					LabTestTypesCache.Remove(cachedExType);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		internal bool DeleteDoctorType(ExaminationType exType)
+		{
+			if (DoctorTypesCache.FirstOrDefault(et => et.Id == exType.Id, null) is ExaminationType cachedExType)
+			{
+				if (RecordsDataBase.DeleteDoctorType(RecordsDatabaseContext, cachedExType))
+				{
+					DoctorTypesCache.Remove(cachedExType);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		internal bool DeleteDoctor(Doctor doctor)
+		{
+			if (DoctorCache.FirstOrDefault(d => d.Id == doctor.Id, null) is Doctor cachedDoc)
+			{
+				if (RecordsDataBase.DeleteDoctor(RecordsDatabaseContext, cachedDoc))
+				{
+					DoctorCache.Remove(cachedDoc);
+					return true;
+				}
+			}
+
+			return false;
+		}			
+
 		public void Dispose()
 		{
 			RecordsDatabaseContext.Dispose();
-		}
-
+		}		
 	}
 }

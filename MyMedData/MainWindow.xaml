@@ -65,14 +65,12 @@
                        DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0" Foreground="{StaticResource DarkThemeFontColor}"/>
 
         </DockPanel>
-        <StackPanel x:Name="MenuStackPanel" Background="{StaticResource DarkBackColor}"
-                    DockPanel.Dock="Top" Orientation="Horizontal">
-
-        </StackPanel>
+        
         <DockPanel x:Name="StatusBarDockPanel"
-             VerticalAlignment="Bottom" Background="{StaticResource DarkBackColor}"
+            Background="{StaticResource DarkBackColor}"
+            Margin="0,10,0,-5"
             DockPanel.Dock="Bottom">
-            <Button x:Name="NewDocExaminationButton"
+            <Button x:Name="NewDocExaminationButton" DockPanel.Dock="Left" VerticalAlignment="Center"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="0"
                     ToolTip="Добавить запись о приеме" ToolTipService.InitialShowDelay="200"
@@ -85,6 +83,7 @@
                 </Grid>
             </Button>
             <Button x:Name="NewLabAnalysisButon"
+                    DockPanel.Dock="Left" VerticalAlignment="Center"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2"
                     ToolTip="Добавить запись об анализе" ToolTipService.InitialShowDelay="200"
@@ -98,6 +97,7 @@
             </Button>
 
             <Button x:Name="DeleteRecordButton"
+                    DockPanel.Dock="Left" VerticalAlignment="Center"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="5"
                     Content="{StaticResource TrashBinIcon}" ToolTip="Удалить запись" ToolTipService.InitialShowDelay="200"
@@ -107,6 +107,7 @@
             <Separator Width="15" Background="Transparent"/>
 
             <Button x:Name="EntitiesEditorButton"
+                    DockPanel.Dock="Left" VerticalAlignment="Center"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
                    ToolTip="Настойки" ToolTipService.InitialShowDelay="200"
@@ -115,6 +116,7 @@
             </Button>
 
             <Button x:Name="SettingsdButton"
+                    DockPanel.Dock="Left" VerticalAlignment="Center"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
                     Content="{StaticResource SettingsImage}" ToolTip="Настойки" ToolTipService.InitialShowDelay="200"
@@ -138,11 +140,11 @@
                     Style="{StaticResource ButtonMousOverStyle}"
                     ToolTip="Табличный вид"/>-->
 
-            <Button x:Name="AutologInButton" Height="25" Width="25" 
-                    Margin="10,4,10,4"  
+            <Button x:Name="AutologInButton" Height="25" Width="25"                     
+                    Margin="10,0,10,0"  
                     BorderBrush="Transparent"
                     Background="Transparent"
-                    DockPanel.Dock="Right"
+                    DockPanel.Dock="Right" VerticalAlignment="Center"
                     Content="{StaticResource AutoLockOnIcon}"
                     Style="{StaticResource ButtonMousOverStyle}"
                     ToolTip="Авто логин" ToolTipService.InitialShowDelay="0"

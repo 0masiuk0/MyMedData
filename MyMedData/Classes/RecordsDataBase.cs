@@ -7,6 +7,8 @@ using System.Windows;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Transactions;
+using System.Linq.Expressions;
+using System.Numerics;
 
 namespace MyMedData
 {
@@ -61,8 +63,8 @@ namespace MyMedData
 				}
 				else
 				{
-					var answer = MessageBox.Show("Найден существующий файл.\n Да - использовать его.\n Нет - файл будет очищен.", "Ошибка!",
-							MessageBoxButton.YesNoCancel, MessageBoxImage.Error);
+					var answer = MessageBox.Show("Использовать существующий файл.\n Да - использовать файл.\n Нет - очистить файл.", "Внимание!",
+							MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 					if (answer == MessageBoxResult.Yes)
 					{
 						return CreateUserDocumnetDb(user, password, DbCreationOptions.UseExistingIfFound);
@@ -194,7 +196,7 @@ namespace MyMedData
 				{
 					case DoctorExaminationRecord docRecord:
 					{
-						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);						
 						if (col.Update(docRecord))
 							goto Commit;
 						else
@@ -311,6 +313,87 @@ namespace MyMedData
 			}			
 		}
 
+		internal static bool DeleteLabTestType(LiteDatabase db, ExaminationType exType)
+		{
+			try
+			{
+				var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
+				if (col.Exists(rec => rec.ExaminationType == exType))
+					return false;
+				else
+				{
+					var labTestCol = db.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);
+					return labTestCol.Delete(exType.Id);
+				}				
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Ошибка удаления.", MessageBoxButton.OK, MessageBoxImage.Error); 
+				return false;
+			}
+		}
+
+		internal static bool DeleteDoctorType(LiteDatabase db, ExaminationType exType)
+		{
+			try
+			{
+				var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+				if (col.Exists(rec => rec.ExaminationType == exType))
+					return false;
+				else
+				{
+					var docTypeCol = db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
+					return docTypeCol.Delete(exType.Id);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Ошибка удаления.", MessageBoxButton.OK, MessageBoxImage.Error);
+				return false;
+			}
+		}
+
+		internal static bool DeleteDoctor(LiteDatabase db, Doctor doctor)
+		{
+			try
+			{
+				var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+				if (col.Exists(rec => rec.Doctor == doctor))
+					return false;
+				else
+				{
+					var docTypeCol = db.GetCollection<Doctor>(Doctor.DbCollectionName);
+					return docTypeCol.Delete(doctor.Id);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Ошибка удаления.", MessageBoxButton.OK, MessageBoxImage.Error);
+				return false;
+			}
+		}
+
+		internal static bool DeleteClinic(LiteDatabase db, Clinic clinic)
+		{
+			try
+			{
+				var docCol = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+				var labCol = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
+				if (docCol.Exists(rec => rec.Clinic == clinic) || labCol.Exists(rec => rec.Clinic == clinic))
+					return false;
+				else
+				{
+					var clinicCol = db.GetCollection<Clinic>(Clinic.DbCollectionName);
+					return clinicCol.Delete(clinic.Id);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Ошибка удаления.", MessageBoxButton.OK, MessageBoxImage.Error);
+				return false;
+			}
+		}
+
 		//public static IEnumerable<ExaminationRecord> UploadFilesToRecords(this IEnumerable<ExaminationRecord> records, Session session)
 		//{
 		//	foreach (ExaminationRecord record in records)
@@ -370,6 +453,6 @@ namespace MyMedData
 						yield break;
 				}
 			}
-		}		
+		}
 	}
 }

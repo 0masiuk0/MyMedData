@@ -60,7 +60,7 @@ namespace MyMedData
 		}
 
 		[BsonIgnore]
-		public string Id => _name; // For IHasId
+		public string Id => Name; // For IHasId
 	}
 
 	public class Clinic : IMedicalEntity
@@ -118,7 +118,7 @@ namespace MyMedData
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		public string Id => _name; // For IHasId
+		public string Id => Name; // For IHasId
 	}
 
 	public class ExaminationType : IMedicalEntity
@@ -177,7 +177,7 @@ namespace MyMedData
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		public string Id => _examinationTypeTitle; // For IHasId
+		public string Id => ExaminationTypeTitle; // For IHasId
 	}
 #pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
 }

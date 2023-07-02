@@ -56,20 +56,27 @@ namespace MyMedData.Windows
 		private void EditDataFileButton_Click(object sender, RoutedEventArgs e)
 		{
 			_validDataFile = null;
+
 			var openFileDialog = new Microsoft.Win32.OpenFileDialog();
 			openFileDialog.Multiselect = false;
 			openFileDialog.CheckFileExists = false;
 			openFileDialog.Filter = "LiteDB Data Base|*.db";
 			if (openFileDialog.ShowDialog() ?? false)
 			{
+				if (File.Exists(openFileDialog.FileName)) 
+				{
+					if (MessageBox.Show("Выбран существующий файл. Его использование возможно только при совпадении пароля этой учетной записи и пароля," +
+						"использванного при создании базы данных.",
+						"Предупреждение о шифровании.",
+						MessageBoxButton.OKCancel, MessageBoxImage.Exclamation)
+						!= MessageBoxResult.OK)
+						return;
+				}
+
 				NewUser.DatabaseFile = openFileDialog.FileName;
 				DataFileTextBox.Text = openFileDialog.FileName;
 			}
-			else
-			{
-				NewUser.DatabaseFile = "";
-				DataFileTextBox.Text = null;
-			}
+			
 			ValidateData();
 		}
 
