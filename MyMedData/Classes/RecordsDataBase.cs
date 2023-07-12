@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Transactions;
 using System.Linq.Expressions;
 using System.Numerics;
+using System.Windows.Controls;
+using System.CodeDom;
 
 namespace MyMedData
 {
@@ -196,9 +198,12 @@ namespace MyMedData
 				{
 					case DoctorExaminationRecord docRecord:
 					{
-						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);						
+						var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
 						if (col.Update(docRecord))
+						{
+							UpsertMedicalEntities(docRecord, db);
 							goto Commit;
+						}
 						else
 							throw new Exception();
 					}
@@ -206,7 +211,10 @@ namespace MyMedData
 					{
 						var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
 						if (col.Update(labRecord))
+						{
+							UpsertMedicalEntities(labRecord, db);
 							goto Commit;
+						}
 						else
 							throw new Exception();
 						}
@@ -246,20 +254,22 @@ namespace MyMedData
 						{
 							var col = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
 							docRecord.Id = col.Insert(docRecord).AsInt32;
+							UpsertMedicalEntities(docRecord, db);
 							goto Commit;
-							
+
 						}
 					case LabExaminationRecord labRecord:
 						{
 							var col = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
 							labRecord.Id = col.Insert(labRecord).AsInt32;
+							UpsertMedicalEntities(labRecord, db);
 							goto Commit;
 						}
 					default:
 						throw new Exception();
 				}
 
-				Commit:
+			Commit:
 				db.Commit();
 				return true;
 			}
@@ -268,6 +278,165 @@ namespace MyMedData
 				db.Rollback();
 				return false;
 			}
+		}
+
+		private static void UpsertMedicalEntities(LabExaminationRecord labRecord, LiteDatabase db)
+		{
+			if (labRecord.ExaminationType is ExaminationType exType)
+			{
+				UpsertLabExaminationType(exType, db);
+			}
+
+			if (labRecord.Clinic is Clinic clinic)
+			{
+				UpsertClinic(clinic, db);
+			}
+		}
+
+		private static void UpsertMedicalEntities(DoctorExaminationRecord docRecord, LiteDatabase db)
+		{
+			if (docRecord.Doctor is Doctor doc)
+			{
+				UpsertDoctor(doc, db);
+			}
+
+			if (docRecord.ExaminationType is ExaminationType exType)
+			{
+				UpsertDoctorType(exType, db);
+			}
+
+			if (docRecord.Clinic is Clinic clinic)
+			{
+				UpsertClinic(clinic, db);
+			}
+		}
+
+		internal static void UpsertLabExaminationType(ExaminationType labTestType, LiteDatabase db)
+		{
+			var labExTypeCol = db.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);
+			labExTypeCol.Upsert(labTestType);
+		}
+
+		internal static void UpsertDoctorType(ExaminationType docType, LiteDatabase db)
+		{
+			var docExTypeCol = db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
+			docExTypeCol.Upsert(docType); ;
+		}
+
+		internal static void UpsertDoctor(Doctor doc, LiteDatabase db)
+		{
+			var docCol = db.GetCollection<Doctor>(Doctor.DbCollectionName);
+			docCol.Upsert(doc);
+		}
+
+		internal static void UpsertClinic(Clinic clinic, LiteDatabase db)
+		{
+			var clinicCol = db.GetCollection<Clinic>(Clinic.DbCollectionName);
+			clinicCol.Upsert(clinic);
+		}
+
+		internal static void SubstituteLabExaminationType(ExaminationType oldLabTestType, ExaminationType newLabExType, LiteDatabase db)
+		{
+			var labExTypeCol = db.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);			
+
+			db.BeginTrans();
+			try
+			{
+				var deletionOK = labExTypeCol.Delete(oldLabTestType.ExaminationTypeTitle);
+				if (!deletionOK)
+					throw new InvalidDbIdException(oldLabTestType.ExaminationTypeTitle);
+
+				labExTypeCol.Insert(newLabExType);
+			}
+			catch (InvalidDbIdException badIdException)
+			{
+				db.Rollback();
+				throw badIdException;
+			}
+			catch (Exception ex) 
+			{
+				db.Rollback();
+				throw new DbOperationException(ex.Message);
+			}
+			db.Commit();			
+		}
+
+		internal static void SubstituteDocType(ExaminationType oldDocType, ExaminationType newDocType, LiteDatabase db)
+		{
+			var docTypeCol = db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
+
+			db.BeginTrans();
+			try
+			{
+				var deletionOK = docTypeCol.Delete(oldDocType.ExaminationTypeTitle);
+				if (!deletionOK)
+					throw new InvalidDbIdException(oldDocType.ExaminationTypeTitle);
+
+				docTypeCol.Insert(newDocType);
+			}
+			catch (InvalidDbIdException badIdException)
+			{
+				db.Rollback();
+				throw badIdException;
+			}
+			catch (Exception ex)
+			{
+				db.Rollback();
+				throw new DbOperationException(ex.Message);
+			}
+			db.Commit();
+		}
+
+		internal static void SubstituteDoctor(Doctor oldDoc, Doctor newDoctor, LiteDatabase db)
+		{
+			var doctorCol = db.GetCollection<Doctor>(Doctor.DbCollectionName);
+
+			db.BeginTrans();
+			try
+			{
+				var deletionOK = doctorCol.Delete(oldDoc.Name);
+				if (!deletionOK)
+					throw new InvalidDbIdException(oldDoc.Name);
+
+				doctorCol.Insert(newDoctor);
+			}
+			catch (InvalidDbIdException badIdException)
+			{
+				db.Rollback();
+				throw badIdException;
+			}
+			catch (Exception ex)
+			{
+				db.Rollback();
+				throw new DbOperationException(ex.Message);
+			}
+			db.Commit();
+		}
+
+		internal static void SubstituteClinic(Clinic oldClinic, Clinic newClinic, LiteDatabase db)
+		{
+			var clinicCol = db.GetCollection<Clinic>(Clinic.DbCollectionName);
+
+			db.BeginTrans();
+			try
+			{
+				var deletionOK = clinicCol.Delete(oldClinic.Name);
+				if (!deletionOK)
+					throw new InvalidDbIdException(oldClinic.Name);
+
+				clinicCol.Insert(newClinic);
+			}
+			catch (InvalidDbIdException badIdException)
+			{
+				db.Rollback();
+				throw badIdException;
+			}
+			catch (Exception ex)
+			{
+				db.Rollback();
+				throw new DbOperationException(ex.Message);
+			}
+			db.Commit();
 		}
 
 		internal static bool DeleteRecord(LiteDatabase db, ExaminationRecord record)
@@ -323,7 +492,7 @@ namespace MyMedData
 				else
 				{
 					var labTestCol = db.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);
-					return labTestCol.Delete(exType.Id);
+					return labTestCol.Delete(exType.ExaminationTypeTitle);
 				}				
 			}
 			catch(Exception ex)
@@ -343,7 +512,7 @@ namespace MyMedData
 				else
 				{
 					var docTypeCol = db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
-					return docTypeCol.Delete(exType.Id);
+					return docTypeCol.Delete(exType.ExaminationTypeTitle);
 				}
 			}
 			catch (Exception ex)
@@ -363,7 +532,7 @@ namespace MyMedData
 				else
 				{
 					var docTypeCol = db.GetCollection<Doctor>(Doctor.DbCollectionName);
-					return docTypeCol.Delete(doctor.Id);
+					return docTypeCol.Delete(doctor.Name);
 				}
 			}
 			catch (Exception ex)
@@ -384,7 +553,7 @@ namespace MyMedData
 				else
 				{
 					var clinicCol = db.GetCollection<Clinic>(Clinic.DbCollectionName);
-					return clinicCol.Delete(clinic.Id);
+					return clinicCol.Delete(clinic.Name);
 				}
 			}
 			catch (Exception ex)
@@ -454,5 +623,24 @@ namespace MyMedData
 				}
 			}
 		}
+	}
+
+	public class InvalidDbIdException: Exception
+	{
+		public object? ID { get; set; }
+
+		public InvalidDbIdException(): base() { }
+
+		public InvalidDbIdException(object id) :base($"Неверный ID: {id}")
+		{
+			this.ID = id;			
+		}
+	}
+
+	public class DbOperationException : Exception
+	{
+		public DbOperationException() : base() { }
+
+		public DbOperationException(string message) : base(message) { }
 	}
 }

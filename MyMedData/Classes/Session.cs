@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Xml.Linq;
 
 namespace MyMedData
 {
@@ -30,12 +31,12 @@ namespace MyMedData
 		public Session(User user, string password)
 		{
 			ActiveUser = user;
-			
-			ExaminationRecords = new ObservableCollection<ExaminationRecord>();			
+
+			ExaminationRecords = new ObservableCollection<ExaminationRecord>();
 
 			//Getting DB context
 			RecordsDatabaseContext = new LiteDatabase(RecordsDataBase.GetConnectionString(user, password));
-			
+
 			//Building medical entities cashe
 			EntitiesCacheUpdateHelper = new EntitiesCacheUpdateHelper(this);
 			LabTestTypesCache = EntitiesCacheUpdateHelper.LabTestTypesCache;
@@ -50,12 +51,12 @@ namespace MyMedData
 				.Include(x => x.Clinic)
 				.Include(x => x.ExaminationType)
 				.Include(x => x.Documents);
-			
+
 			var labExaminationRecords = RecordsDatabaseContext
 				.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName)
 				.Include(x => x.Clinic)
 				.Include(x => x.ExaminationType)
-				.Include(x => x.Documents);  
+				.Include(x => x.Documents);
 
 			foreach (var docExam in docExaminationRecords.FindAll())
 			{
@@ -87,6 +88,7 @@ namespace MyMedData
 				//ExaminationRecords.RemoveAt(recordToUpdateIndex);
 				//ExaminationRecords.Insert(recordToUpdateIndex, record);
 				ExaminationRecords[recordToUpdateIndex] = record;
+				EntitiesCacheUpdateHelper.EnsureNewEntitiesCached(record);
 				return true;
 			}
 
@@ -97,11 +99,167 @@ namespace MyMedData
 		{
 			if (RecordsDataBase.InsertRecord(this, ref record))
 			{
+				EntitiesCacheUpdateHelper.EnsureNewEntitiesCached(record);
 				ExaminationRecords.Add(record);
 				return true;
 			}
 
 			return false;
+		}
+
+		internal void UpdateMedicalEntityId(IMedicalEntity oldValue, IMedicalEntity medicalEntity, EntityType entityType)
+		{
+			try
+			{
+				switch (entityType)
+				{
+					case EntityType.LabExaminaionType:
+						if (LabTestTypesCache.FirstOrDefault(lt => lt.Id == oldValue.Id, null) is ExaminationType oldLabTestType
+							&& medicalEntity is ExaminationType newLabExType)
+						{
+							RecordsDataBase.SubstituteLabExaminationType(oldLabTestType, newLabExType, RecordsDatabaseContext);
+
+							var affectedRecs = ExaminationRecords.Where(rc => rc is LabExaminationRecord)
+								.Cast<LabExaminationRecord>()
+								.Where(labRec => labRec.ExaminationType == oldLabTestType);
+
+							foreach (var rec in affectedRecs)
+							{
+								rec.ExaminationType = newLabExType;
+							}
+
+							LabTestTypesCache.Remove(oldLabTestType);
+							LabTestTypesCache.Insert(0, newLabExType);
+						}
+						break;
+					case EntityType.DoctorType:
+						if (DoctorTypesCache.FirstOrDefault(dt => dt.Id == oldValue.Id, null) is ExaminationType oldDocType
+							&& medicalEntity is ExaminationType newDocType)
+						{
+							RecordsDataBase.SubstituteDocType(oldDocType, newDocType, RecordsDatabaseContext);
+
+							var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
+								.Cast<DoctorExaminationRecord>()
+								.Where(docRec => docRec.ExaminationType == oldDocType);
+
+							foreach (var rec in affectedRecs)
+							{
+								rec.ExaminationType = newDocType;
+							}
+
+							DoctorTypesCache.Remove(oldDocType);
+							DoctorTypesCache.Insert(0, newDocType);
+						}
+						break;
+					case EntityType.Doctor:
+						if (DoctorCache.FirstOrDefault(doc => doc.Id == oldValue.Id, null) is Doctor oldDoc
+							&& medicalEntity is Doctor newDoctor)
+						{
+							RecordsDataBase.SubstituteDoctor(oldDoc, newDoctor, RecordsDatabaseContext);
+
+							var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
+								.Cast<DoctorExaminationRecord>()
+								.Where(docRec => docRec.Doctor == oldDoc);
+							foreach (var rec in affectedRecs)
+							{
+								rec.Doctor = newDoctor;
+							}
+
+							DoctorCache.Remove(oldDoc);
+							DoctorCache.Insert(0, newDoctor);
+						}
+						break;
+					case EntityType.Clinic:
+						if (ClinicCache.FirstOrDefault(clinic => clinic.Id == oldValue.Id, null) is Clinic oldClinic
+							&& medicalEntity is Clinic newClinic)
+						{
+							RecordsDataBase.SubstituteClinic(oldClinic, newClinic, RecordsDatabaseContext);
+
+							var affectedRecs = ExaminationRecords.Where(rec => rec.Clinic == oldClinic);
+							foreach (var rec in affectedRecs)
+							{
+								rec.Clinic = newClinic;
+							}
+
+							ClinicCache.Remove(oldClinic);
+							ClinicCache.Insert(0, newClinic);
+						}
+						break;
+					default: throw new Exception("Impossible exeption 9");
+				}
+			}
+			catch(DbOperationException dbEx)
+			{
+				MessageBox.Show("Возникла ошибка.", dbEx.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			catch(InvalidDbIdException idEx)
+			{
+				MessageBox.Show("Недопустимый ID!", $"ID {idEx.ID} уже существует или недопустимый.");
+			}
+		}
+
+		internal void UpdateMedicalEntityComment(IMedicalEntity oldValue, string comment, EntityType entityType)
+		{
+			switch (entityType)
+			{
+				case EntityType.LabExaminaionType:
+					if (LabTestTypesCache.FirstOrDefault(lt => lt.Id == oldValue.Id, null) is ExaminationType labTestType)
+					{
+						RecordsDataBase.UpsertLabExaminationType(labTestType, RecordsDatabaseContext);
+
+						var affectedRecs = ExaminationRecords.Where(rc => rc is LabExaminationRecord)
+							.Cast<LabExaminationRecord>()
+							.Where(labRec => labRec.ExaminationType == labTestType);
+						foreach (var rec in affectedRecs)
+						{
+							rec.ExaminationType.Comment = comment;
+						}
+						
+						labTestType.Comment = comment;						
+					}
+					break;
+				case EntityType.DoctorType:
+					if (DoctorTypesCache.FirstOrDefault(dt => dt.Id == oldValue.Id, null) is ExaminationType docType)
+					{
+						RecordsDataBase.UpsertDoctorType(docType, RecordsDatabaseContext);
+						var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
+							.Cast<DoctorExaminationRecord>()
+							.Where(docRec => docRec.ExaminationType == docType);
+						foreach (var rec in affectedRecs)
+						{
+							rec.ExaminationType.Comment = comment;
+						}
+						docType.Comment = comment;
+					}
+					break;
+				case EntityType.Doctor:
+					if (DoctorCache.FirstOrDefault(doc => doc.Id == oldValue.Id, null) is Doctor doc)
+					{
+						RecordsDataBase.UpsertDoctor(doc, RecordsDatabaseContext);
+						var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
+							.Cast<DoctorExaminationRecord>()
+							.Where(docRec => docRec.Doctor == doc);
+						foreach (var rec in affectedRecs)
+						{
+							rec.Doctor.Comment = comment;
+						}
+						doc.Comment = comment;
+					}
+					break;
+				case EntityType.Clinic:
+					if (ClinicCache.FirstOrDefault(clinic => clinic.Id == oldValue.Id, null) is Clinic clinic)
+					{
+						RecordsDataBase.UpsertClinic(clinic, RecordsDatabaseContext);
+						var affectedRecs = ExaminationRecords.Where(rec => rec.Clinic == clinic);
+						foreach (var rec in affectedRecs)
+						{
+							rec.Clinic.Comment = comment;
+						}
+						clinic.Comment = comment;
+					}
+					break;
+				default: throw new Exception("Impossible exeption 8");
+			}
 		}
 
 		public bool DeleteRecord(ExaminationRecord record)
@@ -111,7 +269,7 @@ namespace MyMedData
 				ExaminationRecords.Remove(record);
 				return true;
 			}
-			
+
 			MessageBox.Show("Не удалось удалит запись.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 			return false;
 		}
@@ -170,7 +328,7 @@ namespace MyMedData
 			}
 
 			return false;
-		}			
+		}
 
 		public void Dispose()
 		{

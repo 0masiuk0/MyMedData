@@ -25,7 +25,7 @@ namespace MyMedData
 				.FindAll());
 
 			ClinicCache = new(EntitiesDb.GetCollection<Clinic>(Clinic.DbCollectionName)
-				.FindAll());						
+				.FindAll());
 		}
 
 		private Session session;
@@ -34,56 +34,34 @@ namespace MyMedData
 		public ObservableCollection<ExaminationType> DoctorTypesCache;
 		public ObservableCollection<Clinic> ClinicCache;
 
-		internal void EnsureValuesAreCached(ExaminationRecord record)
+		internal void EnsureNewEntitiesCached(ExaminationRecord record)
 		{
-			if (record is DoctorExaminationRecord docRecord)
-				EnsureValuesAreCached(DocOrLabExamination.Doc, docRecord.ExaminationType, docRecord.Clinic, docRecord.Doctor);
+			if (record is DoctorExaminationRecord docExam)
+				EnsureDocExamEnitiesCached(docExam);
 			else
-				EnsureValuesAreCached(DocOrLabExamination.Lab, record.ExaminationType, record.Clinic, null);
+				EnsureLabExamEntitiesCached((LabExaminationRecord)record);
 		}
 
-		internal void EnsureValuesAreCached(DocOrLabExamination docOrLab,
-			ExaminationType? examinationType,
-			Clinic? clinic,
-			Doctor? doctor)
+		private void EnsureDocExamEnitiesCached(DoctorExaminationRecord docExam)
 		{
-			if (examinationType != null)
-				UpdateExaminationTypesCache(docOrLab, examinationType);
+			if (docExam.Doctor != null && DoctorCache.FirstOrDefault(d => d.Id == docExam.Doctor?.Id, null) == null)
+				DoctorCache.Add(docExam.Doctor);
 
-			if (clinic != null)
-				UpdateClinicCache(clinic);
+			if (docExam.ExaminationType != null && DoctorTypesCache.FirstOrDefault(dt => dt.Id == docExam.ExaminationType?.Id, null) == null)
+				DoctorTypesCache.Add(docExam.ExaminationType);
 
-			if (doctor != null)
-				if (docOrLab == DocOrLabExamination.Doc )
-					UpdateDoctorCache(doctor);
-		}	
-
-		public void UpdateExaminationTypesCache(DocOrLabExamination docOrLab, ExaminationType examinationType)
-		{
-			var EntitiesDb = session.RecordsDatabaseContext;
-			ILiteCollection<ExaminationType> collection;
-			if (docOrLab == DocOrLabExamination.Doc)
-				collection = EntitiesDb.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
-			else
-				collection = EntitiesDb.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);
-			
-			collection.Upsert(examinationType);
+			if (docExam.Clinic != null && ClinicCache.FirstOrDefault(cl => cl.Id == docExam.Clinic?.Id, null) == null)
+				ClinicCache.Add(docExam.Clinic);
 		}
 
-		public void UpdateDoctorCache(Doctor doctor)
+		private void EnsureLabExamEntitiesCached(LabExaminationRecord labExam)
 		{
-			var EntitiesDb = session.RecordsDatabaseContext;
-			var collection = EntitiesDb.GetCollection<Doctor>(Doctor.DbCollectionName);
-			collection.Upsert(doctor);
-		}
+			if (labExam.ExaminationType != null && LabTestTypesCache.FirstOrDefault(dt => dt.Id == labExam.ExaminationType?.Id, null) == null)
+				LabTestTypesCache.Add(labExam.ExaminationType);
 
-		public void UpdateClinicCache(Clinic clinic)
-		{
-			var EntitiesDb = session.RecordsDatabaseContext;
-			var collection = EntitiesDb.GetCollection<Clinic>(Clinic.DbCollectionName);
-			collection.Upsert(clinic);
+			if (labExam.Clinic != null && ClinicCache.FirstOrDefault(cl => cl.Id == labExam.Clinic?.Id, null) == null)
+				ClinicCache.Add(labExam.Clinic);
 		}
-
 	}
 
 	public enum DocOrLabExamination

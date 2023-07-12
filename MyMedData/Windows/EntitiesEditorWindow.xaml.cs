@@ -121,7 +121,7 @@ namespace MyMedData.Windows
 			if (e.OldValue is IMedicalEntity oldValue && _editedEntity != null
 				&& MessageBox.Show("Сохранить изменения?", "Несохраненные измения", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
 			{
-				ApplyChanges();
+				UpdateMedicalEntityDbAndCache(oldValue, _editedEntity);
 			}
 
 			_editedEntity = null;
@@ -134,10 +134,20 @@ namespace MyMedData.Windows
 			}
 		}
 
-		private void ApplyChanges()
+		private void UpdateMedicalEntityDbAndCache(IMedicalEntity oldValue, IdAndComment newValue)
 		{
+			if (oldValue.Comment != newValue.Comment) 
+			{
+				ActiveSession.UpdateMedicalEntityComment(oldValue, newValue.Comment, Mode);
+			}
+
+			if(oldValue.Id != newValue.Id)
+			{
+				ActiveSession.UpdateMedicalEntityId(oldValue, newValue.GenerateEntity(), Mode);
+			}
+
 			_editedEntity = null;
-		}	
+		}			
 
 		private void UpdateEditedEntity()
 		{
@@ -274,22 +284,40 @@ namespace MyMedData.Windows
 
 		private void AcceptCommentChangeButton_Click(object sender, RoutedEventArgs e)
 		{
-			ApplyChanges();
+			if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null) 
+			{
+				UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+			}			
 		}
 
 		private void AcceptNameChangeButton_Click(object sender, RoutedEventArgs e)
 		{
-			ApplyChanges();
+			if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null)
+			{
+				UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+			}
 		}
 
 		private void NameTextBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Enter && AcceptNameChangeButton.IsEnabled) ApplyChanges();
+			if (e.Key == Key.Enter && AcceptNameChangeButton.IsEnabled)
+			{
+				if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null)
+				{
+					UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+				}
+			}
 		}
 
 		private void CommentTextBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Enter && AcceptCommentChangeButton.IsEnabled) ApplyChanges();
+			if (e.Key == Key.Enter && AcceptCommentChangeButton.IsEnabled)
+			{
+				if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null)
+				{
+					UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+				}
+			}
 		}
 
 		private void DenyNameChangeButton_Click(object sender, RoutedEventArgs e)
