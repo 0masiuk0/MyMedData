@@ -249,5 +249,17 @@ namespace MyMedData.Controls
 			SelectedItem = null;
 			RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
 		}
+
+		private void UserControl_KeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Escape)
+				Cancel();
+		}
+
+		private void Cancel()
+		{
+			SelectedItem = null;
+			RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
+		}
 	}
 }
