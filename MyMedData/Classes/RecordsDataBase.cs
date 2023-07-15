@@ -320,7 +320,7 @@ namespace MyMedData
 		internal static void UpsertDoctorType(ExaminationType docType, LiteDatabase db)
 		{
 			var docExTypeCol = db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
-			docExTypeCol.Upsert(docType); ;
+			docExTypeCol.Upsert(docType);
 		}
 
 		internal static void UpsertDoctor(Doctor doc, LiteDatabase db)

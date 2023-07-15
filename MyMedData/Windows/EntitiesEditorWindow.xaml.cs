@@ -146,10 +146,15 @@ namespace MyMedData.Windows
 				ActiveSession.UpdateMedicalEntityId(oldValue, newValue.GenerateEntity(), Mode);
 			}
 
-			_editedEntity = null;
+			var entityToUpdate = _entities.First(en => en.Id ==  oldValue.Id);
+			var i = _entities.IndexOf(entityToUpdate);
+			_entities.RemoveAt(i);
+			_entities.Insert(i, newValue);
+			EntitiesListBox.SelectedItem = newValue;
+			newValue.Obsolete = GetRecordsAssociatedWithEntity(newValue).Any();
 		}			
 
-		private void UpdateEditedEntity()
+		private void UpdateEditedEntityFromUi()
 		{
 			if (EditedEntity == null)
 			{
@@ -163,8 +168,7 @@ namespace MyMedData.Windows
 			if (EntityViewGrid.DataContext is IdAndComment oldValue)
 			{
 				AcceptNameChangeButton.IsEnabled = !(EditedEntity.Id.Length == 0 || EditedEntity.Id == oldValue.Id);
-				AcceptCommentChangeButton.IsEnabled = !(EditedEntity.Comment == oldValue.Comment 
-					|| (string.IsNullOrWhiteSpace(EditedEntity.Comment) && string.IsNullOrWhiteSpace(oldValue.Comment)));
+				AcceptCommentChangeButton.IsEnabled = !(EditedEntity.Comment == oldValue.Comment || (string.IsNullOrWhiteSpace(EditedEntity.Comment) && string.IsNullOrWhiteSpace(oldValue.Comment)));
 			}
 			else
 			{
@@ -243,7 +247,7 @@ namespace MyMedData.Windows
 			if (EntitiesListBox.SelectedItem == null)
 			{
 				_editedEntity = null;
-				UpdateEditedEntity();
+				UpdateEditedEntityFromUi();
 			}
 		}
 
@@ -274,12 +278,12 @@ namespace MyMedData.Windows
 		}
 		private void NameTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			UpdateEditedEntity();
+			UpdateEditedEntityFromUi();
 		}
 
 		private void CommentTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			UpdateEditedEntity();
+			UpdateEditedEntityFromUi();
 		}
 
 		private void AcceptCommentChangeButton_Click(object sender, RoutedEventArgs e)

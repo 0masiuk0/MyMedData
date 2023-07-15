@@ -121,7 +121,7 @@ namespace MyMedData
 
 							var affectedRecs = ExaminationRecords.Where(rc => rc is LabExaminationRecord)
 								.Cast<LabExaminationRecord>()
-								.Where(labRec => labRec.ExaminationType == oldLabTestType);
+								.Where(labRec => labRec.ExaminationType?.Id == oldLabTestType.Id);
 
 							foreach (var rec in affectedRecs)
 							{
@@ -140,7 +140,7 @@ namespace MyMedData
 
 							var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
 								.Cast<DoctorExaminationRecord>()
-								.Where(docRec => docRec.ExaminationType == oldDocType);
+								.Where(docRec => docRec.ExaminationType?.Id == oldDocType.Id);
 
 							foreach (var rec in affectedRecs)
 							{
@@ -159,7 +159,7 @@ namespace MyMedData
 
 							var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
 								.Cast<DoctorExaminationRecord>()
-								.Where(docRec => docRec.Doctor == oldDoc);
+								.Where(docRec => docRec.Doctor?.Id == oldDoc.Id);
 							foreach (var rec in affectedRecs)
 							{
 								rec.Doctor = newDoctor;
@@ -175,7 +175,7 @@ namespace MyMedData
 						{
 							RecordsDataBase.SubstituteClinic(oldClinic, newClinic, RecordsDatabaseContext);
 
-							var affectedRecs = ExaminationRecords.Where(rec => rec.Clinic == oldClinic);
+							var affectedRecs = ExaminationRecords.Where(rec => rec.Clinic?.Id == oldClinic.Id);
 							foreach (var rec in affectedRecs)
 							{
 								rec.Clinic = newClinic;
@@ -209,7 +209,7 @@ namespace MyMedData
 
 						var affectedRecs = ExaminationRecords.Where(rc => rc is LabExaminationRecord)
 							.Cast<LabExaminationRecord>()
-							.Where(labRec => labRec.ExaminationType == labTestType);
+							.Where(labRec => labRec.ExaminationType?.Id == labTestType.Id);
 						foreach (var rec in affectedRecs)
 						{
 							rec.ExaminationType.Comment = comment;
@@ -221,41 +221,41 @@ namespace MyMedData
 				case EntityType.DoctorType:
 					if (DoctorTypesCache.FirstOrDefault(dt => dt.Id == oldValue.Id, null) is ExaminationType docType)
 					{
+						docType.Comment = comment;
 						RecordsDataBase.UpsertDoctorType(docType, RecordsDatabaseContext);
 						var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
 							.Cast<DoctorExaminationRecord>()
-							.Where(docRec => docRec.ExaminationType == docType);
+							.Where(docRec => docRec.ExaminationType?.Id == docType.Id);
 						foreach (var rec in affectedRecs)
 						{
 							rec.ExaminationType.Comment = comment;
-						}
-						docType.Comment = comment;
+						}						
 					}
 					break;
 				case EntityType.Doctor:
 					if (DoctorCache.FirstOrDefault(doc => doc.Id == oldValue.Id, null) is Doctor doc)
 					{
+						doc.Comment = comment;
 						RecordsDataBase.UpsertDoctor(doc, RecordsDatabaseContext);
 						var affectedRecs = ExaminationRecords.Where(rc => rc is DoctorExaminationRecord)
 							.Cast<DoctorExaminationRecord>()
-							.Where(docRec => docRec.Doctor == doc);
+							.Where(docRec => docRec.Doctor?.Id == doc.Id);
 						foreach (var rec in affectedRecs)
 						{
 							rec.Doctor.Comment = comment;
 						}
-						doc.Comment = comment;
 					}
 					break;
 				case EntityType.Clinic:
 					if (ClinicCache.FirstOrDefault(clinic => clinic.Id == oldValue.Id, null) is Clinic clinic)
 					{
+						clinic.Comment = comment;
 						RecordsDataBase.UpsertClinic(clinic, RecordsDatabaseContext);
-						var affectedRecs = ExaminationRecords.Where(rec => rec.Clinic == clinic);
+						var affectedRecs = ExaminationRecords.Where(rec => rec.Clinic?.Id == clinic.Id);
 						foreach (var rec in affectedRecs)
 						{
 							rec.Clinic.Comment = comment;
 						}
-						clinic.Comment = comment;
 					}
 					break;
 				default: throw new Exception("Impossible exeption 8");

@@ -229,15 +229,25 @@ namespace MyMedData.Controls
 				RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
 			}
 			else if (e.Key == Key.Escape)
-			{
-				SelectedItem = null;
-				RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
-			}
+				Cancel();
 		}
 
 		private void UserControl_Loaded(object sender, RoutedEventArgs e)
 		{
 			UpdateNewEntityButtonEnabling();
+			EntitiesDataGrid.Focus();
+		}
+
+		private void UserControl_KeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Escape)
+				Cancel();
+		}
+
+		private void Cancel()
+		{
+			SelectedItem = null;
+			RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
 		}
 	}
 }

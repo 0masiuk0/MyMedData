@@ -273,8 +273,7 @@ namespace MyMedData.Controls
 
 				entityManager.SelectionDone += (o, e) => EntityPopup.IsOpen = false;
 				
-                EntityPopup.IsOpen = true;
-				EntityPopup.Focus();
+                EntityPopup.IsOpen = true;				
             }
         }
 
