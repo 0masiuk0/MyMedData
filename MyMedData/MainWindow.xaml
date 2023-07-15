@@ -110,7 +110,7 @@
                     DockPanel.Dock="Left" VerticalAlignment="Center"
                     Height="40" Width="40" BorderBrush="Transparent"
                     Margin="5" Padding="2" Background="{StaticResource LightDarkBackColor}"
-                   ToolTip="Настойки" ToolTipService.InitialShowDelay="200"
+                   ToolTip="Редактор базы данных" ToolTipService.InitialShowDelay="200"
                     Click="EntitiesEditorButton_Click">
                 <Image Source="{StaticResource MedicalEntitiesIcon}"/>
             </Button>

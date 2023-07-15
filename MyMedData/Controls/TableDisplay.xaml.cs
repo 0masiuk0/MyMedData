@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.DirectoryServices;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -56,13 +57,33 @@ namespace MyMedData.Controls
 		private readonly CollectionViewSource _recordsCollectionsViewSource;
 
 		private void RecordsDataGrid_Loaded(object sender, RoutedEventArgs e)
-		{
+		{		
 			foreach(var column in RecordsDataGrid.Columns) 
 			{
 				column.CanUserResize = true;
 				column.CanUserSort = true;
 			}
-		
+
+			var dateColumn = DateDataGridColumn;
+
+			if (dateColumn == null) return;
+
+			// Clear current sort descriptions
+			RecordsDataGrid.Items.SortDescriptions.Clear();
+
+			// Add the new sort description
+			RecordsDataGrid.Items.SortDescriptions.Add(new SortDescription(dateColumn.SortMemberPath, ListSortDirection.Descending));
+
+			// Apply sort
+			foreach (var col in RecordsDataGrid.Columns)
+			{
+				col.SortDirection = null;
+			}
+			dateColumn.SortDirection = ListSortDirection.Descending;
+
+			// Refresh items to display sort
+			RecordsDataGrid.Items.Refresh();
+
 		}
 
 		private void RecordDisplay_ChangesSavedToDB(object sender, ChangesSavedToDBEventArgs e)
