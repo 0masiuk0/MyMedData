@@ -84,6 +84,7 @@ namespace MyMedData.Controls
 			// Refresh items to display sort
 			RecordsDataGrid.Items.Refresh();
 
+			RecordDisplay.ChangesSavedToDB += RecordDisplay_ChangesSavedToDB;
 		}
 
 		private void RecordDisplay_ChangesSavedToDB(object sender, ChangesSavedToDBEventArgs e)
@@ -138,7 +139,10 @@ namespace MyMedData.Controls
 				throw new Exception("Source item in table datagrid is not ExaminationRecord somehow.");
 			}
 		}		
+
+		public void UpdateRecordView()
+		{
+			RecordDisplay.UpdateView();
+		}
     }
-
-
 }

@@ -337,16 +337,26 @@ namespace MyMedData
 
 		internal static void SubstituteLabExaminationType(ExaminationType oldLabTestType, ExaminationType newLabExType, LiteDatabase db)
 		{
-			var labExTypeCol = db.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);			
+			var labExTypeCol = db.GetCollection<ExaminationType>(ExaminationType.LabAnalysisTypesDbCollectionName);		
+			var labExamCol = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
 
 			db.BeginTrans();
 			try
 			{
+				if (labExTypeCol.Exists(lab => lab.ExaminationTypeTitle == newLabExType.ExaminationTypeTitle))
+					throw new InvalidDbIdException(newLabExType.ExaminationTypeTitle);
+
+				labExTypeCol.Insert(newLabExType);
+
+				foreach(var affectedRec in labExamCol.Find(labExam => labExam.ExaminationType.ExaminationTypeTitle == oldLabTestType.ExaminationTypeTitle))
+				{
+					affectedRec.ExaminationType = newLabExType;
+					labExamCol.Update(affectedRec);
+				}
+
 				var deletionOK = labExTypeCol.Delete(oldLabTestType.ExaminationTypeTitle);
 				if (!deletionOK)
 					throw new InvalidDbIdException(oldLabTestType.ExaminationTypeTitle);
-
-				labExTypeCol.Insert(newLabExType);
 			}
 			catch (InvalidDbIdException badIdException)
 			{
@@ -364,15 +374,25 @@ namespace MyMedData
 		internal static void SubstituteDocType(ExaminationType oldDocType, ExaminationType newDocType, LiteDatabase db)
 		{
 			var docTypeCol = db.GetCollection<ExaminationType>(ExaminationType.DoctorTypesDbCollectionName);
+			var docExamRecordsCol = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
 
 			db.BeginTrans();
 			try
 			{
-				var deletionOK = docTypeCol.Delete(oldDocType.ExaminationTypeTitle);
-				if (!deletionOK)
-					throw new InvalidDbIdException(oldDocType.ExaminationTypeTitle);
+				if (docTypeCol.Exists(doc => doc.ExaminationTypeTitle == newDocType.ExaminationTypeTitle))
+					throw new InvalidDbIdException(newDocType.ExaminationTypeTitle);
 
 				docTypeCol.Insert(newDocType);
+
+				foreach (var affectedRecord in docExamRecordsCol.Find(docRec => docRec.ExaminationType.ExaminationTypeTitle == oldDocType.ExaminationTypeTitle))
+				{
+					affectedRecord.ExaminationType = newDocType;
+					docExamRecordsCol.Update(affectedRecord);
+				}
+				var deletionOK = docTypeCol.Delete(oldDocType.ExaminationTypeTitle);
+
+				if (!deletionOK)
+					throw new InvalidDbIdException(oldDocType.ExaminationTypeTitle);				
 			}
 			catch (InvalidDbIdException badIdException)
 			{
@@ -390,15 +410,26 @@ namespace MyMedData
 		internal static void SubstituteDoctor(Doctor oldDoc, Doctor newDoctor, LiteDatabase db)
 		{
 			var doctorCol = db.GetCollection<Doctor>(Doctor.DbCollectionName);
+			var docExamRecordsCol = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
 
 			db.BeginTrans();
 			try
 			{
+				if (doctorCol.Exists(doc => doc.Name == newDoctor.Name))
+					throw new InvalidDbIdException(newDoctor.Name);
+
+				doctorCol.Insert(newDoctor);
+
+				foreach(var affectedRec in docExamRecordsCol.Find(docRec => docRec.Doctor.Name == oldDoc.Name))
+				{
+					affectedRec.Doctor = newDoctor;
+					docExamRecordsCol.Update(affectedRec);
+				}
+
 				var deletionOK = doctorCol.Delete(oldDoc.Name);
 				if (!deletionOK)
 					throw new InvalidDbIdException(oldDoc.Name);
 
-				doctorCol.Insert(newDoctor);
 			}
 			catch (InvalidDbIdException badIdException)
 			{
@@ -416,15 +447,32 @@ namespace MyMedData
 		internal static void SubstituteClinic(Clinic oldClinic, Clinic newClinic, LiteDatabase db)
 		{
 			var clinicCol = db.GetCollection<Clinic>(Clinic.DbCollectionName);
+			var docExamRecordsCol = db.GetCollection<DoctorExaminationRecord>(DoctorExaminationRecord.DbCollectionName);
+			var labExamCol = db.GetCollection<LabExaminationRecord>(LabExaminationRecord.DbCollectionName);
 
 			db.BeginTrans();
 			try
 			{
+				if (clinicCol.Exists(cl => cl.Name == newClinic.Name))
+					throw new InvalidDbIdException(newClinic.Name);
+
+				clinicCol.Insert(newClinic);
+
+				foreach(var affectedRecord in docExamRecordsCol.Find(docRec => docRec.Clinic.Name == oldClinic.Name))
+				{
+					affectedRecord.Clinic = newClinic;
+					docExamRecordsCol.Update(affectedRecord);
+				}
+
+				foreach(var affectedLabRecord in labExamCol.Find(labRec => labRec.Clinic.Name == oldClinic.Name)) 
+				{
+					affectedLabRecord.Clinic = newClinic;
+					labExamCol.Update(affectedLabRecord);
+				}
+
 				var deletionOK = clinicCol.Delete(oldClinic.Name);
 				if (!deletionOK)
 					throw new InvalidDbIdException(oldClinic.Name);
-
-				clinicCol.Insert(newClinic);
 			}
 			catch (InvalidDbIdException badIdException)
 			{

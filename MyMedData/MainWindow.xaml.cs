@@ -267,6 +267,7 @@ namespace MyMedData
 			this.Effect = blurEffect;
 			var entitiesWindow = new EntitiesEditorWindow(ActiveSession);
 			entitiesWindow.ShowDialog();
+			RecordsTableDisplay.UpdateRecordView();
 			this.Effect = null;
 		}
 	}

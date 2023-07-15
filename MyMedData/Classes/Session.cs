@@ -190,11 +190,13 @@ namespace MyMedData
 			}
 			catch(DbOperationException dbEx)
 			{
-				MessageBox.Show("Возникла ошибка.", dbEx.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(dbEx.Message, "Возникла ошибка.", MessageBoxButton.OK, MessageBoxImage.Error);
+				throw new Exception(dbEx.Message);
 			}
 			catch(InvalidDbIdException idEx)
 			{
-				MessageBox.Show("Недопустимый ID!", $"ID {idEx.ID} уже существует или недопустимый.");
+				MessageBox.Show($"ID {idEx.ID} уже существует или недопустимый.", "Недопустимый ID!", MessageBoxButton.OK, MessageBoxImage.Error);
+				throw new Exception(idEx.Message);
 			}
 		}
 

@@ -136,22 +136,26 @@ namespace MyMedData.Windows
 
 		private void UpdateMedicalEntityDbAndCache(IMedicalEntity oldValue, IdAndComment newValue)
 		{
-			if (oldValue.Comment != newValue.Comment) 
+			try
 			{
-				ActiveSession.UpdateMedicalEntityComment(oldValue, newValue.Comment, Mode);
-			}
+				if (oldValue.Comment != newValue.Comment)
+				{
+					ActiveSession.UpdateMedicalEntityComment(oldValue, newValue.Comment, Mode);
+				}
 
-			if(oldValue.Id != newValue.Id)
-			{
-				ActiveSession.UpdateMedicalEntityId(oldValue, newValue.GenerateEntity(), Mode);
-			}
+				if (oldValue.Id != newValue.Id)
+				{
+					ActiveSession.UpdateMedicalEntityId(oldValue, newValue.GenerateEntity(), Mode);
+				}
 
-			var entityToUpdate = _entities.First(en => en.Id ==  oldValue.Id);
-			var i = _entities.IndexOf(entityToUpdate);
-			_entities.RemoveAt(i);
-			_entities.Insert(i, newValue);
-			EntitiesListBox.SelectedItem = newValue;
-			newValue.Obsolete = GetRecordsAssociatedWithEntity(newValue).Any();
+				var entityToUpdate = _entities.First(en => en.Id == oldValue.Id);
+				var i = _entities.IndexOf(entityToUpdate);
+				_entities.RemoveAt(i);
+				_entities.Insert(i, newValue);
+				EntitiesListBox.SelectedItem = newValue;
+				newValue.Obsolete = GetRecordsAssociatedWithEntity(newValue).Any();
+			}
+			catch { } //Message handled in Session;
 		}			
 
 		private void UpdateEditedEntityFromUi()

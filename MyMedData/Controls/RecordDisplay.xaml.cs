@@ -56,6 +56,11 @@ namespace MyMedData.Controls
 			}
 		}
 
+		public void UpdateView()
+		{
+			ItemChanged(this, new DependencyPropertyChangedEventArgs(ItemProperty, null, Item));
+		}
+
 		private static void ItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
          {
             RecordDisplay recordDisplay = (RecordDisplay)d;

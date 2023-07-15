@@ -137,6 +137,7 @@
                         <RowDefinition Height="28"/>
                         <RowDefinition/>
                         <RowDefinition Height="5"/>
+                        <RowDefinition Height="28"/>
                         <RowDefinition Height="2*"/>
                     </Grid.RowDefinitions>
 
@@ -152,7 +153,7 @@
                             Click="DenyNameChangeButton_Click"/>
 
                     <TextBlock x:Name="CommentLabel" Text="Комментарий" Grid.Row="2" Grid.ColumnSpan="2"
-                               Style="{StaticResource HeaderLabel}" HorizontalAlignment="Center"/>
+                               Style="{StaticResource HeaderLabel}" HorizontalAlignment="Left"/>
                     <TextBox x:Name="CommentTextBox" Grid.ColumnSpan="2" Grid.Row="3" Style="{StaticResource TextBoxStyle}"
                              VerticalAlignment="Stretch" Margin="10,5,5,5" 
                              TextChanged="CommentTextBox_TextChanged" KeyDown="CommentTextBox_KeyDown"/>
@@ -163,9 +164,12 @@
                             Style="{StaticResource AcceptionButton}" Grid.Column="3" Grid.Row="3"
                             Click="DenyCommentChangeButton_Click"/>
 
-                    <ListBox x:Name="RecordsListBox" Grid.Row="5" Grid.ColumnSpan="4"
+                    <TextBlock x:Name="RecordsListLabel" Text="Список записей" Grid.Row="5" Grid.ColumnSpan="2"
+                               Style="{StaticResource HeaderLabel}" HorizontalAlignment="Left"/>
+
+                    <ListBox x:Name="RecordsListBox" Grid.Row="6" Grid.ColumnSpan="4"
                             Background="{StaticResource LightDarkBackColor}"
-                            Margin="10" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
+                            Margin="10, 5, 8, 8" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             DataContext="{Binding ElementName=EntitiesListBox, Path=SelectedItem}"
                             DataContextChanged="RecordsListBox_DataContextChanged" d:ItemsSource="{d:SampleData ItemCount=5}"                            >
