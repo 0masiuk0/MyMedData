@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:MyMedData.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             DataContextChanged="UserControl_DataContextChanged">
+             DataContextChanged="UserControl_DataContextChanged"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <CollectionViewSource x:Key="EntitiesView" Filter="CollectionViewSource_Filter"/>
         <Style x:Key="EntityTextBoxStyle" TargetType="TextBox">
@@ -28,17 +29,17 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="{Binding ElementName=TitleDataGridColumn, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged, FallbackValue=300}"/>
                     <ColumnDefinition MinWidth="300"/>
-                    <ColumnDefinition Width="45"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <TextBox x:Name="TitleTextBox" Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-                <TextBox x:Name="CommentTextBox" Grid.Column="1" Margin="6,0,0,0"
+                <TextBox x:Name="CommentTextBox" Grid.Column="1" Margin="6,0,3,0"
                          Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                 <Button x:Name="AddNewEntityButton" Grid.Column="2" Style="{StaticResource UnsizedDarkButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Center"
-                Width="25" Height="25" Content="+" FontSize="25" Padding="0,-8,0,0" 
-                IsEnabled="False"
+                Width="25" Height="25" Content="+" FontSize="25" Padding="0,-9,0,0"  Margin="8" BorderThickness="2.5"
+                IsEnabled="False" d:IsEnabled="True"
                 Click="AddNewEntityButton_Click"/>
             </Grid>
 

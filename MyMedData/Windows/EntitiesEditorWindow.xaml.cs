@@ -284,17 +284,17 @@ namespace MyMedData.Windows
 
 		private void AcceptCommentChangeButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null) 
+			if (EntityViewGrid.DataContext is IdAndComment ic && _editedEntity != null) 
 			{
-				UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+				UpdateMedicalEntityDbAndCache(ic.GenerateEntity(), _editedEntity);
 			}			
 		}
 
 		private void AcceptNameChangeButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null)
+			if (EntityViewGrid.DataContext is IdAndComment ic && _editedEntity != null)
 			{
-				UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+				UpdateMedicalEntityDbAndCache(ic.GenerateEntity(), _editedEntity);
 			}
 		}
 
@@ -302,9 +302,9 @@ namespace MyMedData.Windows
 		{
 			if (e.Key == Key.Enter && AcceptNameChangeButton.IsEnabled)
 			{
-				if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null)
+				if (EntityViewGrid.DataContext is IdAndComment ic && _editedEntity != null)
 				{
-					UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+					UpdateMedicalEntityDbAndCache(ic.GenerateEntity(), _editedEntity);
 				}
 			}
 		}
@@ -313,9 +313,9 @@ namespace MyMedData.Windows
 		{
 			if (e.Key == Key.Enter && AcceptCommentChangeButton.IsEnabled)
 			{
-				if (EntityViewGrid.DataContext is IMedicalEntity entity && _editedEntity != null)
+				if (EntityViewGrid.DataContext is IdAndComment ic && _editedEntity != null)
 				{
-					UpdateMedicalEntityDbAndCache(entity, _editedEntity);
+					UpdateMedicalEntityDbAndCache(ic.GenerateEntity(), _editedEntity);
 				}
 			}
 		}

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.Devices.HumanInterfaceDevice;
 
 namespace MyMedData.Controls
 {
@@ -66,6 +67,8 @@ namespace MyMedData.Controls
 			{
 				TitleDataGridColumn.Binding = null;
 			}
+
+			UpdateNewEntityButtonEnabling();
         }
 		        
 		private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
@@ -140,18 +143,25 @@ namespace MyMedData.Controls
 				e.Accepted = true;
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if ((DataContext is ObservableCollection<ExaminationType> examinationTypesCollection
-				    && examinationTypesCollection.FirstOrDefault(t => t.ExaminationTypeTitle.ToLower() == TitleTextBox.Text.Trim(), null) is ExaminationType)
-				|| (DataContext is ObservableCollection<Clinic> clinicTypesCollection
-					&& clinicTypesCollection.FirstOrDefault(t => t.Name.ToLower() == TitleTextBox.Text.Trim(), null) is Clinic)
-				|| (DataContext is ObservableCollection<Doctor> doctorsCollection
-					&& doctorsCollection.FirstOrDefault(t => t.Name.ToLower() == TitleTextBox.Text.Trim(), null) is Doctor))
-						AddNewEntityButton.IsEnabled = false;
-                else
-					    AddNewEntityButton.IsEnabled = !string.IsNullOrWhiteSpace(TitleTextBox.Text);            
-        }
+		private void UpdateNewEntityButtonEnabling()
+		{
+			if ((DataContext is ObservableCollection<ExaminationType> examinationTypesCollection
+								&& examinationTypesCollection.FirstOrDefault(t => t.ExaminationTypeTitle.ToLower() == TitleTextBox.Text.Trim(), null) is ExaminationType)
+							|| (DataContext is ObservableCollection<Clinic> clinicTypesCollection
+								&& clinicTypesCollection.FirstOrDefault(t => t.Name.ToLower() == TitleTextBox.Text.Trim(), null) is Clinic)
+							|| (DataContext is ObservableCollection<Doctor> doctorsCollection
+								&& doctorsCollection.FirstOrDefault(t => t.Name.ToLower() == TitleTextBox.Text.Trim(), null) is Doctor))
+			{
+				AddNewEntityButton.IsEnabled = false;
+				AddNewEntityButton.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				bool enableNew = !string.IsNullOrWhiteSpace(TitleTextBox.Text);
+				AddNewEntityButton.IsEnabled = enableNew;
+				AddNewEntityButton.Visibility = enableNew ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
 
 		private void AddNewEntityButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -199,10 +209,10 @@ namespace MyMedData.Controls
             remove { RemoveHandler(SelectionDoneEvent, value); }
         }
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-
-        }
+			UpdateNewEntityButtonEnabling();
+		}
 
 		internal void Clear()
 		{
@@ -223,6 +233,11 @@ namespace MyMedData.Controls
 				SelectedItem = null;
 				RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
 			}
+		}
+
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			UpdateNewEntityButtonEnabling();
 		}
 	}
 }
