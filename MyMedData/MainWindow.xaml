@@ -68,7 +68,7 @@
         
         <DockPanel x:Name="StatusBarDockPanel"
             Background="{StaticResource DarkBackColor}"
-            Margin="0,10,0,-5"
+            Margin="0,10,0,0"
             DockPanel.Dock="Bottom">
             <Button x:Name="NewDocExaminationButton" DockPanel.Dock="Left" VerticalAlignment="Center"
                     Height="40" Width="40" BorderBrush="Transparent"
