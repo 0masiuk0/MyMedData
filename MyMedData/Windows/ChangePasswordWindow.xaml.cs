@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyMedData.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,9 +39,9 @@ namespace MyMedData.Windows
 				MessageBox.Show("Пароли не совпадают.", "Неверный ввод.", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
-			if (!User.IsValidPassword(PasswordBox1.Password))
+			if (!Authorizator.IsValidPassword(PasswordBox1.Password))
 			{
-				MessageBox.Show("Пароль должен содержать только латинские буквы цифры и \"_\".", "Неверный ввод.", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("Пароль должен содержать только латинские буквы цифры и \"_\" или быть пустым", "Неверный ввод.", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
 

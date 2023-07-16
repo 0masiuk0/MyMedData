@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace MyMedData.Classes
 {
@@ -51,8 +52,11 @@ namespace MyMedData.Classes
 
 		public static bool AuthorizeUser(User user, MainWindow mainWindow)
 		{
-			if (mainWindow.ActiveUser == user)
+			if (mainWindow.ActiveUser?.Name == user.Name)
+			{
+				RaiseUserAuthorizedEvent(user);
 				return true;
+			}
 
 			string? pwrd;
 
@@ -63,6 +67,7 @@ namespace MyMedData.Classes
 			else
 			{
 				EnterPasswordWindow passwordWindow = new EnterPasswordWindow(user);
+				passwordWindow.Owner = mainWindow;
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
 				passwordWindow.ShowDialog();
@@ -90,7 +95,7 @@ namespace MyMedData.Classes
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Непредвиденная ошибка", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(ex.Message, "Непредвиденная ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			return false;
 		}
@@ -142,6 +147,30 @@ namespace MyMedData.Classes
 			SettingsManager.UpsertSetting("last_user", user.Id.ToString());
 			UserAuthorized?.Invoke(new UserAuthorizedEventArgs(user));
 		}
+
+
+//----------------------------STATIC MEMBERS---------------------------------------------
+		public static bool IsValidUserName(string name)
+		{			
+			bool validName = name.Length > 1 && name.Length < 30;
+			foreach (char c in name)
+			{
+				validName &= char.IsLetterOrDigit(c) || c == '_' || char.IsWhiteSpace(c);
+			}
+
+			return validName;
+		}
+
+		public static bool IsValidPassword(string password)
+		{
+			bool validPassword = password.Length < 30;
+			foreach (char c in password)
+			{
+				validPassword &= (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || char.IsDigit(c);
+			}
+
+			return validPassword;
+		}		
 	}
 
 	public class UserDbAccessException : Exception

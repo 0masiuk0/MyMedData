@@ -66,8 +66,9 @@ namespace MyMedData.Windows
 			changePasswordWindow.ShowDialog();
 			if (changePasswordWindow.DialogResult ?? false)
 			{
-				Password = changePasswordWindow.NewPassword ?? "";				
-			}
+				Password = changePasswordWindow.NewPassword ?? "";
+				UsersDataBase.UpdateUser(EditedUser, _usersDbFileName);
+			}			
 		}
 
 		private void EditDBFileNameButton_Click(object sender, RoutedEventArgs e)

@@ -20,7 +20,7 @@
         <uc:UserPlaque x:Name="EditedUserPlaque" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=EditedUser}"
                         Margin="5,10,5,0" HorizontalAlignment="Center" Width="350"
                         BorderBrush="{StaticResource DarkBackColor}" BorderThickness="1"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,5">
             <Button x:Name="EditNameButton" Content="Назначить имя" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditNameButton_Click"/>
             <Button x:Name="EditColorButton" Content="Назначить цвет" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditColorButton_Click"/>
             <Button x:Name="EditPasswordButton" Content="Назначить пароль" Style="{StaticResource LocalButtonStyle}" Height="28" Click="EditPasswordButton_Click"/>

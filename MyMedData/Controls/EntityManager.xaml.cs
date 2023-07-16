@@ -99,7 +99,7 @@ namespace MyMedData.Controls
 			{
                 if (!string.IsNullOrWhiteSpace(TitleTextBox.Text))
                 {
-                    if (!examinationType.ExaminationTypeTitle.ToLower().StartsWith(TitleTextBox.Text.ToLower()))
+                    if (!examinationType.ExaminationTypeTitle?.ToLower().StartsWith(TitleTextBox.Text.ToLower()) ?? true)
                     {
                         e.Accepted = false;
                         return;
@@ -145,12 +145,16 @@ namespace MyMedData.Controls
 
 		private void UpdateNewEntityButtonEnabling()
 		{
-			if ((DataContext is ObservableCollection<ExaminationType> examinationTypesCollection
-								&& examinationTypesCollection.FirstOrDefault(t => t.ExaminationTypeTitle.ToLower() == TitleTextBox.Text.Trim(), null) is ExaminationType)
-							|| (DataContext is ObservableCollection<Clinic> clinicTypesCollection
-								&& clinicTypesCollection.FirstOrDefault(t => t.Name.ToLower() == TitleTextBox.Text.Trim(), null) is Clinic)
-							|| (DataContext is ObservableCollection<Doctor> doctorsCollection
-								&& doctorsCollection.FirstOrDefault(t => t.Name.ToLower() == TitleTextBox.Text.Trim(), null) is Doctor))
+			if (
+				//this is exmainationType dialog AND such type exists in cache
+				(DataContext is ObservableCollection<ExaminationType> examinationTypesCollection 
+							&& examinationTypesCollection.FirstOrDefault(t => t.ExaminationTypeTitle.ToLower() == TitleTextBox.Text.ToLower().Trim(), null) is ExaminationType)
+				//OR this is clinic dialog AND such clinic exists in cache
+				|| (DataContext is ObservableCollection<Clinic> clinicCollection
+							&& clinicCollection.FirstOrDefault(t => t.Name.ToLower() == TitleTextBox.Text.ToLower().Trim(), null) is Clinic)
+				//OR this is Doctor dialog AND such doctor exists in cache
+				|| (DataContext is ObservableCollection<Doctor> doctorsCollection
+							&& doctorsCollection.FirstOrDefault(d => d.Name.ToLower() == TitleTextBox.Text.ToLower().Trim(), null) is Doctor))
 			{
 				AddNewEntityButton.IsEnabled = false;
 				AddNewEntityButton.Visibility = Visibility.Collapsed;

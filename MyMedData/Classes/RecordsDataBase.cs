@@ -107,7 +107,7 @@ namespace MyMedData
 
 
 				LiteDB.Engine.RebuildOptions rebuildOptions = new LiteDB.Engine.RebuildOptions();
-				rebuildOptions.Password = newPassword;
+				rebuildOptions.Password = HashString16(newPassword);
 				try
 				{
 					using (var db = new LiteDatabase(GetConnectionString(tempDbFile.FilePath, oldPassword)))

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
+using MyMedData.Classes;
 
 namespace MyMedData.Windows
 {
@@ -100,8 +101,8 @@ namespace MyMedData.Windows
 			Close();
 		}
 
-		private bool ValidUser => User.IsValidUserName(NewUser.Name);
-		private bool ValidPassword => User.IsValidPassword(PasswordTextBox1.Password);
+		private bool ValidUser => Authorizator.IsValidUserName(NewUser.Name);
+		private bool ValidPassword => Authorizator.IsValidPassword(PasswordTextBox1.Password);
 		private bool PasswordsMatch => PasswordTextBox1.Password == PasswordTextBox2.Password;
 		
 		//IO call and exception processing is too slow to do each TextboxChange.

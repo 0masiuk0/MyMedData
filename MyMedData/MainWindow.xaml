@@ -169,6 +169,7 @@
             <TextBlock x:Name="UsernameTextBlock"
                         FontSize="14"
                         Text="АВТОРИЗУЙТЕСЬ"
+                        ToolTip="Имя пользователя. Двойной клик для авторизации."
                         Background="{StaticResource LightDarkBackColor}"
                         DockPanel.Dock="Right" VerticalAlignment="Center" MinWidth="120"
                         Margin="4,4,10,4" Padding="4" Foreground="{StaticResource DarkThemeFontColor}"/>

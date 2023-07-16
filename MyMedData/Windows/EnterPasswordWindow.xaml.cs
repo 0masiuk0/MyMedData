@@ -26,12 +26,13 @@ namespace MyMedData.Windows
 		{
 			InitializeComponent();
 			_user = user;
+			DataContext = user;
 			Loaded += (o, e) => PasswrodBox.Focus();
 		}
 
 		public string? Password{ get; private set; }
 
-		private void TryAuthorize(object sender, RoutedEventArgs e) => TryAuthorize();
+		private void ReturnPassword(object sender, RoutedEventArgs e) => TryAuthorize();
 
 		private void TryAuthorize()
 		{

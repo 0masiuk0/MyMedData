@@ -10,6 +10,7 @@ using System.Configuration;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using MyMedData.Classes;
 
 namespace MyMedData
 {
@@ -152,30 +153,6 @@ namespace MyMedData
 			return Name;
 		}
 
-
-//----------------------------STATIC MEMBERS---------------------------------------------
-		public static bool IsValidUserName(string name)
-		{			
-			bool validName = name.Length > 1 && name.Length < 30;
-			foreach (char c in name)
-			{
-				validName &= char.IsLetterOrDigit(c) || c == '_' || char.IsWhiteSpace(c);
-			}
-
-			return validName;
-		}
-
-		public static bool IsValidPassword(string password)
-		{
-			bool validPassword = password.Length < 30;
-			foreach (char c in password)
-			{
-				validPassword &= (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || char.IsDigit(c);
-			}
-
-			return validPassword;
-		}		
-
 		public static bool UpdateUser(User updatedUser)
 		{
 			var userDbFilename = ConfigurationManager.AppSettings["UserDbName"];
@@ -207,7 +184,7 @@ namespace MyMedData
 		public bool PasswordIsSet => PasswordHash != null; 
 
 		[BsonIgnore]
-		public bool IsValidUser => PasswordHash != null && IsValidUserName(this.Name) && File.Exists(DatabaseFile);		
+		public bool IsValidUser => PasswordHash != null && Authorizator.IsValidUserName(this.Name) && File.Exists(DatabaseFile);		
 
 		[BsonIgnore]
 		public SolidColorBrush AccountColoredBrush
