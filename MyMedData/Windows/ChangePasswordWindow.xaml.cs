@@ -32,7 +32,7 @@ namespace MyMedData.Windows
 			this._oldPassword = oldPassword;
 		}
 
-		private void OkButtonClick(object sender, RoutedEventArgs e)
+		private void AsquireNewPassword()
 		{
 			if (PasswordBox1.Password != PasswordBox2.Password)
 			{
@@ -45,15 +45,39 @@ namespace MyMedData.Windows
 				return;
 			}
 
-			bool success= _user.ChangePasswordAndRebuildDb(_oldPassword, PasswordBox1.Password);
+			bool success = _user.ChangePasswordAndRebuildDb(_oldPassword, PasswordBox1.Password);
 			_newPassword = success ? PasswordBox1.Password : null;
 			MessageBox.Show("Пароль изменен.", "Успех операции", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-			DialogResult = success;				
+			DialogResult = success;
+		}
+
+		private void Cancel()
+		{
+			DialogResult = false;
+			Close();
 		}
 
 		private void CancelButtonClick(object sender, RoutedEventArgs e)
 		{
-			DialogResult = false;
+			Cancel();
+		}
+
+		private void OkButtonClick(object sender, RoutedEventArgs e)
+		{
+			AsquireNewPassword();
+		}
+
+		private void Window_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter) 
+				AsquireNewPassword();
+			else if (e.Key == Key.Escape) 
+				Cancel(); 
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			PasswordBox1.Focus();
 		}
 	}
 }
