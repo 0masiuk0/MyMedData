@@ -82,7 +82,7 @@
             <TabItem  x:Name="ScannerTabItem"
                       Loaded="ScannerTabItem_Loaded">
                 <TabItem.Header>
-                    <TextBlock x:Name="scannerTabHeaderTextBlcok" Text="Настройки базы данных" FontSize="14">
+                    <TextBlock x:Name="scannerTabHeaderTextBlcok" Text="Настройки сканера" FontSize="14">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
