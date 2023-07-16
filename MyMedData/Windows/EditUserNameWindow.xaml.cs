@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyMedData.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,7 @@ namespace MyMedData.Windows
 		{
 			var newName = UsernameTextBox.Text;
 
-			if (User.IsValidUserName(newName))
+			if (Authorizator.IsValidUserName(newName))
 			{
 				UserName = newName;
 				this.DialogResult = true;

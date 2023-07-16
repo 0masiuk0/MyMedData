@@ -98,7 +98,7 @@ namespace MyMedData.Controls
 			{
 				if (TitleFilterTextBox.Text is string titleFilter && titleFilter.Length > 0)
 				{
-					if (!record.Title.ToLower().Contains(titleFilter.ToLower()))
+					if (!record.Title?.ToLower().Contains(titleFilter.ToLower()) ?? true)
 					{
 						e.Accepted = false;
 						return;
@@ -125,7 +125,7 @@ namespace MyMedData.Controls
 
 				if(CommentFilterTextBox.Text is string commentFilter && commentFilter.Length > 0)
 				{
-					if(!record.Comment.ToLower().Contains(commentFilter.ToLower())) 
+					if(!record.Comment?.ToLower().Contains(commentFilter.ToLower()) ?? true) 
 					{
 						e.Accepted = false; 
 						return; 
