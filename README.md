@@ -10,6 +10,6 @@ WIndows 10+ WPF Приложение. Потому что Windows 10 и дале
 
 # Благодарности
 * [LiteDB](https://www.litedb.org/) - безсерверная база данных.
-* [NAPS2.Wia](https://github.com/cyanfish/naps2-wia) - - библиотека работы со сканерами
+* [NAPS2.Wia](https://github.com/cyanfish/naps2-wia) - библиотека работы со сканерами
 * [PixieColorPicker](https://github.com/PixiEditor/ColorPicker) - инструмент выбора цвета
 * [Lander Verhack гайд по отображению pdf в WPF приложени](https://blogs.u2u.be/lander/post/2018/01/23/Creating-a-PDF-Viewer-in-WPF-using-Windows-10-APIs)
