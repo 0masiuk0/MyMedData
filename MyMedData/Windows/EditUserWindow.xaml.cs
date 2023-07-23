@@ -33,14 +33,8 @@ namespace MyMedData.Windows
 			this.Password = password;
 		}
 
-		private void Window_Loaded(object sender, RoutedEventArgs e)
-		{
-			_usersDbFileName = SettingsManager.AppSettings["UserDbName"]?.Value;
-		}
-
 		public User EditedUser { get; private set; }
 		public string Password { get; private set; }
-		private string _usersDbFileName;
 
 		private void EditNameButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -48,7 +42,7 @@ namespace MyMedData.Windows
 			if (editUserNameWindow.ShowDialog() ?? false)
 			{
 				EditedUser.Name = editUserNameWindow.UserName;
-				UsersDataBase.UpdateUser(EditedUser, _usersDbFileName);
+				AppConfigDatabase.UpdateUser(EditedUser);
 			}
 		}
 
@@ -57,7 +51,7 @@ namespace MyMedData.Windows
 			var colorPickerWindow = new ColorPickerWindow(EditedUser.AccountColor);
 			colorPickerWindow.ShowDialog();
 			EditedUser.AccountColor = colorPickerWindow.SelectedColor;
-			UsersDataBase.UpdateUser(EditedUser, _usersDbFileName);
+			AppConfigDatabase.UpdateUser(EditedUser);
 		}
 
 		private void EditPasswordButton_Click(object sender, RoutedEventArgs e)
@@ -67,7 +61,7 @@ namespace MyMedData.Windows
 			if (changePasswordWindow.DialogResult ?? false)
 			{
 				Password = changePasswordWindow.NewPassword ?? "";
-				UsersDataBase.UpdateUser(EditedUser, _usersDbFileName);
+				AppConfigDatabase.UpdateUser(EditedUser);
 			}			
 		}
 

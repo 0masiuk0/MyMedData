@@ -87,13 +87,24 @@ namespace MyMedData.Windows
 			var password = PasswordTextBox1.Password;
 
 			NewUser.SetPassword(password);
-			if (!RecordsDataBase.CreateUserDocumnetDb(NewUser, password, DbCreationOptions.Ask))
+			try
 			{
-				//неудача создания базы для пользователя		
-				MessageBox.Show("Новый пользователь создан не был.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+				if (!RecordsDataBase.CreateUserDocumnetDb(NewUser, password, DbCreationOptions.Ask))
+				{
+					//неудача создания базы для пользователя		
+					MessageBox.Show("Новый пользователь создан не был.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+					DialogResult = false;
+					Close();
+				}
+				DialogResult = true;
+				Close();
 			}
-			DialogResult = true;
-			Close();
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Новый пользователь создан не был.", MessageBoxButton.OK, MessageBoxImage.Warning);
+				DialogResult = true;
+				Close();
+			}
 		}
 
 		private void CancelButton_Click(object sender, RoutedEventArgs e)

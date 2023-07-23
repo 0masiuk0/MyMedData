@@ -43,42 +43,7 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-
-            <TabItem x:Name="DbaseTabItem">
-                <TabItem.Header>
-                    <TextBlock x:Name="dbTabHeaderTextBlcok" Text="Настройки базы данных" FontSize="14">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{StaticResource DarkThemeFontColor}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=DbaseTabItem, Path=IsSelected}" Value="True">
-                                        <Setter Property="Foreground" Value="{StaticResource DarkBackColor}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>                        
-                    </TextBlock>
-                </TabItem.Header>
-                <StackPanel>
-                    <TextBlock 
-                        FontSize="16"
-                        Foreground="{StaticResource DarkThemeFontColor}"
-                        Margin="{StaticResource StackPanelChildMargin}">
-                    Файл базы данных пользователей
-                    </TextBlock>
-                    <DockPanel Margin="{StaticResource StackPanelChildMargin}">
-                        <Button x:Name="EditUserDBFileButton"
-                                DockPanel.Dock="Right" Background = "Transparent" BorderBrush="Transparent"
-                                Width="25" Height="25" VerticalAlignment="Center" Margin="10,0,0,0" Padding="3"
-                                Content="{StaticResource EditFiledImage}" Click="EditUserDBFileButton_Click">                            
-                        </Button>
-                        <TextBox x:Name="UsersDbFileNameTextBox"
-                            VerticalAlignment="Center"        
-                            IsReadOnly="True"/>                        
-                    </DockPanel>
-                </StackPanel>
-            </TabItem>
-
+            
             <TabItem  x:Name="ScannerTabItem"
                       Loaded="ScannerTabItem_Loaded">
                 <TabItem.Header>

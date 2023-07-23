@@ -23,23 +23,17 @@ namespace MyMedData.Classes
 			using var deviceManager = new WiaDeviceManager();
 			return deviceManager.GetDeviceInfos().Select(info => info.Name()).ToArray();
 		}
-
-		public const string DEFAULT_SCANNER_NAME_SETTING_KEY = "scanner_name";
-		public const string DPI_SETTING_KEY = "scan_DPI";
+				
 		public const int A4_INCH_WIDTH = 8_270;
 		public const int A4_INCH_HEIGHT = 11_670;
 		public const int A5_INCH_WIDTH = 5_800;
 		public const int A5_INCH_HEIGHT = 8_300;
 		public static string[] AVALIBLE_DPI => new string[] { "100", "150", "200", "300" };
-
-		public static string? GetPreferenceScannerName()
-		{
-			return SettingsManager.AppSettings[DEFAULT_SCANNER_NAME_SETTING_KEY]?.Value;
-		}
+		
 
 		public static async Task<bool> CheckThatPrefereedScannerIsAvailible()
 		{
-			if (GetPreferenceScannerName() is not string preferredScannerName)
+			if (AppConfigDatabase.Settings.DefaultScannerName is not string preferredScannerName)
 				return false;
 
 			return await Task.Run(() => PingScanner(preferredScannerName));
@@ -101,7 +95,7 @@ namespace MyMedData.Classes
 			{
 				using WiaDeviceManager wiaDeviceManager = new WiaDeviceManager();
 				var devices = wiaDeviceManager.GetDeviceInfos();
-				var scannerName = ScannerManager.GetPreferenceScannerName();
+				var scannerName = AppConfigDatabase.Settings.DefaultScannerName;
 				if (scannerName == null)
 				{
 					MessageBox.Show("Сканер не выбран. Выберите сканер в настройках приложения", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

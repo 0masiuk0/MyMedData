@@ -8,7 +8,6 @@
         mc:Ignorable="d"
         Title="Редактировать пользователя" Name="editUserWindow"
         SizeToContent="WidthAndHeight" ResizeMode="NoResize"
-        Loaded="Window_Loaded"        
         Style="{StaticResource DarkWindowStyle}">
     <Window.Resources>
         <Style x:Key="LocalButtonStyle" TargetType="Button" BasedOn="{StaticResource UnsizedDarkButtonStyle}">

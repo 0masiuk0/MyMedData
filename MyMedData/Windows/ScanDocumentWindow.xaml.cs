@@ -32,7 +32,7 @@ namespace MyMedData.Windows
 			scanProgressGradientStop2 = scanButtonBrush.GradientStops[2];
 
 			ScannerManager.AVALIBLE_DPI.ToList().ForEach(dpi => DPI_ComboBox.Items.Add(dpi));
-			if (SettingsManager.AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value is string dpi)
+			if (AppConfigDatabase.Settings.DPI is string dpi)
 				DPI_ComboBox.SelectedItem = dpi;
 			else
 				DPI_ComboBox.SelectedIndex = 0;

@@ -38,8 +38,10 @@ namespace MyMedData.Controls
 			AttachmentEditedCollection.CollectionChanged += (o, e) => UpdateRecordDisplay();
 
 			Loaded += (o, e) => UpdateScannerAvailibity();
-			SettingsManager.ParametersChanged +=
-				(paramName, newValue) => { if (paramName == ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY) UpdateScannerAvailibity(); };
+			AppConfigDatabase.Settings.SettingsChanged += (oldValue, newValue) => 
+				{ 
+					if (oldValue.Key == nameof(AppConfigDatabase.Settings.DPI)) UpdateScannerAvailibity(); 
+				};
 
 			EntityPopup = (Popup)TryFindResource("EntityChoicePopup");
 			EntityPopup.Closed += EntityPopup_Closed;

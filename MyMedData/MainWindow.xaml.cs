@@ -46,7 +46,7 @@ namespace MyMedData
 
 			AutoLogOn_Off_Icon = (Image)TryFindResource("AutoLockOffIcon");
 			AutoLogOn_On_Icon = (Image)TryFindResource("AutoLockOnIcon");
-			var autologinParam = SettingsManager.GetOrInsertDefaultValue("auto_log_in", "False");
+			string? autologinParam = AppConfigDatabase.Settings.AutoLogin;
 			autoLogin = autologinParam == "True" ? true : false;
 
 			blurEffect = new BlurEffect();
@@ -61,7 +61,6 @@ namespace MyMedData
 			EntitiesEditorButton.Visibility = Visibility.Collapsed;
 			RecordsTableDisplay.RecordsDataGrid.SelectionChanged += RecordsDataGrid_SelectionChanged;
 
-			CheckUserDb();
 			if (autoLogin)
 			{
 				Authorizator.AuthorizeLastUser(this);
@@ -111,24 +110,7 @@ namespace MyMedData
 			NewLabAnalysisButon.Visibility = Visibility.Collapsed;
 			EntitiesEditorButton.Visibility = Visibility.Collapsed;
 		}
-
-		public void CheckUserDb()
-		{
-			try
-			{
-				using var userDb = Authorizator.GetUsersDatabase();
-			}
-			catch
-			{
-				autoLogin = false;
-				if (MessageBox.Show("Не удалось определить базу данных пользвателей. Создайте или укажите в настройках файл базы пользвателей.",
-						"Не найдена база пользвателей", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) == MessageBoxResult.OK)
-				{
-					OpenSettings();
-				}
-			}
-		}
-
+				
 		bool _autologin;
 		private bool autoLogin
 		{
@@ -246,7 +228,7 @@ namespace MyMedData
 		private void AutlogInButton_Click(object sender, RoutedEventArgs e)
 		{
 			autoLogin = !autoLogin;
-			SettingsManager.UpsertSetting("auto_log_in", autoLogin.ToString());
+			AppConfigDatabase.Settings.AutoLogin = autoLogin.ToString();
 
 			if (sender is not Button button)
 				return;

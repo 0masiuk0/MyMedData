@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.IO;
 using MyMedData.Classes;
-using static MyMedData.Classes.SettingsManager;
 using System.Linq;
 
 namespace MyMedData.Windows
@@ -18,71 +17,28 @@ namespace MyMedData.Windows
 			InitializeComponent();			
 		}
 
-		private Dictionary<string, string> _changedSettings = new();		
-
 		private MainWindow MainWindow => (MainWindow)this.Owner;
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			string? userDbFileName = SettingsManager.AppSettings["UserDbName"]?.Value;
-			if (userDbFileName != null)
-			{
-				if (File.Exists(userDbFileName) && UsersDataBase.FastCheckUserDvValidity(userDbFileName))
-				{
-					UsersDbFileNameTextBox.Text = userDbFileName;
-				}
-				else
-				{
-					UpsertSetting("UserDbName", "");
-				}
-			}
-
 			DBPasswordTextBox.Text = RecordsDataBase.HashString16("");
 		}		
 
 		private void OKbutton_Click(object sender, RoutedEventArgs e)
 		{
-			AddUpdateAppSettings();
+			AppConfigDatabase.Settings.SaveSettings();
 			Close();
 		}
 
 		private void Applybutton_Click(object sender, RoutedEventArgs e)
 		{
-			AddUpdateAppSettings();
+			AppConfigDatabase.Settings.SaveSettings();
 		}
 
 		private void CancelButton_Click(object sender, RoutedEventArgs e)
 		{
-			_changedSettings.Clear();
+			AppConfigDatabase.Settings.CancelSettingUpdate();
 			Close();
-		}
-
-		private void AddUpdateAppSettings()
-		{
-			foreach (var settingKeyValue in _changedSettings)
-			{
-				UpsertSetting(settingKeyValue.Key, settingKeyValue.Value);
-			}
-		}
-
-		private void EditUserDBFileButton_Click(object sender, RoutedEventArgs e)
-		{
-			MainWindow.LogOff();
-			Microsoft.Win32.OpenFileDialog openFileDialog = new ();
-			openFileDialog.Filter = "LiteDB database|*.db";
-			openFileDialog.DefaultExt = ".db";
-			openFileDialog.CheckFileExists = false;
-			if (openFileDialog.ShowDialog() ?? false)
-			{
-				string newPath = openFileDialog.FileName;
-
-				if (!UsersDataBase.CreateNewUsersDb(newPath))
-					System.Windows.MessageBox.Show("Создание/перезапись базы дапнных отменена.", "Отмена операции.",
-						MessageBoxButton.OK, MessageBoxImage.Information);
-
-				UpsertSetting("UserDbName", newPath);
-				UsersDbFileNameTextBox.Text = newPath;
-			}
 		}
 
 		private void AccountPasswordTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -99,7 +55,7 @@ namespace MyMedData.Windows
 				ScannerCombBox.Items.Add(scannerName);
 			}
 
-			int index = ScannerCombBox.Items.IndexOf(ScannerManager.GetPreferenceScannerName());
+			int index = ScannerCombBox.Items.IndexOf(AppConfigDatabase.Settings.DefaultScannerName);
 			if (index > 0)
 			{
 				ScannerCombBox.SelectedIndex = index;
@@ -109,7 +65,7 @@ namespace MyMedData.Windows
 				ScannerCombBox.SelectedIndex = 0;
 			}
 
-			var dpi = AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value;
+			var dpi = AppConfigDatabase.Settings.DPI;
 			var dpi_list = ScannerManager.AVALIBLE_DPI.ToList();
 			dpi_list.ForEach(dpi => DPI_CombBox.Items.Add(dpi));
 			
@@ -119,19 +75,18 @@ namespace MyMedData.Windows
 
 		private void ScannerCombBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (ScannerCombBox.SelectedItem.ToString() is string newScannerName && newScannerName != AppSettings[ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY]?.Value)
-				_changedSettings[ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY] = newScannerName;
+			if (ScannerCombBox.SelectedItem.ToString() is string newScannerName)
+				AppConfigDatabase.Settings.DefaultScannerName = newScannerName;
 			else
-				_changedSettings.Remove(ScannerManager.DEFAULT_SCANNER_NAME_SETTING_KEY);
+				AppConfigDatabase.Settings.CancelSettingUpdate(nameof(AppConfigDatabase.Settings.DefaultScannerName));
         }
 
 		private void DPI_CombBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (DPI_CombBox.SelectedItem is string newDPI
-				&& newDPI != AppSettings[ScannerManager.DPI_SETTING_KEY]?.Value)
-				_changedSettings[ScannerManager.DPI_SETTING_KEY] = newDPI;
+			if (DPI_CombBox.SelectedItem is string newDPI)
+				AppConfigDatabase.Settings.DPI = newDPI;
 			else
-				_changedSettings.Remove(ScannerManager.DPI_SETTING_KEY);
+				AppConfigDatabase.Settings.CancelSettingUpdate(nameof(AppConfigDatabase.Settings.DPI));
 		}
     }
 }

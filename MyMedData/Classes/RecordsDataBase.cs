@@ -23,6 +23,9 @@ namespace MyMedData
 				if (!user.CheckPassword(password))
 					throw new InvalidDataException($"Попытка создать файл базы данных с ключом шифрования, отличным от пароля пользователя {user.Name}");
 
+				if (FileChecker.IsFileLocked(user.DatabaseFile))
+					throw new Exception("Файл занят.");
+
 				//есть файл
 				if (options == DbCreationOptions.UseExistingIfFound)
 				{
@@ -91,12 +94,13 @@ namespace MyMedData
 		{
 			try
 			{
-				using (var db = new LiteDatabase(GetConnectionString(filename, password)))
-				{
-					return db.GetCollectionNames().All(name => _allowedCollectionNames.Contains(name));
-				}
+				using var db = new LiteDatabase(GetConnectionString(filename, password));				
+				return db.GetCollectionNames().Any();				
 			}
-			catch(LiteException ex) { return false; }
+			catch
+			{
+				return false; 
+			}
 		}
 
 		public static bool ChangeDbEncryptionPassword(string filename, string oldPassword, string newPassword)
@@ -125,7 +129,7 @@ namespace MyMedData
 			}
 		}
 
-		private static bool CreateFreshRecordDb(string filename, string password, bool keepsPrivateDoctorsDb = false)
+		private static bool CreateFreshRecordDb(string filename, string password)
 		{
 			try
 			{

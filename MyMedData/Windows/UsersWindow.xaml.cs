@@ -19,6 +19,7 @@ using MyMedData.Controls;
 using MyMedData.Windows;
 using System.Windows.Markup;
 using MyMedData.Classes;
+using System.Diagnostics.Eventing.Reader;
 
 namespace MyMedData.Windows
 {
@@ -47,8 +48,12 @@ namespace MyMedData.Windows
 		{
 			try
 			{
-				using (var userDb = Authorizator.GetUsersDatabase())
-					ReadUsers(userDb);
+				var usersCollection = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(User.DbCollectionName);
+				foreach (User u in usersCollection.FindAll())
+				{
+					_users.Add(u);
+				}				
+
 				if (MainWindow.ActiveUser is User user)
 				{
 					User? dbUser = _users.FirstOrDefault(u => u.Id == user.Id, null);
@@ -64,7 +69,11 @@ namespace MyMedData.Windows
 						}
 					}
 				}
-				UsersListBox.SelectedIndex = 0;
+
+				if (_users.Count > 0) 
+					UsersListBox.SelectedIndex = 0;
+				else
+					LoginButton.IsEnabled = DeleteUserButton.IsEnabled = EditUserButton.IsEnabled = false;
 			}
 			catch (UserDbAccessException ex) 
 			{
@@ -75,17 +84,7 @@ namespace MyMedData.Windows
 
 			UsersListBox.Focus();
 		}
-
-		private void ReadUsers(LiteDatabase usersDb)
-		{
-			var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
-			foreach (User user in usersCollection.FindAll())
-			{
-				Users.Add(user);
-			}
-		}
-
-
+		
 		private void AddUserButton_Click(object sender, RoutedEventArgs e)
 		{
 			AddUserWindow addUserWindow = new();
@@ -93,12 +92,7 @@ namespace MyMedData.Windows
 			if (addUserWindow.DialogResult == true)
 			{
 				var newUser = addUserWindow.NewUser;
-				using (var usersDb = new LiteDatabase(UsersDataBase.GetUsersDbFileNameFromConfig()))
-				{
-					var usersCollection = usersDb.GetCollection<User>(User.DbCollectionName);
-					usersCollection.Insert(newUser);
-					usersCollection.EnsureIndex(x => x.Name);
-				}
+				AppConfigDatabase.AddNewUser(newUser);
 
 				Users.Add(newUser);
 			}
@@ -172,7 +166,7 @@ namespace MyMedData.Windows
 				{
 					case MessageBoxResult.Yes:
 						{
-							switch (MessageBox.Show("Вы уверены, что требуется удалить все данные пользвателя?", "Удаления данных",
+							switch (MessageBox.Show("Вы уверены, что требуется удалить все данные пользователя?", "Удаление данных",
 										MessageBoxButton.YesNoCancel))
 							{
 								case MessageBoxResult.Yes: databaseDeletion = true; break;
@@ -185,7 +179,7 @@ namespace MyMedData.Windows
 					default: return;
 				}
 
-				bool success = UsersDataBase.DeleteUser(user, databaseDeletion, UsersDataBase.GetUsersDbFileNameFromConfig());
+				bool success = AppConfigDatabase.DeleteUser(user, databaseDeletion);
 
 				if (success)
 				{

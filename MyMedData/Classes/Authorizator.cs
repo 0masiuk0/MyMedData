@@ -15,41 +15,6 @@ namespace MyMedData.Classes
 {
 	public static class Authorizator
 	{
-		public static LiteDatabase GetUsersDatabase()
-		{
-			try
-			{
-				var appSettings = SettingsManager.AppSettings;
-
-				string? UsersDbFileName = appSettings["UserDbName"]?.Value;
-				if (UsersDbFileName == null)
-				{
-					throw new UserDbAccessException("Адрес базы данных пользователей не настроен!");
-				}
-				else
-				{
-					//Нет активной сессии или она не заниает UsersDb
-					if (File.Exists(UsersDbFileName) && UsersDataBase.FastCheckUserDvValidity(UsersDbFileName))
-					{
-						return new LiteDatabase(UsersDbFileName);
-					}
-					else
-					{
-						throw new UserDbAccessException("Не найден корректный файл с базой пользователей.");
-					}
-				}
-			}
-			catch (UserDbAccessException dbEx)
-			{
-				throw dbEx;
-			}
-			catch (Exception ex)
-			{
-				throw new UserDbAccessException("Не удалось прочитать базу пользвателей", ex);
-			}
-
-		}
-
 		public static bool AuthorizeUser(User user, MainWindow mainWindow)
 		{
 			if (mainWindow.ActiveUser?.Name == user.Name)
@@ -104,14 +69,11 @@ namespace MyMedData.Classes
 		{
 			try
 			{
-				using (var userDB = GetUsersDatabase())
-				{
-					User? user = userDB.GetCollection<User>(User.DbCollectionName).FindById(userId);
-					if (user == null)
-						return false;
+				User? user = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(User.DbCollectionName).FindById(userId);
+				if (user == null)
+					return false;
 
-					return AuthorizeUser(user, mainWindow);
-				}
+				return AuthorizeUser(user, mainWindow);
 			}
 			catch (Exception ex)
 			{
@@ -123,16 +85,25 @@ namespace MyMedData.Classes
 		public static bool AuthorizeLastUser(MainWindow mainWindow)
 		{
 			int? id = GetLastUserId();
+			bool lastUserAutorizationSuccess;
 
 			if (id is int ID)
-				return AuthorizeUser(ID, mainWindow);
+				lastUserAutorizationSuccess = AuthorizeUser(ID, mainWindow);
 			else
-				return false;
+				lastUserAutorizationSuccess = false;
+
+			if (!lastUserAutorizationSuccess)
+			{
+				AppConfigDatabase.Settings.LastUser = null;
+				AppConfigDatabase.Settings.SaveSettings();
+			}
+			
+			return lastUserAutorizationSuccess;
 		}
 
 		public static int? GetLastUserId()
 		{
-			string idStr = SettingsManager.AppSettings["last_user"].Value;
+			string? idStr = AppConfigDatabase.Settings.LastUser;
 			if (Int32.TryParse(idStr, out int id))
 			{
 				return id;
@@ -144,7 +115,8 @@ namespace MyMedData.Classes
 
 		static void RaiseUserAuthorizedEvent(User user)
 		{
-			SettingsManager.UpsertSetting("last_user", user.Id.ToString());
+			AppConfigDatabase.Settings.LastUser = user.Id.ToString();
+			AppConfigDatabase.Settings.SaveSettings();
 			UserAuthorized?.Invoke(new UserAuthorizedEventArgs(user));
 		}
 

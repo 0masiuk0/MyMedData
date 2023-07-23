@@ -22,6 +22,8 @@
     <None Remove="Pics\Icons\AuthorizationIcon.svg" />
     <None Remove="Pics\Icons\CalendarViewIcon.png" />
     <None Remove="Pics\Icons\TableViewIcon.png" />
+    <None Remove="Users Database debug.db" />
+    <None Remove="Users Database.db" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +43,12 @@
 
   <ItemGroup>
     <Content Include="Pics\App-Icon.ico" />
+    <Content Include="Users Database.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Users Database debug.db">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
