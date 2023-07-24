@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyMedData.Controls"
              mc:Ignorable="d" Name="ArchivedDocumentPlaque"
-             d:DesignHeight="40" d:DesignWidth="300"
+             d:DesignHeight="50" d:DesignWidth="300"
              MouseDoubleClick="UserControl_MouseDoubleClick">
     <Border BorderBrush="{StaticResource DarkThemeFontColor}"
             BorderThickness="1"
             Background="#FF3A4F92">
-        <DockPanel>
+        <DockPanel Margin="0,10,0,0">
             <Image Height="30" MouseDown="Image_MouseDown"
                 Source="{StaticResource ViewFileDrawing}"/>
             <TextBox x:Name="UserNameTextBlock"                  

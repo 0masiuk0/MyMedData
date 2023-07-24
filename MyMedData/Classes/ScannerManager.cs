@@ -42,7 +42,7 @@ namespace MyMedData.Classes
 		private static Task<bool>? PingScanner(string scannerName)
 		{
 			using WiaDeviceManager wiaDeviceManager = new WiaDeviceManager();
-			var devices = wiaDeviceManager.GetDeviceInfos();
+			var devices = wiaDeviceManager.GetDeviceInfos();			
 			return Task.FromResult(devices.Any(device => device.Name() == scannerName));
 		}
 

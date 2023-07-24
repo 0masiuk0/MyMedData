@@ -35,8 +35,8 @@ namespace MyMedData
 
 			public static string? DPI 
 			{
-				get => settingsCache.GetValueOrDefault(nameof(DefaultScannerName), null);
-				set => settingsCache[nameof(DefaultScannerName)] = value;
+				get => settingsCache.GetValueOrDefault(nameof(DPI), null);
+				set => settingsCache[nameof(DPI)] = value;
 			}
 
 			public static string? AutoLogin
