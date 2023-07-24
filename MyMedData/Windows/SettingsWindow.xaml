@@ -86,7 +86,7 @@
                 </StackPanel>
             </TabItem>
             
-            <TabItem>
+            <TabItem Visibility="Collapsed" d:Visibility="Visible">
                 <TabItem.Header>
                     <TextBlock>
                         Пароль БД

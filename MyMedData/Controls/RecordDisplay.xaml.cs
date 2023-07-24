@@ -306,7 +306,7 @@ namespace MyMedData.Controls
 		{
 			var fileBytes = await attachment.LoadData((Session)DataContext);
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.FileName = attachment.FileName;
+			saveFileDialog.FileName = attachment.CustomName;
 			if (saveFileDialog.ShowDialog() ?? false)
 			{
 				await File.WriteAllBytesAsync(saveFileDialog.FileName, fileBytes);
