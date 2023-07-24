@@ -93,11 +93,14 @@ namespace MyMedData.Controls
 				recordDisplay.ResetRecordView();
                 recordDisplay.DocOrLab = null;
                 recordDisplay.ExamniantionTypeLabel.Text = "Вид обследования";
-                recordDisplay.ExaminationTypeButton.Content = "Выбор исследования";
+                recordDisplay.ExaminationTypeButton.Content = "Выбор вида обследования";
                 recordDisplay.ClinicButton.Content = "Выбор мед. учереждения";
                 recordDisplay.DoctorButton.Content = "Выбор врача";
+				
             }
-        }
+
+			recordDisplay.UpdateScannerAvailibity();
+		}
 
 		Popup EntityPopup;
 
@@ -299,6 +302,17 @@ namespace MyMedData.Controls
 			}
 		}
 
+		private async Task SaveFileToDisk(AttachmentMetaData attachment)
+		{
+			var fileBytes = await attachment.LoadData((Session)DataContext);
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.FileName = attachment.FileName;
+			if (saveFileDialog.ShowDialog() ?? false)
+			{
+				await File.WriteAllBytesAsync(saveFileDialog.FileName, fileBytes);
+			}
+		}
+
 		#region DepdencyPropertires
 		//------------------------------------------DEPENDENCY PROPERTIES----------------------------------------------------------
 		//сюда привязан selected item листа записей
@@ -441,10 +455,31 @@ namespace MyMedData.Controls
 		private void DocumentsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (AttachmentListBox.SelectedItem is AttachmentMetaData)
-				RemoveDocButton.Visibility = Visibility.Visible;
+				SaveFileButton.Visibility = RemoveDocButton.Visibility = Visibility.Visible;
 			else
-				RemoveDocButton.Visibility = Visibility.Hidden;
-		}			
+				SaveFileButton.Visibility = RemoveDocButton.Visibility = Visibility.Hidden;
+		}
+
+		private async void SaveFileButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (AttachmentListBox.SelectedItem is AttachmentMetaData attachment)
+			{
+				try
+				{
+					SaveFileButton.IsEnabled = false;
+					await SaveFileToDisk(attachment);
+				}
+				catch(Exception ex) 
+				{ 
+					MessageBox.Show(ex.Message, "Сохранение не удалось.", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
+				finally 
+				{
+					SaveFileButton.IsEnabled = true;
+					SaveFileButton.Visibility = AttachmentListBox.SelectedItem is AttachmentMetaData ? Visibility.Visible : Visibility.Collapsed; 
+				}
+			}
+		}
 
 		//-----------------------------------------------------------EVENTS----------------------------------------------------------------
 		public delegate void ChangesSavedToDBEventHandler(object sender, ChangesSavedToDBEventArgs e);
@@ -478,8 +513,7 @@ namespace MyMedData.Controls
 			CommentTextBox.MouseLeave += (o, e) => AttachmentListBox.Focus();
 			AttachmentListBox.Focus();
 		}
-
-	}
+    }
 
 	public class ChangesSavedToDBEventArgs
 	{

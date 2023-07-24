@@ -101,6 +101,12 @@
                         Visibility="Hidden" 
                         d:Visibility="Visible" d:IsEnabled="False"
                         Click="RemoveDocButton_Click"/>
+                <Button x:Name="SaveFileButton" Style="{StaticResource UnsizedDarkButtonStyle}"
+                        Width="30" Height="30" Margin="5,5,5,0" Padding="2"
+                        Content="{StaticResource DownloadDocumentDrawingImage}"
+                        Visibility="Hidden" 
+                        d:Visibility="Visible" d:IsEnabled="False"
+                        Click="SaveFileButton_Click"/>
             </StackPanel>
             <ListBox x:Name="AttachmentListBox" 
                         Background="Transparent"

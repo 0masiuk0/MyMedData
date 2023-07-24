@@ -168,7 +168,7 @@
 
             <TextBlock x:Name="UsernameTextBlock"
                         FontSize="14"
-                        Text="АВТОРИЗУЙТЕСЬ"
+                        Text="АВТОРИЗУЙТЕСЬ ДЛЯ НАЧАЛА РАБОТЫ"
                         ToolTip="Имя пользователя. Двойной клик для авторизации."
                         Background="{StaticResource LightDarkBackColor}"
                         DockPanel.Dock="Right" VerticalAlignment="Center" MinWidth="120"

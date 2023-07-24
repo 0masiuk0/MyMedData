@@ -104,7 +104,7 @@ namespace MyMedData
 			{
 				ActiveSession.Dispose();
 				ActiveSession = null;
-				UsernameTextBlock.Text = "АВТОРИЗУЙТЕСЬ";
+				UsernameTextBlock.Text = "АВТОРИЗУЙТЕСЬ ДЛЯ НАЧАЛА РАБОТЫ";
 			}
 			NewDocExaminationButton.Visibility = Visibility.Collapsed;
 			NewLabAnalysisButon.Visibility = Visibility.Collapsed;

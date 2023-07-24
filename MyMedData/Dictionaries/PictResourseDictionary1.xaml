@@ -770,4 +770,20 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+
+    <Image x:Key="DownloadDocumentDrawingImage">
+        <Image.Source>
+            <DrawingImage>
+                <DrawingImage.Drawing>
+                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M19,15L19,21 M19,21L17,19 M19,21L21,19 M13,3L8.2,3C7.0799,3 6.51984,3 6.09202,3.21799 5.71569,3.40973 5.40973,3.71569 5.21799,4.09202 5,4.51984 5,5.0799 5,6.2L5,17.8C5,18.9201 5,19.4802 5.21799,19.908 5.40973,20.2843 5.71569,20.5903 6.09202,20.782 6.51984,21 7.0799,21 8.2,21L14,21 M13,3L19,9 M13,3L13,7.4C13,7.96005 13,8.24008 13.109,8.45399 13.2049,8.64215 13.3578,8.79513 13.546,8.89101 13.7599,9 14.0399,9 14.6,9L19,9 M19,9L19,11 M9,17L13,17 M9,13L15,13 M9,9L10,9">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="{StaticResource BlueConotourColor}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
 </ResourceDictionary>
