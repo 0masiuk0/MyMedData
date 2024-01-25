@@ -143,6 +143,19 @@ namespace MyMedData.Controls
 				e.Accepted = true;
         }
 
+		bool _entityAdditionEnabled;
+		bool entityAdditionEnabled
+		{
+			get { return _entityAdditionEnabled; }
+			set 
+			{
+				_entityAdditionEnabled = value;
+				AddNewEntityButton.IsEnabled = value;
+				AddNewEntityButton.Visibility = _entityAdditionEnabled ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
+
+
 		private void UpdateNewEntityButtonEnabling()
 		{
 			if (
@@ -156,43 +169,49 @@ namespace MyMedData.Controls
 				|| (DataContext is ObservableCollection<Doctor> doctorsCollection
 							&& doctorsCollection.FirstOrDefault(d => d.Name.ToLower() == TitleTextBox.Text.ToLower().Trim(), null) is Doctor))
 			{
-				AddNewEntityButton.IsEnabled = false;
+				entityAdditionEnabled = false;
 				AddNewEntityButton.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
-				bool enableNew = !string.IsNullOrWhiteSpace(TitleTextBox.Text);
-				AddNewEntityButton.IsEnabled = enableNew;
-				AddNewEntityButton.Visibility = enableNew ? Visibility.Visible : Visibility.Collapsed;
+				entityAdditionEnabled = !string.IsNullOrWhiteSpace(TitleTextBox.Text);
 			}
 		}
 
 		private void AddNewEntityButton_Click(object sender, RoutedEventArgs e)
 		{
+			AddNewEntity();
+		}
+
+		private void AddNewEntity()
+		{
+			if (!entityAdditionEnabled)
+				return;
+
 			string title = TitleTextBox.Text;
-            string comment = CommentTextBox.Text ?? "";
-			switch(DataContext) 
+			string comment = CommentTextBox.Text ?? "";
+			switch (DataContext)
 			{
-				case ObservableCollection<ExaminationType> cache: 
+				case ObservableCollection<ExaminationType> cache:
 					var newItem = new ExaminationType(title, comment);
 					cache.Add(newItem);
 					EntitiesDataGrid.SelectedItem = newItem;
 					break;
-				case ObservableCollection<Doctor> cache: 
+				case ObservableCollection<Doctor> cache:
 					var newItem2 = new Doctor(title, comment);
 					cache.Add(newItem2);
 					EntitiesDataGrid.SelectedItem = newItem2;
-                    break;
+					break;
 				case ObservableCollection<Clinic> cache:
 					var newItem3 = new Clinic(title, comment);
 					cache.Add(newItem3);
 					EntitiesDataGrid.SelectedItem = newItem3;
-                    break;
-				default: 
-					SelectedItem = null; 
+					break;
+				default:
+					SelectedItem = null;
 					break;
 			}
-        }
+		}
 
 		private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
@@ -227,13 +246,18 @@ namespace MyMedData.Controls
 
 		private void EntitiesDataGrid_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Enter && EntitiesDataGrid.SelectedItem != null) 
+			if (e.Key == Key.Enter)
 			{
-				SelectedItem = EntitiesDataGrid.SelectedItem;
-				RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
+				if (EntitiesDataGrid.SelectedItem != null)
+				{
+					SelectedItem = EntitiesDataGrid.SelectedItem;
+					RaiseEvent(new RoutedEventArgs(SelectionDoneEvent, this));
+				}
+				else if (entityAdditionEnabled)
+					AddNewEntity();
 			}
 			else if (e.Key == Key.Escape)
-				Cancel();
+				Cancel();			
 		}
 
 		private void UserControl_Loaded(object sender, RoutedEventArgs e)

@@ -35,7 +35,8 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="TitleTextBox" Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="TitleTextBox" Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                         KeyDown="EntitiesDataGrid_KeyDown"/>
                 <TextBox x:Name="CommentTextBox" Grid.Column="1" Margin="6,0,3,0"
                          Style="{StaticResource EntityTextBoxStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                 <Button x:Name="AddNewEntityButton" Grid.Column="2" Style="{StaticResource UnsizedDarkButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Center"
