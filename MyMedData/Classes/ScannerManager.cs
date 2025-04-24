@@ -75,7 +75,9 @@ namespace MyMedData.Classes
 					else
 						throw new ScannerBusyException();
 				}
-			}			
+			}
+			else
+				throw new ScannerBusyException();
 
 			ScanParamters scanParamters = new ScanParamters { PaperSize = paperSize, DPI_X = DPI_X, DPI_Y = DPI_Y };
 
