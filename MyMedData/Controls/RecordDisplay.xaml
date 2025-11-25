@@ -51,6 +51,7 @@
             <DatePicker x:Name="ExaminationDatePicker" 
                 DockPanel.Dock="Top"       
                 FontSize="16" 
+                Margin="-3,0,0,0"
                 Style="{StaticResource DarkDatePicker}"/>
             <TextBlock x:Name="ExamniantionTypeLabel" 
                 DockPanel.Dock="Top"

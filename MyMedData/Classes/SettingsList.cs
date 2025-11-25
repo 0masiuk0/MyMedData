@@ -91,7 +91,7 @@ namespace MyMedData
 				settingsCache = UsersAndSettingsDatabase.GetCollection<Setting>(SettingsCollection).FindAll().ToDictionary(s => s.Key, s => s.Value);
 			}
 
-			static string SettingsCollection = "Settings";
+			const string SettingsCollection = "Settings";
 
 			internal static event SettingsChangedEventHandler SettingsChanged;
 
