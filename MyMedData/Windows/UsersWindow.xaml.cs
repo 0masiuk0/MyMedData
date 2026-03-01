@@ -121,11 +121,8 @@ namespace MyMedData.Windows
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 				passwordWindow.ShowDialog();
 
-				if (!(passwordWindow.Password is string password && user.CheckPassword(password)))
-				{
-					MessageBox.Show("Неверный пароль.", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+				if (passwordWindow.Password is not string password)
 					return;
-				}
 
 				if (MainWindow.ActiveUser != null && MainWindow.ActiveUser.Id == user.Id)
 				{
@@ -133,7 +130,7 @@ namespace MyMedData.Windows
 					MainWindow.LogOff();
 				}
 
-				EditUserWindow editUserWindow = new(user, passwordWindow.Password);
+				EditUserWindow editUserWindow = new(user, password);
 				editUserWindow.Owner = this;
 				editUserWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 				editUserWindow.ShowDialog();
@@ -149,7 +146,7 @@ namespace MyMedData.Windows
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 				passwordWindow.ShowDialog();
 
-				if (!(passwordWindow.Password is string password && user.CheckPassword(password)))
+				if (passwordWindow.Password == null)
 					return;
 
 				if (MainWindow.ActiveUser != null && MainWindow.ActiveUser.Id == user.Id)

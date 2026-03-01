@@ -36,8 +36,7 @@ namespace MyMedData.Classes
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
 				passwordWindow.ShowDialog();
-				if (passwordWindow.Password is string passwordToCheck
-					&& user.CheckPassword(passwordToCheck))
+				if (passwordWindow.Password is string passwordToCheck)
 				{
 					RaiseUserAuthorizedEvent(user);
 					pwrd = passwordToCheck;
