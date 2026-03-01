@@ -20,12 +20,9 @@ namespace MyMedData.Windows
 	/// </summary>
 	public partial class EnterPasswordWindow : Window
 	{
-		private User _user;
-
 		public EnterPasswordWindow(User user)
 		{
-			InitializeComponent();
-			_user = user;
+			InitializeComponent();			
 			DataContext = user;
 			Loaded += (o, e) => PasswrodBox.Focus();
 		}

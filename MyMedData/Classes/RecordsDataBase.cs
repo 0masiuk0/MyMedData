@@ -18,76 +18,66 @@ namespace MyMedData
 	{
 		public static bool CreateUserDocumnetDb(User user, string password, DbCreationOptions options = DbCreationOptions.Ask)
 		{
-			if (File.Exists(user.DatabaseFile))
-			{
-				if (!user.CheckPassword(password))
-					throw new InvalidDataException($"Попытка создать файл базы данных с ключом шифрования, отличным от пароля пользователя {user.Name}");
+			if (!File.Exists(user.DatabaseFile))
+				return CreateFreshRecordDb(user.DatabaseFile, password);
 
-				if (FileChecker.IsFileLocked(user.DatabaseFile))
-					throw new Exception("Файл занят.");
+			if (!user.CheckPassword(password))
+				throw new InvalidDataException($"Попытка создать файл базы данных с ключом шифрования, отличным от пароля пользователя {user.Name}");
 
-				//есть файл
-				if (options == DbCreationOptions.UseExistingIfFound)
-				{
-					if (!RecordsDataBase.FastCheckRecordDbValidity(user.DatabaseFile, password))
-					{
-						if (MessageBox.Show("Указанная база не соответствует формату. Отформатировать с очисткой?", "Ошибка!",
-							MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-						{
-							return CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
-						}
-						else
-						{
-							return false;
-						}
-					}
-					else
-					{
-						return true;
-					}
-				}
-				else if (options == DbCreationOptions.Override)
-				{
-					try
-					{
-						File.Delete(user.DatabaseFile);
-						return CreateFreshRecordDb(user.DatabaseFile, password);
-					}
-					catch
-					{
-						if (MessageBox.Show("Не удается удалить существующий файл. Повторить попытку?", "Ошибка!",
-							MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-						{
-							return CreateUserDocumnetDb(user, password, options);
-						}
-						else
-						{
-							return false;
-						}
-					}
-				}
-				else
-				{
-					var answer = MessageBox.Show("Использовать существующий файл.\n Да - использовать файл.\n Нет - очистить файл.", "Внимание!",
-							MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-					if (answer == MessageBoxResult.Yes)
-					{
-						return CreateUserDocumnetDb(user, password, DbCreationOptions.UseExistingIfFound);
-					}
-					else if (answer == MessageBoxResult.No)
-					{
-						return CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
-					}
-					else
-					{
-						return false;
-					}
-				}
-			}
-			else
+			if (FileChecker.IsFileLocked(user.DatabaseFile))
+				throw new Exception("Файл занят.");
+
+			return options switch
 			{
+				DbCreationOptions.UseExistingIfFound => HandleUseExisting(user, password),
+				DbCreationOptions.Override => HandleOverride(user, password),
+				_ => HandleAsk(user, password)
+			};
+		}
+
+		private static bool HandleUseExisting(User user, string password)
+		{
+			if (RecordsDataBase.FastCheckRecordDbValidity(user.DatabaseFile, password))
+				return true;
+
+			var reformat = MessageBox.Show(
+				"Указанная база не соответствует формату. Отформатировать с очисткой?",
+				"Ошибка!", MessageBoxButton.YesNo, MessageBoxImage.Error);
+
+			return reformat == MessageBoxResult.Yes
+				&& CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
+		}
+
+		private static bool HandleOverride(User user, string password)
+		{
+			try
+			{
+				File.Delete(user.DatabaseFile);
 				return CreateFreshRecordDb(user.DatabaseFile, password);
 			}
+			catch
+			{
+				var retry = MessageBox.Show(
+					"Не удается удалить существующий файл. Повторить попытку?",
+					"Ошибка!", MessageBoxButton.YesNo, MessageBoxImage.Error);
+
+				return retry == MessageBoxResult.Yes
+					&& CreateUserDocumnetDb(user, password, DbCreationOptions.Override);
+			}
+		}
+
+		private static bool HandleAsk(User user, string password)
+		{
+			var answer = MessageBox.Show(
+				"Использовать существующий файл.\n Да - использовать файл.\n Нет - очистить файл.",
+				"Внимание!", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
+			return answer switch
+			{
+				MessageBoxResult.Yes => CreateUserDocumnetDb(user, password, DbCreationOptions.UseExistingIfFound),
+				MessageBoxResult.No => CreateUserDocumnetDb(user, password, DbCreationOptions.Override),
+				_ => false
+			};
 		}
 
 		public static bool FastCheckRecordDbValidity(string filename, string password)
@@ -153,7 +143,7 @@ namespace MyMedData
 			return GetConnectionString(user.DatabaseFile, password);
 		}
 
-		private static string[] _allowedCollectionNames = new string[]
+		private static readonly string[] _allowedCollectionNames = new string[]
 		{
 			DoctorExaminationRecord.DbCollectionName, LabExaminationRecord.DbCollectionName,
 			Doctor.DbCollectionName, Clinic.DbCollectionName,

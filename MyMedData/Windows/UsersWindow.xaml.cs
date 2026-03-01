@@ -48,7 +48,7 @@ namespace MyMedData.Windows
 		{
 			try
 			{
-				var usersCollection = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(User.DbCollectionName);
+				var usersCollection = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(AppConfigDatabase.DbCollectionName);
 				foreach (User u in usersCollection.FindAll())
 				{
 					_users.Add(u);

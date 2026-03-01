@@ -19,6 +19,8 @@ namespace MyMedData
 {
 	internal static partial class AppConfigDatabase
 	{
+
+		public static string DbCollectionName => "Users";
 		internal static class Settings
 		{
 			public static string? LastUser

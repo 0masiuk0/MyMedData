@@ -69,7 +69,7 @@ namespace MyMedData.Classes
 		{
 			try
 			{
-				User? user = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(User.DbCollectionName).FindById(userId);
+				User? user = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(AppConfigDatabase.DbCollectionName).FindById(userId);
 				if (user == null)
 					return false;
 
