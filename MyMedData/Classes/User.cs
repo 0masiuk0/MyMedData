@@ -158,7 +158,7 @@ namespace MyMedData
 			var userDbFilename = ConfigurationManager.AppSettings["UserDbName"];
 			using (var db = new LiteDatabase(userDbFilename))
 			{
-				var users = db.GetCollection<User>(DbCollectionName);
+				var users = db.GetCollection<User>(AppConfigDatabase.DbCollectionName);
 				return users.Update(updatedUser);				
 			}
 		}
@@ -174,10 +174,8 @@ namespace MyMedData
 			return copy;
 		}
 
-		public static string DbCollectionName => "Users";
-
-		//---------------------------------------------NON-SERIALIZED INSTANCE MEMBERS-------------------------------------
-		[BsonIgnore]
+        //---------------------------------------------NON-SERIALIZED INSTANCE MEMBERS-------------------------------------
+        [BsonIgnore]
 		public string DatabaseShortFileName => Path.GetFileName(DatabaseFile);
 		
 		[BsonIgnore]

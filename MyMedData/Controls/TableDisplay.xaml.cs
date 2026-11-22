@@ -57,8 +57,10 @@ namespace MyMedData.Controls
 		private readonly CollectionViewSource _recordsCollectionsViewSource;
 
 		private void RecordsDataGrid_Loaded(object sender, RoutedEventArgs e)
-		{		
-			foreach(var column in RecordsDataGrid.Columns) 
+		{
+			_filterMode = (FilterMode)FilterStateButton.CurrentState.ButtonStateTag;
+
+			foreach (var column in RecordsDataGrid.Columns) 
 			{
 				column.CanUserResize = true;
 				column.CanUserSort = true;
@@ -92,10 +94,24 @@ namespace MyMedData.Controls
 			RecordsDataGrid.SelectedItem = e.NewRecord;
 		}
 
+
+		private FilterMode _filterMode;
 		private void RecordsCollectionViewSource_Filter(object sender, FilterEventArgs e)
 		{	
 			if (e.Item is ExaminationRecord record)
 			{
+				switch (_filterMode)
+				{
+					case FilterMode.DocExam:
+						if (record is LabExaminationRecord)
+							e.Accepted = false;
+						return;
+					case FilterMode.LabExam:
+						if (record is DoctorExaminationRecord)
+							e.Accepted = false;
+						return;					
+				}
+
 				if (TitleFilterTextBox.Text is string titleFilter && titleFilter.Length > 0)
 				{
 					if (!record.Title?.ToLower().Contains(titleFilter.ToLower()) ?? true)
@@ -144,5 +160,21 @@ namespace MyMedData.Controls
 		{
 			RecordDisplay.UpdateView();
 		}
-    }
+		
+		private void FilterStateButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is MultiStateButton button && button.CurrentState?.ButtonStateTag is FilterMode mode)
+			{
+				_filterMode = mode;
+				_recordsCollectionsViewSource.View.Refresh();
+			}
+		}
+	}
+
+	public enum FilterMode
+	{
+		NoFilter,
+		DocExam,
+		LabExam,		
+	}
 }

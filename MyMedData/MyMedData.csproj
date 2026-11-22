@@ -43,12 +43,6 @@
 
   <ItemGroup>
     <Content Include="Pics\App-Icon.ico" />
-    <Content Include="Users Database.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Users Database debug.db">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

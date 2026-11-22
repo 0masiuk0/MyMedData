@@ -48,7 +48,7 @@ namespace MyMedData
 		{
 			try
 			{
-				var usersCollection = usersDatabase.GetCollection<User>(User.DbCollectionName);
+				var usersCollection = usersDatabase.GetCollection<User>(AppConfigDatabase.DbCollectionName);
 				var id = usersCollection.Insert(user).AsInt32;
 				return true;
 			}
@@ -59,7 +59,7 @@ namespace MyMedData
 		{
 			try
 			{
-				var usersCollection = usersDatabase.GetCollection<User>(User.DbCollectionName);
+				var usersCollection = usersDatabase.GetCollection<User>(AppConfigDatabase.DbCollectionName);
 				return usersCollection.Update(user);
 			}
 			catch (LiteException) { return false; }
@@ -71,7 +71,7 @@ namespace MyMedData
 
 			try
 			{
-				var usersCollection = usersDatabase.GetCollection<User>(User.DbCollectionName);
+				var usersCollection = usersDatabase.GetCollection<User>(AppConfigDatabase.DbCollectionName);
 				dbDeletionSuccess = usersCollection.Delete(user.Id);
 			}
 			catch (LiteException) { dbDeletionSuccess = false; }

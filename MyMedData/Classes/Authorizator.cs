@@ -36,8 +36,7 @@ namespace MyMedData.Classes
 				passwordWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
 				passwordWindow.ShowDialog();
-				if (passwordWindow.Password is string passwordToCheck
-					&& user.CheckPassword(passwordToCheck))
+				if (passwordWindow.Password is string passwordToCheck)
 				{
 					RaiseUserAuthorizedEvent(user);
 					pwrd = passwordToCheck;
@@ -69,7 +68,7 @@ namespace MyMedData.Classes
 		{
 			try
 			{
-				User? user = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(User.DbCollectionName).FindById(userId);
+				User? user = AppConfigDatabase.UsersAndSettingsDatabase.GetCollection<User>(AppConfigDatabase.DbCollectionName).FindById(userId);
 				if (user == null)
 					return false;
 
